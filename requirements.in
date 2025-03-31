@@ -29,4 +29,4 @@ watermark==2.4.3
 # https://github.com/sphinx-doc/sphinx/issues/10291
 Jinja2<3.1
 
-covasim==3.1.4
+covasim==3.1.6
