@@ -9,7 +9,7 @@ def cv_infection_log_to_alstd_df(log_records: list) -> pd.DataFrame:
     ]
     df["source"] = df["source"].astype(int)
 
-    most_recent_event = {}
+    most_recent_event = {}  # person_id -> row number
     ancestor_ids = []
     for i, row in df.iterrows():
         source, target = row["source"], row["target"]
