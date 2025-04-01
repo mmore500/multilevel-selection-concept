@@ -8,3 +8,8 @@
 	url = https://github.com/mmore500/multilevel-selection-concept.git
 	branch = binder-2024-10-20-example.ipynb
 	shallow = true
+[submodule "binder/binder-2025-03-31-dev-variantsync.ipynb"]
+	path = binder/binder-2025-03-31-dev-variantsync.ipynb
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-03-31-dev-variantsync.ipynb
+	shallow = true
