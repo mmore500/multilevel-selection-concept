@@ -1,7 +1,7 @@
 import typing
 
-import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D as mpl_Line2D
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
