@@ -55,7 +55,11 @@ def pairplot(
                 ]
                 if len(groups) > 1:
                     stat, p_val = kruskal(*groups)
-                    if p_val < 0.001:
+                    if p_val < 0.00001:
+                        sig = "*****"
+                    elif p_val < 0.0001:
+                        sig = "****"
+                    elif p_val < 0.001:
                         sig = "***"
                     elif p_val < 0.01:
                         sig = "**"
