@@ -15,7 +15,7 @@ def pairplot(
     """Analog of sns.Pairplot, handled manually to prevent post-hoc log scaling
     artifacts."""
     # Compute the hue levels once for consistency and for the legend
-    hue_levels = data_df[hue].unique()
+    hue_levels = sorted(data_df[hue].unique())
 
     n = len(vars_to_plot)
     fig, axes = plt.subplots(n, n, figsize=(2 * n, 2 * n))
