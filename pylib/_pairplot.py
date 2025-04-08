@@ -3,6 +3,7 @@ import typing
 from matplotlib.lines import Line2D as mpl_Line2D
 import matplotlib.pyplot as plt
 import pandas as pd
+from scipy.stats import kruskal
 import seaborn as sns
 
 
@@ -47,6 +48,30 @@ def pairplot(
                             ax=ax,
                             legend=False,  # disable individual legends
                         )
+                # Compute the Kruskal-Wallis test across groups for the current variable
+                groups = [
+                    data_df.loc[data_df[hue] == level, x_var].dropna()
+                    for level in hue_levels
+                ]
+                if len(groups) > 1:
+                    stat, p_val = kruskal(*groups)
+                    if p_val < 0.001:
+                        sig = "***"
+                    elif p_val < 0.01:
+                        sig = "**"
+                    elif p_val < 0.05:
+                        sig = "*"
+                    else:
+                        sig = "ns"
+                    # Annotate significance level
+                    ax.text(
+                        0.95,
+                        0.95,
+                        sig,
+                        transform=ax.transAxes,
+                        horizontalalignment="right",
+                        verticalalignment="top",
+                    )
 
             # Off-diagonals: Scatterplots using seaborn's KDE plots
             else:
