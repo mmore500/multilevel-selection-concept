@@ -3,7 +3,7 @@ import pandas as pd
 from pylib._generate_dummy_sequences import generate_dummy_sequences
 
 
-def dummy_mutator(ancestor_sequence, variant, ancestor_variant):
+def dummy_mutator(ancestor_sequence, variant, **kwargs):
     return f"{ancestor_sequence}_{variant}"
 
 
@@ -13,6 +13,7 @@ def test_generate_dummy_sequences_smoke():
             "id": [0, 1, 2, 3],
             "ancestor_id": [0, 0, 0, 1],
             "variant": ["A", "B", "C", "D"],
+            "origin_time": [0, 1, 2, 3],
         }
     )
 
