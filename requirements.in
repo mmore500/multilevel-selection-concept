@@ -25,6 +25,7 @@ pytest-xdist==3.2.1
 ruff==0.0.260
 scipy==1.14.1
 seaborn==0.13.2
+python-slugify==8.0.4
 teeplot==1.4.2
 tqdm==4.64.1
 uv==0.4.20
