@@ -35,6 +35,11 @@ def generate_dummy_sequences(
     if not hstrat_aux.alifestd_has_contiguous_ids(phylogeny_df):
         raise ValueError("Phylogeny DataFrame does not have contiguous IDs.")
 
+    if "origin_time" not in phylogeny_df.columns:
+        raise ValueError(
+            "Phylogeny DataFrame does not have an origin_time column.",
+        )
+
     phylogeny_df = hstrat_aux.alifestd_try_add_ancestor_id_col(
         phylogeny_df, mutate=True
     )
@@ -54,6 +59,8 @@ def generate_dummy_sequences(
             ancestor_sequence,
             variant=phylogeny_df.at[idx, "variant"],
             ancestor_variant=phylogeny_df.at[ancestor_id, "variant"],
+            origin_time=phylogeny_df.at[idx, "origin_time"],
+            ancestor_origin_time=phylogeny_df.at[ancestor_id, "origin_time"],
         )
 
         res.append(mutated_sequence)
