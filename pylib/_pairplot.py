@@ -32,25 +32,15 @@ def pairplot(
             if i == j:
                 for level in hue_levels:
                     mask = data_df[hue] == level
-                    if x_var in log_vars:
-                        sns.kdeplot(
-                            x=data_df.loc[mask, x_var],
-                            fill=True,
-                            common_norm=False,
-                            label=level,
-                            ax=ax,
-                            log_scale=(True, False),
-                            legend=False,  # disable individual legends
-                        )
-                    else:
-                        sns.kdeplot(
-                            x=data_df.loc[mask, x_var],
-                            fill=True,
-                            common_norm=False,
-                            label=level,
-                            ax=ax,
-                            legend=False,  # disable individual legends
-                        )
+                    sns.kdeplot(
+                        x=data_df.loc[mask, x_var],
+                        fill=True,
+                        common_norm=False,
+                        label=level,
+                        ax=ax,
+                        log_scale=(x_var in log_vars, False),
+                        legend=False,  # disable individual legends
+                    )
 
                 # For a two-group scenario,
                 # report the Mann–Whitney U test and Cliff's delta.
@@ -117,8 +107,6 @@ def pairplot(
             # Off-diagonals: Scatterplots using seaborn's KDE plots
             else:
                 # Determine log_scale parameters for x and y axes
-                x_log = x_var in log_vars
-                y_log = y_var in log_vars
                 sns.kdeplot(
                     data=data_df,
                     x=x_var,
@@ -127,7 +115,7 @@ def pairplot(
                     alpha=0.8,
                     ax=ax,
                     fill=False,
-                    log_scale=(x_log, y_log),
+                    log_scale=(x_var in log_vars, y_var in log_vars),
                     legend=False,
                 )
 
