@@ -97,7 +97,7 @@ gitdb==4.0.12
     # via gitpython
 gitpython==3.1.44
     # via sciris
-hstrat==1.19.4
+hstrat @ git+https://github.com/mmore500/hstrat.git@5a5c17ebe4f978ba99d441c6127097b190b0ae7b#egg=hstrat
     # via -r requirements.in
 hurry-filesize==0.9
     # via nbmetalog
