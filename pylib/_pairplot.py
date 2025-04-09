@@ -3,7 +3,7 @@ import typing
 from matplotlib.lines import Line2D as mpl_Line2D
 import matplotlib.pyplot as plt
 import pandas as pd
-from scipy.stats import kruskal
+from scipy.stats import mannwhitneyu  # Use Mann–Whitney U test for two groups
 import seaborn as sns
 
 
@@ -20,6 +20,9 @@ def pairplot(
 
     n = len(vars_to_plot)
     fig, axes = plt.subplots(n, n, figsize=(2 * n, 2 * n))
+
+    # Create custom legend handles using the default seaborn palette
+    palette = sns.color_palette()
 
     for i, y_var in enumerate(vars_to_plot):
         for j, x_var in enumerate(vars_to_plot):
@@ -48,26 +51,64 @@ def pairplot(
                             ax=ax,
                             legend=False,  # disable individual legends
                         )
-                # Compute the Kruskal-Wallis test across groups for the current variable
+
+                # For a two-group scenario,
+                # report the Mann–Whitney U test and Cliff's delta.
                 groups = [
                     data_df.loc[data_df[hue] == level, x_var].dropna()
                     for level in hue_levels
                 ]
-                if len(groups) > 1:
-                    stat, p_val = kruskal(*groups)
-                    if p_val < 0.001:
-                        sig = "***"
+                if len(groups) == 2:
+                    group0 = groups[0]
+                    group1 = groups[1]
+                    # Compute medians for directionality
+                    median0 = group0.median()
+                    median1 = group1.median()
+                    # Perform Mann–Whitney U test (two-sided)
+                    U, p_val = mannwhitneyu(
+                        group0, group1, alternative="two-sided"
+                    )
+                    n0 = len(group0)
+                    n1 = len(group1)
+                    # Compute Cliff's delta: δ = 1 - 2*(U/(n0*n1))
+                    cliffs_delta = 1 - 2 * (U / (n0 * n1))
+
+                    # Convert p-value to significance stars
+                    if p_val < 0.00001:
+                        stars = "*****"
+                    elif p_val < 0.0001:
+                        stars = "****"
+                    elif p_val < 0.001:
+                        stars = "***"
                     elif p_val < 0.01:
-                        sig = "**"
+                        stars = "**"
                     elif p_val < 0.05:
-                        sig = "*"
+                        stars = "*"
                     else:
-                        sig = "ns"
-                    # Annotate significance level
+                        stars = "ns"
+
+                    # Determine the direction arrow:
+                    #   - '>' if group0 > group1,
+                    #   - '<' if group0 < group1,
+                    #   - '=' if medians are exactly equal
+                    if median0 > median1:
+                        arrow = "<"
+                    elif median0 < median1:
+                        arrow = ">"
+                    else:
+                        arrow = "="
+
+                    # Annotation: first line stars and arrow, second line Cliff's delta
+                    annotation = f"{stars} {arrow}\nδ={cliffs_delta:.2f}"
                     ax.text(
                         0.95,
                         0.95,
-                        sig,
+                        annotation,
+                        color={
+                            ">": palette[0],
+                            "<": palette[1],
+                            "=": "black",
+                        }[arrow],
                         transform=ax.transAxes,
                         horizontalalignment="right",
                         verticalalignment="top",
@@ -105,8 +146,6 @@ def pairplot(
     # Adjust layout to make space for the top legend
     plt.tight_layout(rect=[0, 0, 1, 0.95])
 
-    # Create custom legend handles using the default seaborn palette
-    palette = sns.color_palette()
     handles = [
         mpl_Line2D([], [], color=palette[i], lw=2)
         for i, level in enumerate(hue_levels)
