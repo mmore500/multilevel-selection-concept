@@ -19,8 +19,8 @@ for branch in $(git branch -r | grep 'origin/binder' | sed 's|origin/||'); do
     fi
 
     # Add the branch as a submodule
-    git clone --branch "$branch" --single-branch "https://github.com/mmore500/hstrat-agentless-concept.git" "binder/$branch" --jobs $(nproc) --depth 1
-    git submodule add --branch "$branch" "https://github.com/mmore500/hstrat-agentless-concept.git" "binder/$branch"
+    git clone --branch "$branch" --single-branch "https://github.com/mmore500/multilevel-selection-concept.git" "binder/$branch" --jobs $(nproc) --depth 1
+    git submodule add --branch "$branch" "https://github.com/mmore500/multilevel-selection-concept.git" "binder/$branch"
     git config -f .gitmodules submodule."binder/$branch".branch "$branch"
     git config -f .gitmodules submodule."binder/$branch".shallow true
 
