@@ -97,7 +97,7 @@ gitdb==4.0.12
     # via gitpython
 gitpython==3.1.44
     # via sciris
-hstrat @ git+https://github.com/mmore500/hstrat.git@5a5c17ebe4f978ba99d441c6127097b190b0ae7b#egg=hstrat
+hstrat==1.19.7
     # via -r requirements.in
 hurry-filesize==0.9
     # via nbmetalog
@@ -209,7 +209,7 @@ more-itertools==9.1.0
     #   keyname
 mpmath==1.3.0
     # via hstrat
-multidict==6.2.0
+multidict==6.4.2
     # via yarl
 multiprocess==0.70.17
     # via sciris
@@ -332,7 +332,7 @@ polars==1.9.0
     #   downstream
     #   hstrat
     #   joinem
-polars-u64-idx==1.26.0
+polars-u64-idx==1.27.0
     # via hstrat
 prettytable==3.16.0
     # via hstrat
