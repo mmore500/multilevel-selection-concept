@@ -3,7 +3,7 @@ backstrip==0.2.4
 biopython==1.85
 black==22.10.0
 Deprecated==1.2.13
-git+https://github.com/mmore500/hstrat.git@v1.19.6#egg=hstrat
+hstrat==1.19.7
 interval_search==0.5.2
 IPython==7.31.1
 isort==5.12.0
