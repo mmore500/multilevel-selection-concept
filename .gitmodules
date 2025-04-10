@@ -13,3 +13,23 @@
 	url = https://github.com/mmore500/multilevel-selection-concept.git
 	branch = binder-2025-03-31-dev-variantsync.ipynb
 	shallow = true
+[submodule "binder/binder-2025-04-07-dev-variantscreen.ipynb"]
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-04-07-dev-variantscreen.ipynb
+	shallow = true
+[submodule "binder/binder-2025-04-08-dev-sequencescreen-beneficialinhost.ipynb"]
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-04-08-dev-sequencescreen-beneficialinhost.ipynb
+	shallow = true
+[submodule "binder/binder-2025-04-08-dev-sequencescreen-neutral.ipynb"]
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-04-08-dev-sequencescreen-neutral.ipynb
+	shallow = true
+[submodule "binder/binder-2025-04-08-dev-sequencescreen-pessimal.ipynb"]
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-04-08-dev-sequencescreen-pessimal.ipynb
+	shallow = true
+[submodule "binder/binder-2025-04-08-dev-sequencescreen.ipynb"]
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-04-08-dev-sequencescreen.ipynb
+	shallow = true
