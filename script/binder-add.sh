@@ -3,6 +3,7 @@
 cd "$(dirname "$0")/.."
 
 # Fetch all remote branches
+git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
 git fetch --all --jobs $(nproc)
 git fetch origin
 
