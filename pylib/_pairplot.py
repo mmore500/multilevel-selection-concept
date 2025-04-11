@@ -117,6 +117,7 @@ def pairplot(
                     fill=False,
                     log_scale=(x_var in log_vars, y_var in log_vars),
                     legend=False,
+                    warn_singular=False,
                 )
 
             # Label only the left and bottom plots for clarity
