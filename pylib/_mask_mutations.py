@@ -6,7 +6,7 @@ import numpy as np
 def mask_mutations(
     ancestral_sequence: str,
     derived_sequences: typing.Sequence[str],
-) -> typing.Dict[str, np.ndarray]:
+) -> typing.Dict[tuple, np.ndarray]:
     """
     Generate boolean masks for mutations in derived sequences relative to an
     ancestral sequence.
