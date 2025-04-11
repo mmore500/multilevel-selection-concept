@@ -225,13 +225,16 @@ def run_phastSim(
         # siblings etc), the nodes in layers below the current one are simply
         # "forgotten" (in C they could be de-allocated, but the task here is
         # left to python automation).
-        genome_tree.mutateBranchETEhierarchy(
-            t,
-            genome_tree.genomeRoot,
-            1,
-            sim_run.args.createNewick,
-            preMutationsBranches,
-        )
+        with hstrat_aux.log_context_duration(
+            "mutateBranchETEhierarchy", print
+        ):
+            genome_tree.mutateBranchETEhierarchy(
+                t,
+                genome_tree.genomeRoot,
+                1,
+                sim_run.args.createNewick,
+                preMutationsBranches,
+            )
 
     # use simpler approach that collates same rates along the genome - less
     # #efficient with more complex models.
@@ -256,14 +259,15 @@ def run_phastSim(
         genome_tree.normalize_rates(scale=sim_run.args.scale)
 
         # Run sequence evolution simulation along tree
-        genome_tree.mutateBranchETE(
-            t,
-            genome_tree.muts,
-            genome_tree.totAlleles,
-            genome_tree.totMut,
-            genome_tree.extras,
-            sim_run.args.createNewick,
-        )
+        with hstrat_aux.log_context_duration("mutateBranchETE", print):
+            genome_tree.mutateBranchETE(
+                t,
+                genome_tree.muts,
+                genome_tree.totAlleles,
+                genome_tree.totMut,
+                genome_tree.extras,
+                sim_run.args.createNewick,
+            )
 
     # depending on the type of genome_tree, this automatically uses the correct
     # version
