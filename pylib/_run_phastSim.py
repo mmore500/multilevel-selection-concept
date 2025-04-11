@@ -59,6 +59,8 @@ def run_phastSim(
         str(ancestral_sequence_path),
         "--outpath",
         str(work_dir),
+        "--scale",
+        "2.74e-6",
     ]
 
     # setup the argument parser and read the arguments from command line
