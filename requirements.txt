@@ -10,6 +10,8 @@ anytree==2.13.0
     # via
     #   alifedata-phyloinformatics-convert
     #   hstrat
+argparse==1.4.0
+    # via phastsim
 attrs==25.3.0
     # via
     #   jsonschema
@@ -24,11 +26,14 @@ backstrip==0.2.4
     #   -r requirements.in
     #   pecking
 beautifulsoup4==4.13.3
-    # via nbconvert
+    # via
+    #   google
+    #   nbconvert
 biopython==1.85
     # via
     #   -r requirements.in
     #   alifedata-phyloinformatics-convert
+    #   phastsim
 bitarray==3.3.1
     # via
     #   bitstring
@@ -52,7 +57,7 @@ covasim==3.1.6
     # via -r requirements.in
 cycler==0.12.1
     # via matplotlib
-debugpy==1.8.13
+debugpy==1.8.14
     # via ipykernel
 decorator==5.2.1
     # via
@@ -80,7 +85,9 @@ downstream==1.11.0
 et-xmlfile==2.0.0
     # via openpyxl
 ete3==3.1.3
-    # via alifedata-phyloinformatics-convert
+    # via
+    #   alifedata-phyloinformatics-convert
+    #   phastsim
 exceptiongroup==1.2.2
     # via pytest
 execnet==2.1.1
@@ -97,6 +104,8 @@ gitdb==4.0.12
     # via gitpython
 gitpython==3.1.44
     # via sciris
+google==3.0.0
+    # via phastsim
 hstrat==1.19.7
     # via -r requirements.in
 hurry-filesize==0.9
@@ -105,6 +114,8 @@ idna==3.10
     # via yarl
 importlib-metadata==8.6.1
     # via watermark
+importlib-resources==6.5.2
+    # via phastsim
 iniconfig==2.1.0
     # via pytest
 interval-search==0.5.2
@@ -209,7 +220,7 @@ more-itertools==9.1.0
     #   keyname
 mpmath==1.3.0
     # via hstrat
-multidict==6.4.2
+multidict==6.4.3
     # via yarl
 multiprocess==0.70.17
     # via sciris
@@ -261,6 +272,7 @@ numpy==2.1.2
     #   pandera
     #   patsy
     #   pecking
+    #   phastsim
     #   pyarrow
     #   scikit-learn
     #   scipy
@@ -316,6 +328,8 @@ pecking==0.2.1
     # via -r requirements.in
 pexpect==4.9.0
     # via ipython
+phastsim==0.0.6
+    # via -r requirements.in
 pickleshare==0.7.5
     # via ipython
 pillow==11.1.0
@@ -332,7 +346,7 @@ polars==1.9.0
     #   downstream
     #   hstrat
     #   joinem
-polars-u64-idx==1.27.0
+polars-u64-idx==1.27.1
     # via hstrat
 prettytable==3.16.0
     # via hstrat
@@ -340,6 +354,8 @@ prompt-toolkit==3.0.50
     # via ipython
 propcache==0.3.1
     # via yarl
+protobuf==3.20.3
+    # via phastsim
 psutil==7.0.0
     # via
     #   ipykernel
@@ -432,7 +448,9 @@ setuptools==78.1.0
     #   sciris
     #   watermark
 six==1.17.0
-    # via python-dateutil
+    # via
+    #   phastsim
+    #   python-dateutil
 smmap==5.0.2
     # via gitdb
 sortedcontainers==2.4.0
@@ -486,7 +504,7 @@ treeswift==1.1.45
     # via alifedata-phyloinformatics-convert
 typeguard==4.4.2
     # via pandera
-typing-extensions==4.13.1
+typing-extensions==4.13.2
     # via
     #   alifedata-phyloinformatics-convert
     #   beautifulsoup4
