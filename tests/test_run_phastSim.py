@@ -14,11 +14,11 @@ def test_run_phastSim():
         }
     )
     res = run_phastSim(
-        ancestral_sequence="ACGT" * 25,
+        ancestral_sequence="ACGT-" * 25,
         phylogeny_df=phylogeny_df,
     )
 
     assert "id" in res.columns
     assert "sequence" in res.columns
     assert set(res["id"]) == {2, 3}
-    assert np.all(res["sequence"].str.len() == 100)
+    assert np.all(res["sequence"].str.len() == 125)
