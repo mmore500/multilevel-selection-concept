@@ -41,6 +41,13 @@ def run_phastSim(
 ) -> pd.DataFrame:
     """Shim function to run phastSim without subprocess."""
 
+    # temporarily remove "-" characters
+    dash_indices = [
+        i for i, char in enumerate(ancestral_sequence) if char == "-"
+    ]
+    ancestral_sequence_ = ancestral_sequence
+    ancestral_sequence = ancestral_sequence.replace("-", "")
+
     # write ancestral sequence to tempdir
     ancestral_sequence_path = work_dir / "ancestral_sequence.fasta"
     ancestral_sequence_path.write_text(
@@ -283,9 +290,22 @@ def run_phastSim(
     assert len(lines) == 0 or lines[0].startswith(">")
     assert len(lines) == 0 or not lines[1].startswith(">")
 
-    return pd.DataFrame(
+    res = pd.DataFrame(
         {
             "id": [int(line[1:]) for line in lines[0::2]],
             "sequence": [line for line in lines[1::2]],
         },
     )
+
+    # restore "-" characters
+    with hstrat_aux.log_context_duration("restore dashes", print):
+        for i in dash_indices:
+            res["sequence"] = (
+                res["sequence"].str[:i] + "-" + res["sequence"].str[i:]
+            )
+
+    assert res["sequence"].str.len().unique().squeeze() == len(
+        ancestral_sequence_,
+    )
+
+    return res
