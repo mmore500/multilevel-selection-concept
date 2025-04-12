@@ -48,6 +48,10 @@ def run_phastSim(
     ancestral_sequence_ = ancestral_sequence
     ancestral_sequence = ancestral_sequence.replace("-", "")
 
+    # check for whitespace
+    if ancestral_sequence != "".join(ancestral_sequence.split()):
+        raise ValueError("Ancestral sequence contains whitespace")
+
     # write ancestral sequence to tempdir
     ancestral_sequence_path = work_dir / "ancestral_sequence.fasta"
     ancestral_sequence_path.write_text(
