@@ -17,4 +17,5 @@ class VariantFlavor:
 
     p_wt_to_mut: float
 
+    label: str
     sequence: str
