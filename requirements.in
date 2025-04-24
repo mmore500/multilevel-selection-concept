@@ -3,7 +3,8 @@ backstrip==0.2.4
 biopython==1.85
 black==22.10.0
 Deprecated==1.2.13
-hstrat==1.19.7
+hstrat==1.20.1
+downstream==1.14.3
 interval_search==0.5.2
 IPython==7.31.1
 isort==5.12.0
@@ -33,6 +34,7 @@ uv==0.4.20
 watermark==2.4.3
 
 # https://github.com/sphinx-doc/sphinx/issues/10291
+astropy<7.0.0
 Jinja2<3.1
 
 covasim==3.1.6
