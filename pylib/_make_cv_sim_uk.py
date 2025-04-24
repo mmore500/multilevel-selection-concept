@@ -1,6 +1,8 @@
 # adapted from
 # https://github.com/Jasminapg/Covid-19-Analysis/blob/7a26db7b5f985e09a4af30e6d6605a570535940b/8_omicron_analysis/calibrate_uk.py
 
+import typing
+
 import covasim as cv
 import covasim.parameters as cvpar
 import numpy as np
@@ -8,8 +10,10 @@ import sciris as sc
 
 
 def make_cv_sim_uk(
+    *,
     pop_size: int = 100_000,
     seed: int = 1,
+    variants: typing.List[cv.variant],
 ) -> cv.Sim:
 
     ########################################################################
@@ -131,7 +135,7 @@ def make_cv_sim_uk(
         pop_size = total_pop if pop_size is None else pop_size
         pop_scale = int(total_pop / pop_size)
         pop_type = "hybrid"
-        pop_infected = 1000
+        pop_infected = 0  # handled by variant config
         beta = beta
         asymp_factor = 2
         contacts = {"h": 3.0, "s": 20, "w": 20, "c": 20}
@@ -279,38 +283,6 @@ def make_cv_sim_uk(
             layers="c",
         )
         interventions = [h_beta, w_beta, s_beta, c_beta]
-
-        # adding different variants: B.1.177 in September 2020, Alpha slightly
-        # later and Delta from April 2021
-        # Add B.1.177 strain from September 2020 and assume it's like b1351 (no
-        # vaccine at this time in England)
-        variants = []
-        b1177 = cv.variant(
-            "b1351",
-            days=np.arange(sim.day("2020-08-10"), sim.day("2020-08-20")),
-            n_imports=3000,
-        )
-        b1177.p["rel_beta"] = 1.2
-        b1177.p["rel_severe_prob"] = 0.4
-        variants += [b1177]
-        # Add Alpha strain from October 2020
-        b117 = cv.variant(
-            "b117",
-            days=np.arange(sim.day("2020-10-20"), sim.day("2020-10-30")),
-            n_imports=3000,
-        )
-        b117.p["rel_beta"] = 1.8
-        b117.p["rel_severe_prob"] = 0.4
-        variants += [b117]
-        # Add Delta strain starting middle of April
-        b16172 = cv.variant(
-            "b16172",
-            days=np.arange(sim.day("2021-04-15"), sim.day("2021-04-20")),
-            n_imports=4000,
-        )
-        b16172.p["rel_beta"] = 3.1
-        b16172.p["rel_severe_prob"] = 0.2
-        variants += [b16172]
 
         # ADD TEST AND TRACE INTERVENTIONS
         tc_day = sim.day(
