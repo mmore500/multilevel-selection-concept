@@ -16,8 +16,10 @@ appnope==0.1.4
     #   ipython
 argparse==1.4.0
     # via phastsim
-astropy==7.0.1
-    # via hstrat
+astropy==6.1.7
+    # via
+    #   -r requirements.in
+    #   hstrat
 astropy-iers-data==0.2025.4.21.0.37.6
     # via astropy
 attrs==25.3.0
