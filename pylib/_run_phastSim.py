@@ -318,4 +318,6 @@ def run_phastSim(
         ancestral_sequence_,
     )
 
+    assert len(res) == hstrat_aux.alifestd_count_leaf_nodes(phylogeny_df)
+
     return res
