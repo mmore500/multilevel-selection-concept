@@ -29,13 +29,15 @@ def diff_sequences(
     mismatch_chars = seq_arr[mismatch_row, mismatch_pos]
 
     # prepare df with mismatches as rows
-    df = pl.DataFrame(
+    df_ = pl.DataFrame(
         {
             "index": mismatch_row,
             "pos": mismatch_pos,
             "sequence": mismatch_chars,
         },
-    ).lazy()
+    )
+
+    df = df_.lazy()
 
     # prepare diff string for each position
     df = df.with_columns(
@@ -51,7 +53,8 @@ def diff_sequences(
     df = df.group_by("index").agg(diff=pl.col("diff").str.join(", "))
 
     # prepare a base index 0..N to get one row per sequence, even if no diffs
-    base = pl.select(index=pl.arange(N, dtype=pl.UInt32)).lazy()
+    index_dtype = df_["index"].dtype
+    base = pl.select(index=pl.arange(N, dtype=index_dtype)).lazy()
 
     # left‐join the diffs, wrap in braces, fill nulls to get "{}"
     return (
