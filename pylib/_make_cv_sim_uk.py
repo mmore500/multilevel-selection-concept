@@ -11,6 +11,8 @@ import sciris as sc
 
 def make_cv_sim_uk(
     *,
+    preinterventions: typing.Sequence[object] = tuple(),
+    postinterventions: typing.Sequence[object] = tuple(),
     pop_size: int = 100_000,
     seed: int = 1,
     variants: typing.List[cv.variant],
@@ -615,9 +617,19 @@ def make_cv_sim_uk(
             interventions += [vx]
 
         # Finally, update the parameters
-        sim.update_pars(interventions=interventions, variants=variants)
+        sim.update_pars(
+            interventions=[
+                *preinterventions,
+                *interventions,
+                *postinterventions,
+            ],
+            variants=variants,
+        )
         for intervention in sim["interventions"]:
-            intervention.do_plot = False
+            try:
+                intervention.do_plot = False
+            except AttributeError:
+                pass
 
         return sim
 
