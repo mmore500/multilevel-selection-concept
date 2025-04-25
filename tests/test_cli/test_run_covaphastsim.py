@@ -1,4 +1,7 @@
+import os
 import subprocess
+
+assets = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../assets")
 
 
 def test_run_covaphastsim_smoke():
@@ -9,14 +12,17 @@ def test_run_covaphastsim_smoke():
             "pylib.cli.run_covaphastsim",
         ],
         check=True,
-        input="""
+        input=f"""
 cfg_p_wt_to_mut: 0.01
 cfg_pop_size: 10000
+cfg_refseqs: "{assets}/alignedsequences.csv"
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
+replicate_num: 0
 trt_mutmx_active_strain_factor: 1.0
 trt_mutmx_rel_beta: 1.0
 trt_mutmx_withinhost_r: 1.0
+trt_name: "test"
 trt_seed: 1
 """.encode(),
     )
