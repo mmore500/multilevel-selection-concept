@@ -9,7 +9,7 @@ from ._run_phastSim import run_phastSim
 def generate_dummy_sequences_phastSim(
     phylogeny_df: pd.DataFrame,
     ancestral_sequences: typing.Dict[str, str],  # variant flavor -> sequence
-) -> typing.List[str]:
+) -> pd.DataFrame:
     """Generate dummy sequences based on a phylogeny DataFrame and an ancestral
     sequence.
 
@@ -25,8 +25,8 @@ def generate_dummy_sequences_phastSim(
 
     Returns
     -------
-    list of str
-        List of dummy sequences generated based on the phylogeny and ancestral
+    pd.DataFrame
+        Dummy sequences generated based on the phylogeny and ancestral
         sequence.
     """
 
