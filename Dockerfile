@@ -31,7 +31,7 @@ COPY . /app
 # Install python dependencies
 RUN python3 -m pip install uv --break-system-packages \
     && python3 -m uv pip install --system --break-system-packages \
-        -r /app/requirementstxt.txt \
+        -r /app/requirements.txt \
     && python3 -m uv pip install --system --break-system-packages "/app"
 
 # force cppimport build
