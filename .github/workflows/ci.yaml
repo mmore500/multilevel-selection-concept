@@ -199,6 +199,19 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y git lshw python3.10-venv
+      - name: Set up Apptainer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm2cpio
+          sudo apt-get install -y golang-go
+          mkdir -p ~/apptainer
+          # echo 'export PATH="$HOME/apptainer/bin:$PATH"' >> ~/.bashrc
+          echo "$HOME/apptainer/bin" >> $GITHUB_PATH
+          curl -s https://raw.githubusercontent.com/apptainer/apptainer/03bb84afc90c9699816db2e2730b56f2d3501eff/tools/install-unprivileged.sh | bash -s - ~/apptainer
+      - name: Test Apptainer
+        run: |
+          apptainer --version
+          sudo "$(which apptainer)" exec docker://busybox:latest echo "Hello from Singularity and Docker!"
       - name: Test scripts
         run: |
           for script in $(find slurm -name "*.sh"); do
