@@ -194,7 +194,7 @@ cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=16G
+#SBATCH --mem=100G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
@@ -218,6 +218,7 @@ echo "do work ----------------------------------------------------- \${SECONDS}"
 python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:08c7253e45d60b7cb2c3d714c22193c5e4b2b782ac2ab5f568b18678a983e7b9 python3 -m pylib.cli.run_covaphastsim
 
 import itertools as it
+import os
 
 replicates = it.product(
     ["Sdel", "Sneu", "Sben"],
@@ -234,7 +235,7 @@ trt_mutmx_withinhost_r = {"Sdel": 1.5, "Sneu": 2.0, "Sben": 3.0}[S]
 
 cfg = f"""
 cfg_p_wt_to_mut: 0.01
-cfg_pop_size: 100000
+cfg_pop_size: {10000 if "CI" in os.environ else 100000}
 cfg_refseqs: "https://osf.io/hp25c/download"
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
