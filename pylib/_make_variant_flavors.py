@@ -20,6 +20,14 @@ def make_variant_flavors(
     suffix_mut="'",
     suffix_wt="+",
 ) -> typing.List[VariantFlavor]:
+
+    if any(
+        suffix in spec.label
+        for spec in wt_specs
+        for suffix in (suffix_mut, suffix_wt)
+    ):
+        raise ValueError
+
     return [
         VariantFlavor(
             variant_wt=cv.variant(
