@@ -184,7 +184,7 @@ jobs:
         uses: actions/deploy-pages@v4
 
   slurm:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     env:
       # RE https://stackoverflow.com/a/40184923/17332200
       PIP_NO_CACHE_DIR: 1
@@ -198,22 +198,12 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git lshw
+          sudo apt-get install -y git lshw python3.10-venv
       - name: Set up Apptainer
         run: |
           sudo apt-get update
           sudo apt-get install -y rpm2cpio
           sudo apt-get install -y golang-go
-          sudo apt-get install -y libsubid-dev
-          sudo apt-get install -y \
-              build-essential \
-              libseccomp-dev \
-              uidmap \
-              fakeroot \
-              cryptsetup \
-              tzdata \
-              dh-apparmor \
-              curl wget git
           mkdir -p ~/apptainer
           # echo 'export PATH="$HOME/apptainer/bin:$PATH"' >> ~/.bashrc
           echo "$HOME/apptainer/bin" >> $GITHUB_PATH
