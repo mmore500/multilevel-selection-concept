@@ -15,6 +15,7 @@ from .._diff_sequences import diff_sequences
 from .._generate_dummy_sequences_phastSim import (
     generate_dummy_sequences_phastSim,
 )
+from .._glimpse_df import glimpse_df
 from .._make_cv_sim_uk import make_cv_sim_uk
 from .._make_flavored_variants import make_flavored_variants
 from .._make_variant_flavors import make_variant_flavors
@@ -27,7 +28,7 @@ from .._shrink_df import shrink_df
 def _get_reference_sequences(
     cfg: dict,
 ) -> typing.Dict[str, str]:
-    reference_sequences = pd.read_csv("https://osf.io/hp25c/download")
+    reference_sequences = pd.read_csv(cfg["cfg_refseqs"])
     return dict(
         zip(
             reference_sequences["WHO Label"].values,
@@ -193,11 +194,14 @@ if __name__ == "__main__":
         sim.run()
 
     phylo_df = _extract_phylo(sim.people.infection_log, variant_flavors)
+    glimpse_df(phylo_df, logger=print)
+
     seq_df = _generate_sequences(
         phylo_df,
         cfg=cfg,
         reference_sequences=reference_sequences,
     )
+    glimpse_df(seq_df, logger=print)
 
     with hstrat_aux.log_context_duration("phylo_df.merge", logger=print):
         phylo_df = phylo_df.reset_index(drop=True).merge(
@@ -213,12 +217,17 @@ if __name__ == "__main__":
         phylo_df = _add_sequence_diffs(phylo_df=phylo_df)
 
     with hstrat_aux.log_context_duration("finalize phylo_df", logger=print):
+        phylo_df["mls0_group_id"] = phylo_df["id"]
+        phylo_df["mls1_group_id"] = phylo_df["id"]
+        phylo_df["platform"] = "covaphast"
+
         for k, v in cfg.items():
             phylo_df[k] = v
 
         phylo_df = shrink_df(phylo_df, inplace=True)
 
-    print(phylo_df.head())
+    glimpse_df(phylo_df.head(), logger=print)
+    glimpse_df(phylo_df.tail(), logger=print)
 
     with hstrat_aux.log_context_duration("phylo_df.to_parquet", logger=print):
         phylo_df.to_parquet(

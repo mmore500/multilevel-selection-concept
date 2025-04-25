@@ -48,7 +48,7 @@ def diff_sequences(
     )
 
     # aggregate each index into one comma‐separated diff string
-    df = df.group_by("index").agg(diff=pl.col("diff").str.join(","))
+    df = df.group_by("index").agg(diff=pl.col("diff").str.join(", "))
 
     # prepare a base index 0..N to get one row per sequence, even if no diffs
     base = pl.select(index=pl.arange(N, dtype=pl.UInt32)).lazy()
