@@ -198,7 +198,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git lshw python3.10-venv
+          sudo apt-get install -y git lshw
       - name: Set up Apptainer
         run: |
           sudo apt-get update
