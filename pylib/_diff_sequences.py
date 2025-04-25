@@ -51,10 +51,10 @@ def diff_sequences(
     df = df.group_by("index").agg(diff=pl.col("diff").str.join(","))
 
     # prepare a base index 0..N to get one row per sequence, even if no diffs
-    base = pl.select(index=pl.arange(len(sequences), dtype=pl.UInt32)).lazy()
+    base = pl.select(index=pl.arange(N, dtype=pl.UInt32)).lazy()
 
     # left‐join the diffs, wrap in braces, fill nulls to get "{}"
-    result = (
+    return (
         base.join(df, how="left", on="index")
         .sort("index")
         .select(
@@ -65,5 +65,3 @@ def diff_sequences(
         .collect()
         .to_series()
     )
-
-    return result
