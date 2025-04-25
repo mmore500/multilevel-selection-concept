@@ -7,4 +7,4 @@ def test_diff_sequences():
     ancestral_sequence = "ACGT"
     assert diff_sequences(
         sequences, ancestral_sequence=ancestral_sequence
-    ).to_list() == ["{}", "{}", "{}", '{1: "X"}']
+    ).to_list() == ["{}", "{}", "{}", '{0: "X"}']
