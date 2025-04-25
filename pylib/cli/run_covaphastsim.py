@@ -94,6 +94,9 @@ def _extract_phylo(
     ):
         phylo_df = cv_infection_log_to_alstd_df(infection_log)
 
+    with hstrat_aux.log_context_duration("alifestd_join_roots", logger=print):
+        phylo_df = hstrat_aux.alifestd_join_roots(phylo_df, mutate=True)
+
     with hstrat_aux.log_context_duration(
         "alifestd_to_working_format", logger=print
     ):
@@ -118,13 +121,20 @@ def _generate_sequences(
     reference_sequences: typing.Dict[str, str],
 ) -> pd.DataFrame:
 
+    # workaround to generate sequences for all nodes, not just leaves
+    dummy_leaves = phylo_df.copy()
+    dummy_leaves["ancestor_id"] = dummy_leaves["id"]
+    id_delta = phylo_df["id"].max() + 1
+    dummy_leaves["id"] += id_delta
+
     with hstrat_aux.log_context_duration(
         "generate_dummy_sequences_phastSim", logger=print
     ):
         seq_df = generate_dummy_sequences_phastSim(
-            phylo_df,
+            pd.concat([phylo_df, dummy_leaves], ignore_index=True),
             ancestral_sequences=reference_sequences,
         )
+        seq_df["id"] -= id_delta  # revert dummy leaves back to true nodes
 
     with hstrat_aux.log_context_duration("extract variant", logger=print):
         seq_df["variant"] = seq_df["id"].map(
@@ -144,7 +154,33 @@ def _generate_sequences(
             + seq_df["sequence"]
         )
 
+    assert len(seq_df) == len(phylo_df)
     return seq_df
+
+
+def _add_sequence_diffs(phylo_df: pd.DataFrame):
+    assert hstrat_aux.alifestd_is_topologically_sorted(phylo_df)
+    assert hstrat_aux.alifestd_count_root_nodes(phylo_df) == 1
+
+    phylo_df = phylo_df.set_index("id", drop=False)
+    ancestral_sequence = phylo_df.at[0, "sequence"]
+    phylo_df["ancestral_sequence"] = ancestral_sequence
+    assert phylo_df["sequence"].str.len().nunique() == 1
+
+    phylo_df["sequence_diff"] = phylo_df["sequence"].apply(
+        lambda seq: (
+            "{"
+            + ", ".join(
+                f'{pos}: "{char}"'
+                for pos, char in enumerate(seq)
+                if char != ancestral_sequence[pos]
+            )
+            + "}"
+        ),
+    )
+    del phylo_df["sequence"]
+
+    return phylo_df
 
 
 if __name__ == "__main__":
@@ -178,6 +214,9 @@ if __name__ == "__main__":
             ),
             on="id",
         )
+
+    with hstrat_aux.log_context_duration("_add_sequence_diffs", logger=print):
+        phylo_df = _add_sequence_diffs(phylo_df=phylo_df)
 
     with hstrat_aux.log_context_duration("finalize phylo_df", logger=print):
         for k, v in cfg.items():
