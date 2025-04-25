@@ -11,6 +11,7 @@ import pandas as pd
 from .._SyncHostCompartments import SyncHostCompartments
 from .._VariantFlavor import VariantFlavor
 from .._cv_infection_log_to_alstd_df import cv_infection_log_to_alstd_df
+from .._diff_sequences import diff_sequences
 from .._generate_dummy_sequences_phastSim import (
     generate_dummy_sequences_phastSim,
 )
@@ -167,16 +168,9 @@ def _add_sequence_diffs(phylo_df: pd.DataFrame):
     phylo_df["ancestral_sequence"] = ancestral_sequence
     assert phylo_df["sequence"].str.len().nunique() == 1
 
-    phylo_df["sequence_diff"] = phylo_df["sequence"].apply(
-        lambda seq: (
-            "{"
-            + ", ".join(
-                f'{pos}: "{char}"'
-                for pos, char in enumerate(seq)
-                if char != ancestral_sequence[pos]
-            )
-            + "}"
-        ),
+    phylo_df["sequence_diff"] = diff_sequences(
+        phylo_df["sequence"],
+        ancestral_sequence=ancestral_sequence,
     )
     del phylo_df["sequence"]
 
