@@ -205,6 +205,15 @@ jobs:
           sudo apt-get install -y rpm2cpio
           sudo apt-get install -y golang-go
           sudo apt-get install -y libsubid-dev
+          sudo apt-get install -y \
+              build-essential \
+              libseccomp-dev \
+              uidmap \
+              fakeroot \
+              cryptsetup \
+              tzdata \
+              dh-apparmor \
+              curl wget git
           mkdir -p ~/apptainer
           # echo 'export PATH="$HOME/apptainer/bin:$PATH"' >> ~/.bashrc
           echo "$HOME/apptainer/bin" >> $GITHUB_PATH
