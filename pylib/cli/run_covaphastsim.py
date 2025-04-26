@@ -220,6 +220,7 @@ if __name__ == "__main__":
         phylo_df["mls0_group_id"] = phylo_df["id"]
         phylo_df["mls1_group_id"] = phylo_df["id"]
         phylo_df["platform"] = "covaphast"
+        phylo_df["divergence_from_root"] = phylo_df["date"]
 
         for k, v in cfg.items():
             phylo_df[k] = v
