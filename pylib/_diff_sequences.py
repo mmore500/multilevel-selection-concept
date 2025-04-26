@@ -46,8 +46,7 @@ def diff_sequences(
         diff=pl.concat_str(
             pl.lit(key_quote),
             pl.col("pos"),
-            pl.lit(key_quote),
-            pl.lit(': "'),
+            pl.lit(f'{key_quote}: "'),
             pl.col("sequence"),
             pl.lit('"'),
         )
