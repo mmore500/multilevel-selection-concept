@@ -8,6 +8,7 @@ def diff_sequences(
     sequences: typing.Sequence[str],
     *,
     ancestral_sequence: str,
+    quote_keys: bool = True,
 ) -> pl.Series:
 
     N = len(sequences)
@@ -40,9 +41,12 @@ def diff_sequences(
     df = df_.lazy()
 
     # prepare diff string for each position
+    key_quote = '"' * bool(quote_keys)
     df = df.with_columns(
         diff=pl.concat_str(
+            pl.lit(key_quote),
             pl.col("pos"),
+            pl.lit(key_quote),
             pl.lit(': "'),
             pl.col("sequence"),
             pl.lit('"'),
