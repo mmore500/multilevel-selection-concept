@@ -22,15 +22,15 @@ def test_mask_sequence_diffs_simple():
     )
 
     # We expect four masks:
-    #  - pos=0, char='T' -> [True, True]
-    #  - pos=1, char='G' -> [True, False]
-    #  - pos=1, char='T' -> [False, True]
-    #  - pos=2, char='A' -> [True, True]
+    #  - pos=0, char='T' → [True, True]
+    #  - pos=1, char='G' → [True, False]
+    #  - pos=1, char='T' → [False, True]
+    #  - pos=2, char='A' → [True, True]
     expected = [
-        ((0, "A", "T"), np.array([True, True])),
-        ((1, "C", "G"), np.array([True, False])),
-        ((1, "C", "T"), np.array([False, True])),
-        ((2, "G", "A"), np.array([True, True])),
+        ((0, "T"), np.array([True, True])),
+        ((1, "G"), np.array([True, False])),
+        ((1, "T"), np.array([False, True])),
+        ((2, "A"), np.array([True, True])),
     ]
 
     assert len(result) == len(expected)
