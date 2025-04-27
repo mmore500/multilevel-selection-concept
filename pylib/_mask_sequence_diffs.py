@@ -9,7 +9,8 @@ def mask_sequence_diffs(
     *,
     ancestral_sequence: str,
     sequence_diffs: typing.Sequence[str],
-) -> typing.Iterable[typing.Tuple[typing.Tuple[int, str], np.ndarray]]:
+    progress_wrap: typing.Callable = lambda x: x,
+) -> typing.Iterable[typing.Tuple[typing.Tuple[int, str, str], np.ndarray]]:
     diffs = pl.DataFrame(
         {"diffs": sequence_diffs},
         schema={"diffs": pl.Utf8},
@@ -24,12 +25,18 @@ def mask_sequence_diffs(
     key_list = " ".join(key_blob.replace(":", ",").split(",")[::2]).replace(
         '"', ""
     )
-    keys = np.unique(np.loadtxt(io.StringIO(key_list), dtype=int))
+    if key_list.strip():
+        keys = np.unique(np.loadtxt(io.StringIO(key_list), dtype=int))
+    else:
+        keys = np.array([], dtype=int)  # avoid numpy warning
+
     keys.sort()
 
-    for pos in keys:
+    for pos in progress_wrap(keys):
         vals = diffs["diffs"].str.json_path_match(f"$.{pos}")
         assert vals.count()
         for char in sorted(vals.unique()):
             assert char != ancestral_sequence[pos]
-            yield (pos, char), (vals == char).to_numpy()
+            yield (pos, ancestral_sequence[pos], char), (
+                vals == char
+            ).to_numpy()
