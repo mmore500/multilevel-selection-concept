@@ -296,7 +296,7 @@ ls -1 "${BATCHDIR}"/__*/**/a=run_volzscreen+* \
     | tee /dev/stderr \
     | python3.10 -m joinem --progress \
         --eager-write --eager-read \
-        --how "diagonal_relaxed" \
+        --how "vertical_relaxed" \
         "${BATCHDIR_JOBRESULT}/a=result+date=${JOBDATE}+job=${JOBNAME}+ext=.pqt"
 ls -l "${BATCHDIR_JOBRESULT}"
 du -h "${BATCHDIR_JOBRESULT}"
