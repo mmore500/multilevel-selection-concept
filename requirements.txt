@@ -96,8 +96,6 @@ ete3==3.1.3
     # via
     #   alifedata-phyloinformatics-convert
     #   phastsim
-exceptiongroup==1.2.2
-    # via pytest
 execnet==2.1.1
     # via pytest-xdist
 fastjsonschema==2.21.1
@@ -351,7 +349,7 @@ platformdirs==4.3.7
     #   jupyter-core
 pluggy==1.5.0
     # via pytest
-polars==1.9.0
+polars==1.26.0
     # via
     #   -r requirements.in
     #   downstream
@@ -488,11 +486,7 @@ tinycss2==1.4.0
 tokenize-rt==6.1.0
     # via nbqa
 tomli==2.2.1
-    # via
-    #   autopep8
-    #   black
-    #   nbqa
-    #   pytest
+    # via nbqa
 tornado==6.4.2
     # via
     #   ipykernel
@@ -523,11 +517,8 @@ typing-extensions==4.13.2
     #   alifedata-phyloinformatics-convert
     #   beautifulsoup4
     #   hstrat
-    #   mistune
-    #   multidict
     #   pydantic
     #   pydantic-core
-    #   referencing
     #   teeplot
     #   typeguard
     #   typing-inspect
