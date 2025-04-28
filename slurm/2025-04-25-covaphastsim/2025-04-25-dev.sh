@@ -100,7 +100,7 @@ for attempt in {1..5}; do
     && python3.10 -m uv pip install \
         'more_itertools==10.*' \
         'numpy==1.*' \
-        'joinem==0.9.3' \
+        'joinem==0.7.0' \
         'pandas==1.*' \
         'polars==1.6.*' \
         'pyarrow==15.*' \
@@ -305,7 +305,6 @@ echo "   - join result"
 ls -1 "${BATCHDIR}"/__*/**/a=run_covaphastsim+* \
     | tee /dev/stderr \
     | python3.10 -m joinem --progress \
-        --how "vertical_relaxed" \
         "${BATCHDIR_JOBRESULT}/a=result+date=${JOBDATE}+job=${JOBNAME}+ext=.pqt"
 ls -l "${BATCHDIR_JOBRESULT}"
 du -h "${BATCHDIR_JOBRESULT}"
