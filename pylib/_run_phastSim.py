@@ -10,8 +10,8 @@ from ete3 import Tree
 from hstrat import _auxiliary_lib as hstrat_aux
 import numpy as np
 import pandas as pd
-import polars as pl
 import phastSim.phastSim as phastSim
+import polars as pl
 
 
 def _with_work_dir(**tempdir_kwargs):

@@ -14,7 +14,7 @@ def test_run_phastSim():
         }
     )
     res = run_phastSim(
-        ancestral_sequence="ACGT-" * 25,
+        ancestral_sequence="-AGT-" * 25,
         phylogeny_df=phylogeny_df,
     )
 
