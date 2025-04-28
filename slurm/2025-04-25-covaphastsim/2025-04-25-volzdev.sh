@@ -100,7 +100,7 @@ for attempt in {1..5}; do
     && python3.10 -m uv pip install \
         'more_itertools==10.*' \
         'numpy==1.*' \
-        'joinem==0.7.0' \
+        'joinem==0.9.3' \
         'pandas==1.*' \
         'polars==1.6.*' \
         'pyarrow==15.*' \
