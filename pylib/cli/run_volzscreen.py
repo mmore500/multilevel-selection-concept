@@ -126,7 +126,7 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
 @hstrat_aux.log_context_duration("_calc_tb_stats", logger=print)
 def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
-    min_leaves = cfg["trt_clade_size_thresh"]
+    min_leaves = cfg["cfg_clade_size_thresh"]
     work_mask = (phylo_df["num_leaves"] > min_leaves) & (
         phylo_df["num_leaves_sibling"] > min_leaves
     )
@@ -282,7 +282,7 @@ if __name__ == "__main__":
         phylo_df = _prep_phylo(phylo_df, cfg)
         phylo_df = _calc_tb_stats(phylo_df, cfg)
 
-        min_leaves = cfg["trt_clade_size_thresh"]
+        min_leaves = cfg["cfg_clade_size_thresh"]
         clade_size_thresh_mask = (phylo_df["num_leaves"] > min_leaves) & (
             phylo_df["num_leaves_sibling"] > min_leaves
         )
@@ -293,7 +293,7 @@ if __name__ == "__main__":
             .astype(str)
             .item(),
             sequence_diffs=phylo_df["sequence_diff"],
-            mut_freq_thresh=500,
+            mut_freq_thresh=cfg["cfg_mut_freq_thresh"],
             progress_wrap=tqdm,
         ):
             mut_uuid = str(uuid.uuid4())
