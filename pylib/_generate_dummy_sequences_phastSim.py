@@ -1,9 +1,33 @@
+import contextlib
+import multiprocessing
+import os
 import typing
 
 from hstrat import _auxiliary_lib as hstrat_aux
 import pandas as pd
 
 from ._run_phastSim import run_phastSim
+
+
+def _worker(
+    args: typing.Tuple[int, pd.DataFrame, typing.Dict[str, str]],
+) -> pd.DataFrame:
+    """Worker for phastSim simulation."""
+    flavor_origin, group_df, ancestral_sequences = args
+    group_df = group_df.copy().reset_index(drop=True)
+    group_df.loc[
+        group_df["id"] == flavor_origin, "ancestor_id"
+    ] = flavor_origin
+    variant_flavor = group_df["variant_flavor"].unique().item()
+    ancestral_sequence = ancestral_sequences[variant_flavor]
+
+    # silence verbose phastSim log pollution
+    with open(os.devnull, "w") as f:
+        with contextlib.redirect_stdout(f), contextlib.redirect_stderr(f):
+            return run_phastSim(
+                ancestral_sequence=ancestral_sequence,
+                phylogeny_df=group_df,
+            )
 
 
 def generate_dummy_sequences_phastSim(
@@ -66,23 +90,12 @@ def generate_dummy_sequences_phastSim(
 
     phylogeny_df["variant_flavor_origin"] = origins
 
-    generated_sequences = []
-    for flavor_origin, group_df in phylogeny_df.groupby(
-        "variant_flavor_origin", sort=False
-    ):
-        group_df = group_df.copy().reset_index(drop=True)
-
-        # fix root
-        group_df.loc[
-            group_df["id"] == flavor_origin, "ancestor_id"
-        ] = flavor_origin
-
-        (variant_flavor,) = group_df["variant_flavor"].unique()
-        generated_sequences.append(
-            run_phastSim(
-                ancestral_sequence=ancestral_sequences[variant_flavor],
-                phylogeny_df=group_df,
-            ),
-        )
+    groups = list(phylogeny_df.groupby("variant_flavor_origin", sort=False))
+    args = [
+        (flavor_origin, group_df, ancestral_sequences)
+        for flavor_origin, group_df in groups
+    ]
+    with multiprocessing.Pool() as pool:
+        generated_sequences = pool.map(_worker, args)
 
     return pd.concat(generated_sequences, ignore_index=True)
