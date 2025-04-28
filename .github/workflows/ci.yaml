@@ -56,7 +56,7 @@ jobs:
           sudo python -m pip install pip --upgrade
           sudo python -m pip install uv --upgrade
           sudo python -m uv pip install -r requirements.txt  --system
-      - run: python -m pytest -n auto tests
+      - run: python -m pytest -n auto -vvvs tests
 
   # adapted from https://code.dblock.org/2021/09/03/generating-task-matrix-by-looping-over-repo-files-with-github-actions.html
   list-notebooks:
