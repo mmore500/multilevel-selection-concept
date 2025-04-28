@@ -44,10 +44,14 @@ def mask_sequence_diffs(
     frequent_muts.sort()
 
     for pos in progress_wrap(frequent_muts):
-        vals = diffs["diffs"].str.json_path_match(f"$.{pos}").fill_null(False)
+        vals = diffs["diffs"].str.json_path_match(f"$.{pos}")
         assert vals.count()
-        for char in sorted(vals.unique()):
+        for char in sorted(vals.drop_nulls().unique()):
             assert char != ancestral_sequence[pos]
-            yield (pos, ancestral_sequence[pos], char), (
-                vals == char
-            ).to_numpy()
+            assert isinstance(char, str) and len(char) == 1
+            ancestral_char = ancestral_sequence[pos]
+            assert isinstance(ancestral_char, str) and len(ancestral_char) == 1
+            yield (
+                (int(pos), ancestral_char, char),
+                (vals == char).fill_null(False).to_numpy(),
+            )
