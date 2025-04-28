@@ -215,7 +215,7 @@ echo "cpuinfo ----------------------------------------------------- \${SECONDS}"
 cat /proc/cpuinfo || :
 
 echo "do work ----------------------------------------------------- \${SECONDS}"
-python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:2a82f5079699e67ce5c2230cbc25fdae62c681f018b21b6eddff7e7866eb6c53 python3 -m pylib.cli.run_covaphastsim
+python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:65e00138aee208519c08bbc6dc5cce35df08eb57ce2adcbf4e40889e3bfeba25 python3 -m pylib.cli.run_covaphastsim
 
 import itertools as it
 import os
