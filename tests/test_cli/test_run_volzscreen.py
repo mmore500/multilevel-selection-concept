@@ -25,11 +25,12 @@ def test_run_volzscreen_smoke(hsurf_bits: int):
         check=True,
         env={"PYTHONPATH": f"{pwd}"},
         input=f"""
+cfg_clade_size_thresh: 4
+cfg_mut_freq_thresh: 500
 cfg_refphylos: "{assets}/a=run_covaphastsim.pqt"
 screen_num: 0
 trt_hsurf_bits: {hsurf_bits}
 trt_n_downsample: 1000
-trt_clade_size_thresh: 4
 """.encode(),
     )
 
@@ -70,10 +71,11 @@ trt_seed: 1
         check=True,
         env={"PYTHONPATH": pwd},
         input=f"""
+cfg_clade_size_thresh: 4
+cfg_mut_freq_thresh: 500
 cfg_refphylos: "{mit.one(glob.glob('*.pqt'))}"
 screen_num: 0
 trt_hsurf_bits: {hsurf_bits}
 trt_n_downsample: 1000
-trt_clade_size_thresh: 4
 """.encode(),
     )
