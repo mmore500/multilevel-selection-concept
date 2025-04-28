@@ -235,7 +235,7 @@ trt_mutmx_withinhost_r = {"Sdel": 1.5, "Sneu": 2.0, "Sben": 3.0}[S]
 
 cfg = f"""
 cfg_p_wt_to_mut: 0.01
-cfg_pop_size: {10000 if "CI" in os.environ else 100000}
+cfg_pop_size: {10_000 if "CI" in os.environ else 100_000}
 cfg_refseqs: "https://osf.io/hp25c/download"
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
