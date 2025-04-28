@@ -84,6 +84,8 @@ def _hsurf_fudge_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 @hstrat_aux.log_context_duration("_prep_phylo", logger=print)
 def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
+    phylo_df["origin_time"] = phylo_df["divergence_from_root"]
+
     phylo_df = hstrat_aux.alifestd_to_working_format(phylo_df, mutate=False)
 
     assert "ancestor_id" in phylo_df.columns
