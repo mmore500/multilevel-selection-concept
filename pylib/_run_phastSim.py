@@ -233,7 +233,9 @@ def run_phastSim(
         # siblings etc), the nodes in layers below the current one are simply
         # "forgotten" (in C they could be de-allocated, but the task here is
         # left to python automation).
-        with hstrat_aux.log_context_duration("mutateBranchETEhierarchy", print):
+        with hstrat_aux.log_context_duration(
+            "mutateBranchETEhierarchy", print
+        ):
             genome_tree.mutateBranchETEhierarchy(
                 t,
                 genome_tree.genomeRoot,
