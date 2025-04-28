@@ -234,7 +234,7 @@ trt_mutmx_withinhost_r = {"Sdel": None, "Sneu": 2.0, "Sben": 3.0}[S]
 
 cfg = f"""
 cfg_p_wt_to_mut: 2.74e-6
-cfg_pop_size: 6_700_000
+cfg_pop_size: {67_000_000 // 40}
 cfg_refseqs: "https://osf.io/hp25c/download"
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
