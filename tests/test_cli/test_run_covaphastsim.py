@@ -1,17 +1,23 @@
 import os
 import subprocess
+import sys
+
+from pylib._cd_tmpdir_context import cd_tempdir_context
 
 assets = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../assets")
+pwd = os.getcwd()
 
 
+@cd_tempdir_context()
 def test_run_covaphastsim_smoke():
     subprocess.run(
         [
-            "python3",
+            sys.executable,
             "-m",
             "pylib.cli.run_covaphastsim",
         ],
         check=True,
+        env={"PYTHONPATH": f"{pwd}"},
         input=f"""
 cfg_p_wt_to_mut: 0.01
 cfg_pop_size: 10000
