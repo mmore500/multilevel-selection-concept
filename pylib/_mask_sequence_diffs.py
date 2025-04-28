@@ -9,49 +9,54 @@ def mask_sequence_diffs(
     *,
     ancestral_sequence: str,
     sequence_diffs: typing.Sequence[str],
-    mut_freq_thresh: int = 0,
+    mut_count_thresh: int = 0,
+    mut_quart_thresh: float = 0.0,
     progress_wrap: typing.Callable = lambda x: x,
 ) -> typing.Iterable[typing.Tuple[typing.Tuple[int, str, str], np.ndarray]]:
-    diffs = pl.DataFrame(
-        {"diffs": sequence_diffs},
-        schema={"diffs": pl.Utf8},
-    )
+    diffs = pl.DataFrame({"diffs": sequence_diffs}, schema={"diffs": pl.Utf8})
 
-    key_blob = (
+    mut_tokens = (
         diffs.lazy()
+        .drop_nulls()
+        .filter(pl.col("diffs") != "{}")
+        .filter(pl.col("diffs") != "")
         .select(
-            pl.col("diffs")
-            .filter(pl.col("diffs") != "{}")
-            .str.head(-1)
-            .str.tail(-1)
-            .str.join(",")
+            pl.col("diffs").str.head(-1).str.tail(-1).str.join(","),
         )
         .collect()
         .item()
+        .replace(":", ",")
+        .replace('"', "")
+        .replace(",", " ")
+        .split()
     )
-    key_list = " ".join(key_blob.replace(":", ",").split(",")[::2]).replace(
-        '"', ""
+
+    if not mut_tokens:
+        return
+
+    pos_vals = np.loadtxt(io.StringIO(" ".join(mut_tokens[::2])), dtype=int)
+    char_vals = np.array(mut_tokens[1::2], dtype="S1").view(np.uint8)
+    mut_uids = pos_vals.astype(np.uint64) << 8 | char_vals
+
+    (mut_unique, mut_counts) = np.unique(mut_uids, return_counts=True)
+
+    mut_count_thresh = max(
+        mut_count_thresh,
+        np.quantile(mut_counts, mut_quart_thresh),
     )
+    is_frequent_mut = mut_counts >= mut_count_thresh
 
-    if key_list.strip():
-        mut_counts = np.unique_counts(
-            np.loadtxt(io.StringIO(key_list), dtype=int)
-        )
-    else:  # avoid numpy warning
-        mut_counts = np.unique_counts(np.array([], dtype=int))
+    seq_diff_sizes = diffs["diffs"].str.count_matches(":").fill_null(0)
+    seq_diff_rows = np.repeat(np.arange(len(seq_diff_sizes)), seq_diff_sizes)
 
-    frequent_muts = mut_counts.values[mut_counts.counts >= mut_freq_thresh]
-    frequent_muts.sort()
+    for mut_uid in progress_wrap(mut_unique[is_frequent_mut]):
+        mask = np.zeros(len(sequence_diffs), dtype=bool)
+        mask[seq_diff_rows[mut_uid == mut_uids]] = True
 
-    for pos in progress_wrap(frequent_muts):
-        vals = diffs["diffs"].str.json_path_match(f"$.{pos}")
-        assert vals.count()
-        for char in sorted(vals.drop_nulls().unique()):
-            assert char != ancestral_sequence[pos]
-            assert isinstance(char, str) and len(char) == 1
-            ancestral_char = ancestral_sequence[pos]
-            assert isinstance(ancestral_char, str) and len(ancestral_char) == 1
-            yield (
-                (int(pos), ancestral_char, char),
-                (vals == char).fill_null(False).to_numpy(),
-            )
+        pos, mut_char_var = int(mut_uid >> 8), chr(mut_uid & 0xFF)
+        mut_char_ref = ancestral_sequence[pos]
+
+        assert mut_char_var != ancestral_sequence[pos]
+        assert isinstance(mut_char_var, str) and len(mut_char_var) == 1
+        assert isinstance(mut_char_ref, str) and len(mut_char_ref) == 1
+        yield (pos, mut_char_ref, mut_char_var), mask
