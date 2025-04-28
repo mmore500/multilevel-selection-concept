@@ -180,9 +180,9 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
 def _calc_screen_result(
     *,
-    mut_from_: str,
-    mut_site: int,
-    mut_to: str,
+    mut_char_pos: int,
+    mut_char_ref: str,
+    mut_char_var: str,
     mut_uuid: str,
     phylo_df_background: pd.DataFrame,
     phylo_df_screened: pd.DataFrame,
@@ -212,10 +212,10 @@ def _calc_screen_result(
         binom_stat = np.nan
 
     return {
-        "mut": repr((mut_site, mut_from_, mut_to)),
-        "mut_from_": mut_from_,
-        "mut_site": mut_site,
-        "mut_to": to,
+        "mut": repr((mut_char_pos, mut_char_ref, mut_char_var)),
+        "mut_char_pos": mut_char_pos,
+        "mut_char_ref": mut_char_ref,
+        "mut_char_var": mut_char_var,
         "mut_uuid": mut_uuid,
         "screen_name": screen_name,
         "screen_mask_len": len(screen_mask),
@@ -295,7 +295,7 @@ if __name__ == "__main__":
             .astype(str)
             .item(),
             sequence_diffs=phylo_df["sequence_diff"],
-            mut_freq_thresh=cfg["cfg_mut_freq_thresh"],
+            mut_count_thresh=cfg["cfg_mut_count_thresh"],
             progress_wrap=tqdm,
         ):
             mut_uuid = str(uuid.uuid4())
@@ -309,9 +309,9 @@ if __name__ == "__main__":
             ):
                 res.append(
                     _calc_screen_result(
-                        mut_from_=from_,
-                        mut_site=site,
-                        mut_to=to,
+                        mut_char_ref=from_,
+                        mut_char_pos=site,
+                        mut_char_var=to,
                         mut_uuid=mut_uuid,
                         phylo_df_background=phylo_df[
                             clade_size_thresh_mask & ~screen_mask
