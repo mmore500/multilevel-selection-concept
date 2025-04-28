@@ -193,7 +193,7 @@ echo "SBATCH_FILE ${SBATCH_FILE}"
 cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=8
 #SBATCH --mem=100G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
@@ -201,7 +201,7 @@ cat > "${SBATCH_FILE}" << EOF
 #SBATCH --mail-type=FAIL,TIME_LIMIT
 #SBATCH --account=beacon
 #SBATCH --requeue
-#SBATCH --array=0-44
+#SBATCH --array=0-7
 
 ${JOB_PREAMBLE}
 
@@ -215,35 +215,25 @@ echo "cpuinfo ----------------------------------------------------- \${SECONDS}"
 cat /proc/cpuinfo || :
 
 echo "do work ----------------------------------------------------- \${SECONDS}"
-python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:08c7253e45d60b7cb2c3d714c22193c5e4b2b782ac2ab5f568b18678a983e7b9 python3 -m pylib.cli.run_covaphastsim
+python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:5e39c052ea2bf85e479ef62c2ad1e6be7c5e21314ed8459a448cf0ec300eedc8 python3 -m pylib.cli.run_volzscreen
 
 import itertools as it
 import os
 
 replicates = it.product(
-    ["Sdel", "Sneu", "Sben"],
-    ["Gdel", "Gneu", "Gben"],
-    range(1_000_000),
+    [0, 16, 64, 256],
+    [1_000, 10_000],
 )
-S, G, replicate = next(
+hsurf_bits, ndownsamp = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
 )
-
-trt_mutmx_active_strain_factor = {"Gdel": 0.5, "Gneu": 1.0, "Gben": 1.5}[G]
-trt_mutmx_rel_beta = {"Gdel": 0.5, "Gneu": 1.0, "Gben": 1.5}[G]
-trt_mutmx_withinhost_r = {"Sdel": 1.5, "Sneu": 2.0, "Sben": 3.0}[S]
-
 cfg = f"""
-cfg_p_wt_to_mut: 0.01
-cfg_pop_size: {10_000 if "CI" in os.environ else 100_000}
-cfg_refseqs: "https://osf.io/hp25c/download"
-cfg_suffix_mut: "'"
-cfg_suffix_wt: "+"
-replicate_num: {replicate}
-trt_mutmx_active_strain_factor: {trt_mutmx_active_strain_factor}
-trt_mutmx_rel_beta: {trt_mutmx_rel_beta}
-trt_mutmx_withinhost_r: 1.0
-trt_name: "{S}/{G}"
+cfg_clade_size_thresh: 4
+cfg_mut_freq_thresh: 500
+cfg_refphylos: "https://github.com/mmore500/multilevel-selection-concept/raw/5083160014517facd7a9dd891258a23a659915cd/tests/assets/a=run_covaphastsim.pqt"
+screen_num: 0
+trt_hsurf_bits: {hsurf_bits}
+trt_n_downsample: {ndownsamp}
 trt_seed: \${SLURM_ARRAY_TASK_ID:-0}
 """
 
@@ -302,7 +292,7 @@ pushd "${BATCHDIR}/.."
 popd
 
 echo "   - join result"
-ls -1 "${BATCHDIR}"/__*/**/a=run_covaphastsim+* \
+ls -1 "${BATCHDIR}"/__*/**/a=run_volzscreen+* \
     | tee /dev/stderr \
     | python3.10 -m joinem --progress \
         "${BATCHDIR_JOBRESULT}/a=result+date=${JOBDATE}+job=${JOBNAME}+ext=.pqt"
