@@ -296,6 +296,7 @@ if __name__ == "__main__":
             .item(),
             sequence_diffs=phylo_df["sequence_diff"],
             mut_count_thresh=cfg["cfg_mut_count_thresh"],
+            mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
             progress_wrap=tqdm,
         ):
             mut_uuid = str(uuid.uuid4())
