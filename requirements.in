@@ -8,6 +8,7 @@ downstream==1.14.3
 interval_search==0.5.2
 IPython==7.31.1
 isort==5.12.0
+joblib==1.4.2
 joinem==0.9.3
 matplotlib==3.9.2
 more_itertools==9.1.0
