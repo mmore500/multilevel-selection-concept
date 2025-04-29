@@ -1,5 +1,4 @@
 import contextlib
-import multiprocessing
 import os
 import typing
 
@@ -33,6 +32,7 @@ def _worker(
 def generate_dummy_sequences_phastSim(
     phylogeny_df: pd.DataFrame,
     ancestral_sequences: typing.Dict[str, str],  # variant flavor -> sequence
+    progress_map: typing.Callable = map,
 ) -> pd.DataFrame:
     """Generate dummy sequences based on a phylogeny DataFrame and an ancestral
     sequence.
@@ -46,6 +46,10 @@ def generate_dummy_sequences_phastSim(
 
     ancestral_sequence : str
         The ancestral sequence.
+
+    progress_map : typing.Callable, default map
+        Pass tqdm.contrib.concurrent.process_map or equivalent to display
+        progress bar and use multiprocessing.
 
     Returns
     -------
@@ -95,7 +99,7 @@ def generate_dummy_sequences_phastSim(
         (flavor_origin, group_df, ancestral_sequences)
         for flavor_origin, group_df in groups
     ]
-    with multiprocessing.Pool() as pool:
-        generated_sequences = pool.map(_worker, args)
+
+    generated_sequences = progress_map(_worker, args)
 
     return pd.concat(generated_sequences, ignore_index=True)
