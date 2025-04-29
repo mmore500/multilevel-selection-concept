@@ -99,13 +99,14 @@ for attempt in {1..5}; do
     python3.10 -m pip install --upgrade uv \
     && python3.10 -m uv pip install \
         'more_itertools==10.*' \
-        'numpy==1.*' \
+        'numpy==2.*' \
         'joinem==0.9.3' \
-        'pandas==1.*' \
+        'pandas==2.*' \
         'polars==1.6.*' \
-        'pyarrow==15.*' \
+        'pyarrow==16.*' \
         'scipy==1.*' \
         'tqdm==4.*' \
+        "${BATCHDIR_JOBSOURCE}" \
     && break || echo "pip install attempt ${attempt} failed"
     if [ ${attempt} -eq 3 ]; then
         echo "pip install failed"
