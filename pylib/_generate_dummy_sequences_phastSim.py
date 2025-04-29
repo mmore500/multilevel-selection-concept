@@ -1,5 +1,3 @@
-import contextlib
-import os
 import typing
 
 from hstrat import _auxiliary_lib as hstrat_aux
@@ -20,13 +18,9 @@ def _worker(
     variant_flavor = group_df["variant_flavor"].unique().item()
     ancestral_sequence = ancestral_sequences[variant_flavor]
 
-    # silence verbose phastSim log pollution
-    with open(os.devnull, "w") as f:
-        with contextlib.redirect_stdout(f), contextlib.redirect_stderr(f):
-            return run_phastSim(
-                ancestral_sequence=ancestral_sequence,
-                phylogeny_df=group_df,
-            )
+    return run_phastSim(
+        ancestral_sequence=ancestral_sequence, phylogeny_df=group_df
+    )
 
 
 def generate_dummy_sequences_phastSim(
