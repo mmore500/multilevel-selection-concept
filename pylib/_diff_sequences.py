@@ -1,5 +1,6 @@
 import typing
 
+from hstrat import _auxiliary_lib as hstrat_aux
 import numpy as np
 import polars as pl
 
@@ -16,27 +17,33 @@ def diff_sequences(
     assert all(len(seq) == L for seq in sequences)
 
     # join into a flat string and reshape to 2D array
-    flat = "".join(sequences).encode("ascii")
-    assert len(flat) == N * L
-    seq_arr = np.frombuffer(flat, dtype="S1").reshape((N, L))
+    with hstrat_aux.log_context_duration("seq_arr", logger=print):
+        flat = "".join(sequences).encode("ascii")
+        assert len(flat) == N * L
+        seq_arr = np.frombuffer(flat, dtype="S1").reshape((N, L))
 
-    anc_flat = ancestral_sequence.encode("ascii")
-    anc_arr = np.frombuffer(anc_flat, dtype="S1")
+    with hstrat_aux.log_context_duration("anc_arr", logger=print):
+        anc_flat = ancestral_sequence.encode("ascii")
+        anc_arr = np.frombuffer(anc_flat, dtype="S1")
 
     # find mismatches
-    mismatches_idxs = np.argwhere(seq_arr != anc_arr)
-    mismatch_row, mismatch_pos = mismatches_idxs[:, 0], mismatches_idxs[:, 1]
+    with hstrat_aux.log_context_duration("mismatches", logger=print):
+        mismatches_idxs = np.argwhere(seq_arr != anc_arr)
+        mismatch_row, mismatch_pos = (
+            mismatches_idxs[:, 0],
+            mismatches_idxs[:, 1],
+        )
 
-    mismatch_chars = seq_arr[mismatch_row, mismatch_pos]
+        mismatch_chars = seq_arr[mismatch_row, mismatch_pos]
 
-    # prepare df with mismatches as rows
-    df_ = pl.DataFrame(
-        {
-            "index": mismatch_row,
-            "pos": mismatch_pos,
-            "sequence": mismatch_chars,
-        },
-    )
+        # prepare df with mismatches as rows
+        df_ = pl.DataFrame(
+            {
+                "index": mismatch_row,
+                "pos": mismatch_pos,
+                "sequence": mismatch_chars,
+            },
+        )
 
     df = df_.lazy()
 
@@ -60,7 +67,7 @@ def diff_sequences(
     base = pl.select(index=pl.arange(N, dtype=index_dtype)).lazy()
 
     # left‐join the diffs, wrap in braces, fill nulls to get "{}"
-    return (
+    res = (
         base.join(df, how="left", on="index")
         .sort("index")
         .select(
@@ -68,6 +75,7 @@ def diff_sequences(
                 pl.lit("{"), pl.col("diff").fill_null(""), pl.lit("}")
             ),
         )
-        .collect()
-        .to_series()
     )
+
+    with hstrat_aux.log_context_duration("res.collect", logger=print):
+        return res.collect().to_series()
