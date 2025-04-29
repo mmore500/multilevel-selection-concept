@@ -1,7 +1,5 @@
-from contextlib import redirect_stderr, redirect_stdout
 import functools
 import itertools as it
-import os
 import pprint
 import sys
 import typing
@@ -11,7 +9,6 @@ import warnings
 from hstrat import _auxiliary_lib as hstrat_aux
 from hstrat import dataframe as hstrat_df
 from hstrat import hstrat
-from joblib import Parallel, delayed
 import numpy as np
 import pandas as pd
 import polars as pl
@@ -272,71 +269,67 @@ def _calc_screen_result(
 
 
 def _process_replicate(
-    replicate_uuid: str,
     phylo_df: pd.DataFrame,
     cfg: dict,
 ) -> pd.DataFrame:
 
     records = []
-    log_path = os.path.abspath(f"{replicate_uuid}.log")
-    print(f"{log_path=}")
-    with open(log_path, "w") as f, redirect_stdout(f), redirect_stderr(f):
-        phylo_df = phylo_df.copy().reset_index(drop=True)
-        glimpse_df(phylo_df, logger=print)
+    phylo_df = phylo_df.copy().reset_index(drop=True)
+    glimpse_df(phylo_df, logger=print)
 
-        phylo_df = _prep_phylo(phylo_df, cfg)
-        phylo_df = _calc_tb_stats(phylo_df, cfg)
+    phylo_df = _prep_phylo(phylo_df, cfg)
+    phylo_df = _calc_tb_stats(phylo_df, cfg)
 
-        min_leaves = cfg["cfg_clade_size_thresh"]
-        clade_size_thresh_mask = (phylo_df["num_leaves"] > min_leaves) & (
-            phylo_df["num_leaves_sibling"] > min_leaves
+    min_leaves = cfg["cfg_clade_size_thresh"]
+    clade_size_thresh_mask = (phylo_df["num_leaves"] > min_leaves) & (
+        phylo_df["num_leaves_sibling"] > min_leaves
+    )
+
+    for (site, from_, to), mask in mask_sequence_diffs(
+        ancestral_sequence=phylo_df["ancestral_sequence"]
+        .dropna()
+        .unique()
+        .astype(str)
+        .item(),
+        sequence_diffs=phylo_df["sequence_diff"],
+        mut_count_thresh=cfg["cfg_mut_count_thresh"],
+        mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
+        progress_wrap=tqdm,
+    ):
+        mut_uuid = str(uuid.uuid4())
+        screen_masks = screen_mutation_defined_nodes(
+            phylo_df,
+            has_mutation=mask,
         )
 
-        for (site, from_, to), mask in mask_sequence_diffs(
-            ancestral_sequence=phylo_df["ancestral_sequence"]
-            .dropna()
-            .unique()
-            .astype(str)
-            .item(),
-            sequence_diffs=phylo_df["sequence_diff"],
-            mut_count_thresh=cfg["cfg_mut_count_thresh"],
-            mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
-            progress_wrap=tqdm,
+        stats = (
+            "clade duration ratio",
+            "clade growth ratio",
+            "clade size ratio",
+            "num_leaves",
+            "divergence_from_root",
+            "origin_time",
+        )
+        for stat, (screen_name, screen_mask) in it.product(
+            stats, screen_masks.items()
         ):
-            mut_uuid = str(uuid.uuid4())
-            screen_masks = screen_mutation_defined_nodes(
-                phylo_df,
-                has_mutation=mask,
+            records.append(
+                _calc_screen_result(
+                    mut_char_ref=from_,
+                    mut_char_pos=site,
+                    mut_char_var=to,
+                    mut_uuid=mut_uuid,
+                    phylo_df=phylo_df,
+                    phylo_df_background=phylo_df[
+                        clade_size_thresh_mask & ~screen_mask
+                    ],
+                    phylo_df_screened=phylo_df[
+                        clade_size_thresh_mask & screen_mask
+                    ],
+                    screen_name=screen_name,
+                    stat=stat,
+                ),
             )
-
-            stats = (
-                "clade duration ratio",
-                "clade growth ratio",
-                "clade size ratio",
-                "num_leaves",
-                "divergence_from_root",
-                "origin_time",
-            )
-            for stat, (screen_name, screen_mask) in it.product(
-                stats, screen_masks.items()
-            ):
-                records.append(
-                    _calc_screen_result(
-                        mut_char_ref=from_,
-                        mut_char_pos=site,
-                        mut_char_var=to,
-                        mut_uuid=mut_uuid,
-                        phylo_df=phylo_df,
-                        phylo_df_background=phylo_df[
-                            clade_size_thresh_mask & ~screen_mask
-                        ],
-                        phylo_df_screened=phylo_df[
-                            clade_size_thresh_mask & screen_mask
-                        ],
-                        screen_name=screen_name,
-                        stat=stat,
-                    ),
-                )
 
     return pd.DataFrame(records)
 
@@ -351,21 +344,18 @@ if __name__ == "__main__":
         refphylos_df = pd.read_parquet(cfg["cfg_refphylos"])
         glimpse_df(refphylos_df, logger=print)
 
-    jobs = [
-        delayed(_process_replicate)(uid, phylo_df.copy(), cfg)
+    work = [
+        phylo_df
         for uid, phylo_df in refphylos_df.groupby(
             "replicate_uuid", observed=True
         )
+        if "cfg_assigned_replicate_uuid" not in cfg
+        or uid == cfg["cfg_assigned_replicate_uuid"]
     ]
-    print(f"{len(jobs)=}")
-    res = [*Parallel(backend="loky", n_jobs=-1, verbose=50)(jobs)]
+    res = [_process_replicate(phylo_df, cfg) for phylo_df in tqdm(work)]
 
     with hstrat_aux.log_context_duration("finalize phylo_df", logger=print):
-        screen_df = pd.concat(
-            res,
-            ignore_index=True,
-            join="outer",
-        )
+        screen_df = pd.concat(res)
 
         for k, v in cfg.items():
             screen_df[k] = v
