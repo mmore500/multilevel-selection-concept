@@ -305,6 +305,7 @@ def _process_replicate(
         mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
         progress_wrap=tqdm,
     ):
+        print(f"{site=} {from_=} {to=}")
         mut_uuid = str(uuid.uuid4())
         screen_masks = screen_mutation_defined_nodes(
             phylo_df,
