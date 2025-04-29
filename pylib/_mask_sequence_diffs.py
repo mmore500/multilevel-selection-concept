@@ -12,6 +12,7 @@ def mask_sequence_diffs(
     mut_count_thresh: int = 0,
     mut_quart_thresh: float = 0.0,
     progress_wrap: typing.Callable = lambda x: x,
+    sparsify_mask: bool = False,
 ) -> typing.Iterable[typing.Tuple[typing.Tuple[int, str, str], np.ndarray]]:
     diffs = pl.DataFrame({"diffs": sequence_diffs}, schema={"diffs": pl.Utf8})
 
@@ -58,8 +59,11 @@ def mask_sequence_diffs(
     assert len(seq_diff_rows) == len(mut_uids)
 
     for mut_uid in progress_wrap(mut_unique[is_frequent_mut]):
-        mask = np.zeros(len(sequence_diffs), dtype=bool)
-        mask[seq_diff_rows[mut_uid == mut_uids]] = True
+        if not sparsify_mask:
+            mask = np.zeros(len(sequence_diffs), dtype=bool)
+            mask[seq_diff_rows[mut_uid == mut_uids]] = True
+        else:
+            mask = seq_diff_rows[mut_uid == mut_uids].copy()
 
         pos, mut_char_var = int(mut_uid >> 8), chr(mut_uid & 0xFF)
         mut_char_ref = ancestral_sequence[pos]
