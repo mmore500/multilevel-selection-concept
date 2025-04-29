@@ -15,8 +15,7 @@ class SyncHostCompartments:
         *,
         pop_size: int,
         variant_flavors: list[VariantFlavor],
-        # see https://doi.org/10.1073/pnas.2024815118
-        host_capacity: float = 1e10,
+        host_capacity: float = 100.0,
     ) -> None:
         # overall wildtype,
         # then mut/wildtype per flavor
