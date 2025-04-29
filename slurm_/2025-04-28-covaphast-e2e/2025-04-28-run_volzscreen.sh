@@ -193,7 +193,7 @@ echo "SBATCH_FILE ${SBATCH_FILE}"
 cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=10
+#SBATCH --cpus-per-task=8
 #SBATCH --mem=100G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
@@ -201,7 +201,7 @@ cat > "${SBATCH_FILE}" << EOF
 #SBATCH --mail-type=FAIL,TIME_LIMIT
 #SBATCH --account=beacon
 #SBATCH --requeue
-#SBATCH --array=0-5
+#SBATCH --array=0-59
 
 ${JOB_PREAMBLE}
 
@@ -215,23 +215,33 @@ echo "cpuinfo ----------------------------------------------------- \${SECONDS}"
 cat /proc/cpuinfo || :
 
 echo "do work ----------------------------------------------------- \${SECONDS}"
-python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:7fc614b5db29d30eed9f2c4e3b9254293ec55f1d663d775dcb439e212fd64ddd python3 -m pylib.cli.run_volzscreen
+python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:815bd85f34f8dbf0744a9faaf3ce6f33a4c147aff63c51d82a723d92ee5f11ef python3 -m pylib.cli.run_volzscreen
 
 import itertools as it
 import os
 
+import pandas as pd
+
+refphylos = "https://osf.io/58v9c/download"
+
+uuids = sorted(
+    pd.read_parquet(refphylos)["replicate_uuid"].unique().astype(str),
+)
+
 replicates = it.product(
+    uuids,
     [0, 16, 64],
     [100_000, 1_000_000],
 )
-hsurf_bits, ndownsamp = next(
+assigned_uuid, hsurf_bits, ndownsamp = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
 )
 cfg = f"""
+cfg_assigned_replicate_uuid: "{assigned_uuid}"
 cfg_clade_size_thresh: 4
 cfg_mut_count_thresh: 5
 cfg_mut_quart_thresh: 0.95
-cfg_refphylos: "https://osf.io/58v9c/download"
+cfg_refphylos: "{refphylos}"
 screen_num: \${SLURM_ARRAY_TASK_ID:-0}
 trt_hsurf_bits: {hsurf_bits}
 trt_n_downsample: {ndownsamp}
