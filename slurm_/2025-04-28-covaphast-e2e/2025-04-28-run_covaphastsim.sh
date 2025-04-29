@@ -102,7 +102,7 @@ for attempt in {1..5}; do
         'numpy==2.*' \
         'joinem==0.9.3' \
         'pandas==2.*' \
-        'polars==1.26.*' \
+        'polars==1.28.*' \
         'pyarrow==16.*' \
         'scipy==1.*' \
         'tqdm==4.*' \
