@@ -87,7 +87,7 @@ class SyncHostCompartments:
             new_muts = np.zeros_like(compartments[:, offset])
             for __ in range(num_doublings):
                 compartments[:, offset] *= wt_growth_per_doubling
-                new_muts *= mut_growth_per_doubling
+                new_muts *= wt_growth_per_doubling
                 num_mutants = np.random.binomial(
                     compartments[:, offset].astype(int),
                     p_per_doubling,
