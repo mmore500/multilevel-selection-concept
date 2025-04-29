@@ -69,9 +69,7 @@ alifestd_join_roots_wf = _wtwf(hstrat_aux.alifestd_join_roots)
 alifestd_splay_polytomies_wf = _wtwf(hstrat_aux.alifestd_splay_polytomies)
 
 
-_log_context_duration("_hsurf_fudge_phylo", logger=print)
-
-
+@_log_context_duration("_hsurf_fudge_phylo", logger=print)
 def _hsurf_fudge_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
     with hstrat_aux.log_context_duration(
@@ -99,9 +97,7 @@ def _hsurf_fudge_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     return alifestd_join_roots_wf(phylo_df, mutate=True)
 
 
-_log_context_duration("_prep_phylo", logger=print)
-
-
+@_log_context_duration("_prep_phylo", logger=print)
 def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
     phylo_df["origin_time"] = phylo_df["divergence_from_root"]
@@ -146,9 +142,7 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     return phylo_df
 
 
-_log_context_duration("_calc_tb_stats", logger=print)
-
-
+@_log_context_duration("_calc_tb_stats", logger=print)
 def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     min_leaves = cfg["cfg_clade_size_thresh"]
     work_mask = (phylo_df["num_leaves"] > min_leaves) & (
