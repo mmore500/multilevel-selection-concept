@@ -207,10 +207,6 @@ if __name__ == "__main__":
         reference_sequences=reference_sequences,
     )
 
-    fil = phylo_df["sequence_diff"].str.startswith('{"0": ')
-    print(
-        f"{phylo_df.loc[fil, 'sequence_diff'].str.slice(0, 10).value_counts()}"
-    )
     glimpse_df(seq_df, logger=print)
 
     with hstrat_aux.log_context_duration("phylo_df.merge", logger=print):
@@ -226,7 +222,11 @@ if __name__ == "__main__":
     with hstrat_aux.log_context_duration("_add_sequence_diffs", logger=print):
         phylo_df = _add_sequence_diffs(phylo_df=phylo_df)
 
-    print(f"{phylo_df['sequence_diff'].str.slice(0, 10).value_counts()=}")
+    fil = phylo_df["sequence_diff"].str.startswith('{"0": ')
+    print(
+        f"{phylo_df.loc[fil, 'sequence_diff'].str.slice(0, 10).value_counts()}"
+    )
+    glimpse_df(seq_df, logger=print)
 
     with hstrat_aux.log_context_duration("finalize phylo_df", logger=print):
         phylo_df["mls0_group_id"] = phylo_df["id"]
