@@ -235,47 +235,64 @@ def _calc_screen_result(
         binom_p = np.nan
         binom_stat = np.nan
 
-    return {
-        "mut": repr((mut_char_pos, mut_char_ref, mut_char_var)),
-        "mut_char_pos": mut_char_pos,
-        "mut_char_ref": mut_char_ref,
-        "mut_char_var": mut_char_var,
-        "mut_uuid": mut_uuid,
-        "screen_name": screen_name,
-        "phylo_df_background_len": len(phylo_df_background),
-        "phyo_df_screened_len": len(phylo_df_screened),
-        "tb_stat": stat,
-        "screened_mean": screened[stat].mean(),
-        "screened_var": screened[stat].var(),
-        "screened_std": screened[stat].std(),
-        "screened_median": screened[stat].median(),
-        "screened_skew": screened[stat].skew(),
-        "screened_kurt": screened[stat].kurt(),
-        "screened_N": len(screened),
-        "background_mean": background[stat].mean(),
-        "background_var": background[stat].var(),
-        "background_std": background[stat].std(),
-        "background_skew": background[stat].skew(),
-        "background_kurt": background[stat].kurt(),
-        "background_median": background[stat].median(),
-        "background_N": len(background),
-        "mw_U": mw_U,
-        "mw_p": mw_p,
-        "cliffs_delta": cliffs_delta,
-        "binom_n": binom_n,
-        "binom_k": binom_k,
-        "binom_p": binom_p,
-        "binom_stat": binom_stat,
-        **{
-            c: phylo_df[c].dropna().unique().astype(str).item()
-            for c in phylo_df.columns
-            if (
-                c.startswith("cfg_")
-                or c.startswith("trt_")
-                or c.startswith("replicate_")
-            )
-        },
-    }
+    with np.errstate(invalid="ignore"):
+        return {
+            "mut": repr((mut_char_pos, mut_char_ref, mut_char_var)),
+            "mut_char_pos": mut_char_pos,
+            "mut_char_ref": mut_char_ref,
+            "mut_char_var": mut_char_var,
+            "mut_uuid": mut_uuid,
+            "screen_name": screen_name,
+            "phylo_df_background_len": len(phylo_df_background),
+            "phyo_df_screened_len": len(phylo_df_screened),
+            "tb_stat": stat,
+            "screened_nanmin": np.nanmin(screened[stat].values),
+            "screened_nanmax": np.nanmax(screened[stat].values),
+            "screened_min": np.min(screened[stat].values),
+            "screened_max": np.max(screened[stat].values),
+            "screened_nanmean": np.nanmean(screened[stat].values),
+            "screened_nanvar": np.nanvar(screened[stat].values),
+            "screened_nanstd": np.nanstd(screened[stat].values),
+            "screened_nanmedian": np.nanmedian(screened[stat].values),
+            "screened_mean": np.mean(screened[stat].values),
+            "screened_var": np.var(screened[stat].values),
+            "screened_std": np.std(screened[stat].values),
+            "screened_median": np.median(screened[stat].values),
+            "screened_skew": screened[stat].skew(),
+            "screened_kurt": screened[stat].kurt(),
+            "screened_N": len(screened),
+            "background_nanmin": np.nanmin(background[stat].values),
+            "background_nanmax": np.nanmax(background[stat].values),
+            "background_min": np.min(background[stat].values),
+            "background_max": np.max(background[stat].values),
+            "background_nanmean": np.nanmean(background[stat].values),
+            "background_nanvar": np.nanvar(background[stat].values),
+            "background_nanstd": np.nanstd(background[stat].values),
+            "background_nanmedian": np.nanmedian(background[stat].values),
+            "background_mean": np.mean(background[stat].values),
+            "background_var": np.var(background[stat].values),
+            "background_std": np.std(background[stat].values),
+            "background_median": np.median(background[stat].values),
+            "background_skew": background[stat].skew(),
+            "background_kurt": background[stat].kurt(),
+            "background_N": len(background),
+            "mw_U": mw_U,
+            "mw_p": mw_p,
+            "cliffs_delta": cliffs_delta,
+            "binom_n": binom_n,
+            "binom_k": binom_k,
+            "binom_p": binom_p,
+            "binom_stat": binom_stat,
+            **{
+                c: phylo_df[c].dropna().unique().astype(str).item()
+                for c in phylo_df.columns
+                if (
+                    c.startswith("cfg_")
+                    or c.startswith("trt_")
+                    or c.startswith("replicate_")
+                )
+            },
+        }
 
 
 def _process_diff(
@@ -363,21 +380,21 @@ def _process_replicate(
         phylo_df["num_leaves"] > min_leaves
     ) & (phylo_df["num_leaves_sibling"] > min_leaves)
 
-    with Pool(initializer=_init_worker, initargs=(phylo_df,)) as pool:
-        diffs = mask_sequence_diffs(
-            ancestral_sequence=phylo_df["ancestral_sequence"]
-            .dropna()
-            .unique()
-            .astype(str)
-            .item(),
-            sequence_diffs=phylo_df["sequence_diff"],
-            sparsify_mask=True,
-            mut_count_thresh=cfg["cfg_mut_count_thresh"],
-            mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
-            progress_wrap=tqdm,
-        )
-        task_iter = ((mask, site, frm, to) for (site, frm, to), mask in diffs)
+    diffs_iter = mask_sequence_diffs(
+        ancestral_sequence=phylo_df["ancestral_sequence"]
+        .dropna()
+        .unique()
+        .astype(str)
+        .item(),
+        sequence_diffs=phylo_df["sequence_diff"],
+        sparsify_mask=True,
+        mut_count_thresh=cfg["cfg_mut_count_thresh"],
+        mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
+        progress_wrap=tqdm,
+    )
+    task_iter = ((mask, site, frm, to) for (site, frm, to), mask in diffs_iter)
 
+    with Pool(initializer=_init_worker, initargs=(phylo_df,)) as pool:
         for result in pool.imap_unordered(_process_diff_worker, task_iter):
             records.extend(result)
 
