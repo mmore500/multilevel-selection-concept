@@ -36,7 +36,7 @@ def _with_work_dir(**tempdir_kwargs):
 
 
 class FilteredStream:
-    def __init__(self, original_stream, prefix="!!!"):
+    def __init__(self, original_stream, prefix):
         self.original_stream = original_stream
         self.prefix = prefix
         self._buffer = ""
@@ -59,8 +59,9 @@ class FilteredStream:
 
 
 @contextlib.contextmanager
-def filtered_output(prefix="!!!"):
-    """Context manager that only lets lines starting with `prefix` pass through."""
+def filtered_output(prefix):
+    """Context manager that only lets lines starting with `prefix` pass
+    through."""
     # Wrap stdout and stderr
     f_out = FilteredStream(sys.stdout, prefix)
     f_err = FilteredStream(sys.stderr, prefix)
@@ -68,7 +69,7 @@ def filtered_output(prefix="!!!"):
         yield
 
 
-@filtered_output()
+@filtered_output(prefix="!!!")
 @_with_work_dir(suffix="_phastSim")
 def _do_run_phastSim(
     ancestral_sequence: str,
@@ -259,7 +260,9 @@ def _do_run_phastSim(
         # siblings etc), the nodes in layers below the current one are simply
         # "forgotten" (in C they could be de-allocated, but the task here is
         # left to python automation).
-        with hstrat_aux.log_context_duration("mutateBranchETEhierarchy", print):
+        with hstrat_aux.log_context_duration(
+            "mutateBranchETEhierarchy", print
+        ):
             genome_tree.mutateBranchETEhierarchy(
                 t,
                 genome_tree.genomeRoot,
