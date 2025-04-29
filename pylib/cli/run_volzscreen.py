@@ -1,5 +1,7 @@
+from contextlib import redirect_stderr, redirect_stdout
 import functools
 import itertools as it
+import os
 import pprint
 import sys
 import typing
@@ -9,6 +11,7 @@ import warnings
 from hstrat import _auxiliary_lib as hstrat_aux
 from hstrat import dataframe as hstrat_df
 from hstrat import hstrat
+from joblib import Parallel, delayed
 import numpy as np
 import pandas as pd
 import polars as pl
@@ -21,6 +24,19 @@ from .._read_config import read_config
 from .._screen_mutation_defined_nodes import screen_mutation_defined_nodes
 from .._seed_global_rngs import seed_global_rngs
 from .._shrink_df import shrink_df
+
+
+# have to redefine for joblib compat
+def _log_context_duration(what: str, logger: typing.Callable = print):
+    def decorator(func: typing.Callable) -> typing.Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            with hstrat_aux.log_context_duration(what, logger=logger):
+                return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
 
 
 def _wtwf(wrapee: typing.Callable) -> typing.Callable:
@@ -53,7 +69,9 @@ alifestd_join_roots_wf = _wtwf(hstrat_aux.alifestd_join_roots)
 alifestd_splay_polytomies_wf = _wtwf(hstrat_aux.alifestd_splay_polytomies)
 
 
-@hstrat_aux.log_context_duration("_hsurf_fudge_phylo", logger=print)
+_log_context_duration("_hsurf_fudge_phylo", logger=print)
+
+
 def _hsurf_fudge_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
     with hstrat_aux.log_context_duration(
@@ -81,7 +99,9 @@ def _hsurf_fudge_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     return alifestd_join_roots_wf(phylo_df, mutate=True)
 
 
-@hstrat_aux.log_context_duration("_prep_phylo", logger=print)
+_log_context_duration("_prep_phylo", logger=print)
+
+
 def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
     phylo_df["origin_time"] = phylo_df["divergence_from_root"]
@@ -126,7 +146,9 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     return phylo_df
 
 
-@hstrat_aux.log_context_duration("_calc_tb_stats", logger=print)
+_log_context_duration("_calc_tb_stats", logger=print)
+
+
 def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     min_leaves = cfg["cfg_clade_size_thresh"]
     work_mask = (phylo_df["num_leaves"] > min_leaves) & (
@@ -184,6 +206,7 @@ def _calc_screen_result(
     mut_char_ref: str,
     mut_char_var: str,
     mut_uuid: str,
+    phylo_df: pd.DataFrame,
     phylo_df_background: pd.DataFrame,
     phylo_df_screened: pd.DataFrame,
     screen_name: str,
@@ -218,8 +241,8 @@ def _calc_screen_result(
         "mut_char_var": mut_char_var,
         "mut_uuid": mut_uuid,
         "screen_name": screen_name,
-        "screen_mask_len": len(screen_mask),
-        "screen_mask_sum": screen_mask.sum(),
+        "phylo_df_background_len": len(phylo_df_background),
+        "phyo_df_screened_len": len(phylo_df_screened),
         "tb_stat": stat,
         "screened_mean": screened[stat].mean(),
         "screened_var": screened[stat].var(),
@@ -254,30 +277,16 @@ def _calc_screen_result(
     }
 
 
-if __name__ == "__main__":
+def _process_replicate(
+    replicate_uuid: str,
+    phylo_df: pd.DataFrame,
+    cfg: dict,
+) -> pd.DataFrame:
 
-    cfg = read_config(sys.stdin)
-    cfg["screen_uuid"] = str(uuid.uuid4())
-    pprint.PrettyPrinter(depth=4).pprint(cfg)
-    seed_global_rngs(cfg["screen_num"])
-
-    with hstrat_aux.log_context_duration("pd.read_parquet", logger=print):
-        refphylos_df = pd.read_parquet(cfg["cfg_refphylos"])
-        glimpse_df(refphylos_df, logger=print)
-
-    stats = (
-        "clade duration ratio",
-        "clade growth ratio",
-        "clade size ratio",
-        "num_leaves",
-        "divergence_from_root",
-        "origin_time",
-    )
-
-    res = []
-    for __, phylo_df in tqdm(
-        refphylos_df.groupby("replicate_uuid", observed=True),
-    ):
+    records = []
+    log_path = os.path.abspath(f"{replicate_uuid}.log")
+    print(f"{log_path=}")
+    with open(log_path, "w") as f, redirect_stdout(f), redirect_stderr(f):
         phylo_df = phylo_df.copy().reset_index(drop=True)
         glimpse_df(phylo_df, logger=print)
 
@@ -288,6 +297,7 @@ if __name__ == "__main__":
         clade_size_thresh_mask = (phylo_df["num_leaves"] > min_leaves) & (
             phylo_df["num_leaves_sibling"] > min_leaves
         )
+
         for (site, from_, to), mask in mask_sequence_diffs(
             ancestral_sequence=phylo_df["ancestral_sequence"]
             .dropna()
@@ -305,15 +315,24 @@ if __name__ == "__main__":
                 has_mutation=mask,
             )
 
+            stats = (
+                "clade duration ratio",
+                "clade growth ratio",
+                "clade size ratio",
+                "num_leaves",
+                "divergence_from_root",
+                "origin_time",
+            )
             for stat, (screen_name, screen_mask) in it.product(
                 stats, screen_masks.items()
             ):
-                res.append(
+                records.append(
                     _calc_screen_result(
                         mut_char_ref=from_,
                         mut_char_pos=site,
                         mut_char_var=to,
                         mut_uuid=mut_uuid,
+                        phylo_df=phylo_df,
                         phylo_df_background=phylo_df[
                             clade_size_thresh_mask & ~screen_mask
                         ],
@@ -325,8 +344,33 @@ if __name__ == "__main__":
                     ),
                 )
 
+    return pd.DataFrame(records)
+
+
+if __name__ == "__main__":
+    cfg = read_config(sys.stdin)
+    cfg["screen_uuid"] = str(uuid.uuid4())
+    pprint.PrettyPrinter(depth=4).pprint(cfg)
+    seed_global_rngs(cfg["screen_num"])
+
+    with hstrat_aux.log_context_duration("pd.read_parquet", logger=print):
+        refphylos_df = pd.read_parquet(cfg["cfg_refphylos"])
+        glimpse_df(refphylos_df, logger=print)
+
+    jobs = [
+        delayed(_process_replicate)(uid, phylo_df.copy(), cfg)
+        for uid, phylo_df in refphylos_df.groupby(
+            "replicate_uuid", observed=True
+        )
+    ]
+    res = [*Parallel(backend="loky", verbose=50)(jobs)]
+
     with hstrat_aux.log_context_duration("finalize phylo_df", logger=print):
-        screen_df = pd.DataFrame(res)
+        screen_df = pd.concat(
+            res,
+            ignore_index=True,
+            join="outer",
+        )
 
         for k, v in cfg.items():
             screen_df[k] = v
