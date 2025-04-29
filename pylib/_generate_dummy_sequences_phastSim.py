@@ -18,8 +18,16 @@ def _worker(
     variant_flavor = group_df["variant_flavor"].unique().item()
     ancestral_sequence = ancestral_sequences[variant_flavor]
 
+    group_df = hstrat_aux.alifestd_collapse_unifurcations(
+        group_df, mutate=True
+    )
+    group_df["taxon_label"] = group_df["id"]
+    group_df = hstrat_aux.alifestd_to_working_format(group_df, mutate=True)
+
     return run_phastSim(
-        ancestral_sequence=ancestral_sequence, phylogeny_df=group_df
+        ancestral_sequence=ancestral_sequence,
+        phylogeny_df=group_df,
+        taxon_label="taxon_label",
     )
 
 
