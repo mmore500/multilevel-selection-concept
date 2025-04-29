@@ -1,8 +1,10 @@
 # adapted from https://github.com/NicolaDM/phastSim/blob/653ce26c0806a9904a85252c50d05ea59df7e428/bin/phastSim
 
+import contextlib
 from functools import wraps
 from io import StringIO
 import itertools as it
+import os
 import pathlib
 import tempfile
 
@@ -34,25 +36,24 @@ def _with_work_dir(**tempdir_kwargs):
     return decorator
 
 
+@contextlib.contextmanager
+def _shut_up():
+    """Suppresses all output to stdout and stderr."""
+    with open(os.devnull, "w") as f:
+        with contextlib.redirect_stdout(f), contextlib.redirect_stderr(f):
+            yield
+
+
+@_shut_up()
 @_with_work_dir(suffix="_phastSim")
-def run_phastSim(
+def _do_run_phastSim(
     ancestral_sequence: str,
     phylogeny_df: str,
     *,
+    taxon_label: str,
     work_dir: pathlib.Path,
-) -> pd.DataFrame:
+) -> pl.DataFrame:
     """Shim function to run phastSim without subprocess."""
-
-    # temporarily remove "-" characters
-    dash_indices = [
-        i for i, char in enumerate(ancestral_sequence) if char == "-"
-    ]
-    ancestral_sequence_ = ancestral_sequence
-    ancestral_sequence = ancestral_sequence.replace("-", "")
-
-    # check for whitespace
-    if ancestral_sequence != "".join(ancestral_sequence.split()):
-        raise ValueError("Ancestral sequence contains whitespace")
 
     # write ancestral sequence to tempdir
     ancestral_sequence_path = work_dir / "ancestral_sequence.fasta"
@@ -135,7 +136,7 @@ def run_phastSim(
             args.eteFormat = 1
 
     as_newick = hstrat_aux.alifestd_as_newick_asexual(
-        phylogeny_df, taxon_label="id"
+        phylogeny_df, taxon_label=taxon_label
     )
     t = Tree(as_newick, format=args.eteFormat)
 
@@ -302,12 +303,39 @@ def run_phastSim(
     assert len(lines) == 0 or lines[0].startswith(">")
     assert len(lines) == 0 or not lines[1].startswith(">")
 
-    res = pl.DataFrame(
+    return pl.DataFrame(
         {
             "id": [int(line[1:]) for line in lines[0::2]],
             "sequence": [line for line in lines[1::2]],
         },
     )
+
+
+def run_phastSim(
+    ancestral_sequence: str,
+    phylogeny_df: str,
+    taxon_label: str = "id",
+) -> pd.DataFrame:
+    """Shim function to run phastSim without subprocess."""
+
+    # temporarily remove "-" characters
+    with hstrat_aux.log_context_duration("remove dashes", print):
+        dash_indices = [
+            i for i, char in enumerate(ancestral_sequence) if char == "-"
+        ]
+        ancestral_sequence_ = ancestral_sequence
+        ancestral_sequence = ancestral_sequence.replace("-", "")
+
+    # check for whitespace
+    if ancestral_sequence != "".join(ancestral_sequence.split()):
+        raise ValueError("Ancestral sequence contains whitespace")
+
+    with hstrat_aux.log_context_duration("_do_run_phastSim", print):
+        res = _do_run_phastSim(
+            ancestral_sequence=ancestral_sequence,
+            phylogeny_df=phylogeny_df,
+            taxon_label=taxon_label,
+        )
 
     # restore "-" characters
     with hstrat_aux.log_context_duration("restore dashes", print):
