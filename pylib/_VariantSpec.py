@@ -10,5 +10,7 @@ class VariantSpec:
     days: object
     n_imports: int
 
-    withinhost_r: float = 2.0
+    # https://doi.org/10.1038/s43856-022-00195-4
+    # assume doubling time of four hours
+    withinhost_r: float = 2**6
     active_strain_factor: float = 1.0
