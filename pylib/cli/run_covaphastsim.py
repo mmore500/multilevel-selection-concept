@@ -198,6 +198,7 @@ if __name__ == "__main__":
         sim.run()
 
     phylo_df = _extract_phylo(sim.people.infection_log, variant_flavors)
+    print(f"{phylo_df['variant'].value_counts()=}")
     glimpse_df(phylo_df, logger=print)
 
     seq_df = _generate_sequences(
@@ -205,6 +206,7 @@ if __name__ == "__main__":
         cfg=cfg,
         reference_sequences=reference_sequences,
     )
+    print(f"{seq_df['sequence'].str.slice(0, 1).value_counts()=}")
     glimpse_df(seq_df, logger=print)
 
     with hstrat_aux.log_context_duration("phylo_df.merge", logger=print):
@@ -219,6 +221,8 @@ if __name__ == "__main__":
 
     with hstrat_aux.log_context_duration("_add_sequence_diffs", logger=print):
         phylo_df = _add_sequence_diffs(phylo_df=phylo_df)
+
+    print(f"{phylo_df['sequence_diff'].str.slice(0, 10).value_counts()=}")
 
     with hstrat_aux.log_context_duration("finalize phylo_df", logger=print):
         phylo_df["mls0_group_id"] = phylo_df["id"]
