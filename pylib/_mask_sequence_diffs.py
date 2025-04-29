@@ -39,6 +39,13 @@ def mask_sequence_diffs(
     mut_uids = pos_vals.astype(np.uint64) << 8 | char_vals
 
     (mut_unique, mut_counts) = np.unique(mut_uids, return_counts=True)
+    print(
+        f"{ancestral_sequence[0]=} "
+        f"{int(mut_unique[0])=} "
+        f"{int(mut_unique[0] >> 8)=} "
+        f"{chr(mut_unique[0] & 0xFF)=} "
+        f"{int(mut_counts[0])=}",
+    )
 
     mut_count_thresh = max(
         mut_count_thresh,
