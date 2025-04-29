@@ -55,6 +55,7 @@ def mask_sequence_diffs(
 
     seq_diff_sizes = diffs["diffs"].str.count_matches(":").fill_null(0)
     seq_diff_rows = np.repeat(np.arange(len(seq_diff_sizes)), seq_diff_sizes)
+    assert len(seq_diff_rows) == len(mut_uids)
 
     for mut_uid in progress_wrap(mut_unique[is_frequent_mut]):
         mask = np.zeros(len(sequence_diffs), dtype=bool)
