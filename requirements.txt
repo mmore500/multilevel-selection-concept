@@ -114,7 +114,7 @@ gitpython==3.1.44
     # via sciris
 google==3.0.0
     # via phastsim
-hstrat==1.20.4
+hstrat==1.20.5
     # via -r requirements.in
 hurry-filesize==0.9
     # via nbmetalog
@@ -385,9 +385,9 @@ pyarrow==16.1.0
     #   polars
 pycodestyle==2.13.0
     # via autopep8
-pydantic==2.11.3
+pydantic==2.11.4
     # via pandera
-pydantic-core==2.33.1
+pydantic-core==2.33.2
     # via pydantic
 pyerfa==2.0.1.5
     # via astropy
