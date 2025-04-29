@@ -277,6 +277,52 @@ def _calc_screen_result(
     }
 
 
+def _process_diff(
+    phylo_df: pd.DataFrame,
+    mask: np.ndarray,
+    site: int,
+    from_: str,
+    to: str,
+) -> typing.List[dict]:
+    mut_uuid = str(uuid.uuid4())
+    screen_masks = screen_mutation_defined_nodes(
+        phylo_df,
+        has_mutation=mask,
+    )
+
+    stats = (
+        "clade duration ratio",
+        "clade growth ratio",
+        "clade size ratio",
+        "num_leaves",
+        "divergence_from_root",
+        "origin_time",
+    )
+    records = []
+    for stat, (screen_name, screen_mask) in it.product(
+        stats, screen_masks.items()
+    ):
+        records.append(
+            _calc_screen_result(
+                mut_char_ref=from_,
+                mut_char_pos=site,
+                mut_char_var=to,
+                mut_uuid=mut_uuid,
+                phylo_df=phylo_df,
+                phylo_df_background=phylo_df[
+                    phylo_df["clade_size_thresh_mask"] & ~screen_mask
+                ],
+                phylo_df_screened=phylo_df[
+                    phylo_df["clade_size_thresh_mask"] & screen_mask
+                ],
+                screen_name=screen_name,
+                stat=stat,
+            ),
+        )
+
+    return records
+
+
 def _process_replicate(
     phylo_df: pd.DataFrame,
     cfg: dict,
@@ -294,9 +340,9 @@ def _process_replicate(
     phylo_df = _calc_tb_stats(phylo_df, cfg)
 
     min_leaves = cfg["cfg_clade_size_thresh"]
-    clade_size_thresh_mask = (phylo_df["num_leaves"] > min_leaves) & (
-        phylo_df["num_leaves_sibling"] > min_leaves
-    )
+    phylo_df["clade_size_thresh_mask"] = (
+        phylo_df["num_leaves"] > min_leaves
+    ) & (phylo_df["num_leaves_sibling"] > min_leaves)
 
     for (site, from_, to), mask in mask_sequence_diffs(
         ancestral_sequence=phylo_df["ancestral_sequence"]
@@ -310,40 +356,15 @@ def _process_replicate(
         progress_wrap=tqdm,
     ):
         print(f"{site=} {from_=} {to=}")
-        mut_uuid = str(uuid.uuid4())
-        screen_masks = screen_mutation_defined_nodes(
-            phylo_df,
-            has_mutation=mask,
+        records.extend(
+            _process_diff(
+                phylo_df=phylo_df,
+                mask=mask,
+                site=site,
+                from_=from_,
+                to=to,
+            ),
         )
-
-        stats = (
-            "clade duration ratio",
-            "clade growth ratio",
-            "clade size ratio",
-            "num_leaves",
-            "divergence_from_root",
-            "origin_time",
-        )
-        for stat, (screen_name, screen_mask) in it.product(
-            stats, screen_masks.items()
-        ):
-            records.append(
-                _calc_screen_result(
-                    mut_char_ref=from_,
-                    mut_char_pos=site,
-                    mut_char_var=to,
-                    mut_uuid=mut_uuid,
-                    phylo_df=phylo_df,
-                    phylo_df_background=phylo_df[
-                        clade_size_thresh_mask & ~screen_mask
-                    ],
-                    phylo_df_screened=phylo_df[
-                        clade_size_thresh_mask & screen_mask
-                    ],
-                    screen_name=screen_name,
-                    stat=stat,
-                ),
-            )
 
     return pd.DataFrame(records)
 
