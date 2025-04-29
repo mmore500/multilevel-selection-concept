@@ -363,21 +363,21 @@ def _process_replicate(
         phylo_df["num_leaves"] > min_leaves
     ) & (phylo_df["num_leaves_sibling"] > min_leaves)
 
-    with Pool(initializer=_init_worker, initargs=(phylo_df,)) as pool:
-        diffs = mask_sequence_diffs(
-            ancestral_sequence=phylo_df["ancestral_sequence"]
-            .dropna()
-            .unique()
-            .astype(str)
-            .item(),
-            sequence_diffs=phylo_df["sequence_diff"],
-            sparsify_mask=True,
-            mut_count_thresh=cfg["cfg_mut_count_thresh"],
-            mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
-            progress_wrap=tqdm,
-        )
-        task_iter = ((mask, site, frm, to) for (site, frm, to), mask in diffs)
+    diffs_iter = mask_sequence_diffs(
+        ancestral_sequence=phylo_df["ancestral_sequence"]
+        .dropna()
+        .unique()
+        .astype(str)
+        .item(),
+        sequence_diffs=phylo_df["sequence_diff"],
+        sparsify_mask=True,
+        mut_count_thresh=cfg["cfg_mut_count_thresh"],
+        mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
+        progress_wrap=tqdm,
+    )
+    task_iter = ((mask, site, frm, to) for (site, frm, to), mask in diffs_iter)
 
+    with Pool(initializer=_init_worker, initargs=(phylo_df,)) as pool:
         for result in pool.imap_unordered(_process_diff_worker, task_iter):
             records.extend(result)
 
