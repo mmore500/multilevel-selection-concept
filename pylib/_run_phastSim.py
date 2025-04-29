@@ -50,6 +50,7 @@ def _do_run_phastSim(
     ancestral_sequence: str,
     phylogeny_df: str,
     *,
+    taxon_label: str,
     work_dir: pathlib.Path,
 ) -> pl.DataFrame:
     """Shim function to run phastSim without subprocess."""
@@ -135,7 +136,7 @@ def _do_run_phastSim(
             args.eteFormat = 1
 
     as_newick = hstrat_aux.alifestd_as_newick_asexual(
-        phylogeny_df, taxon_label="id"
+        phylogeny_df, taxon_label=taxon_label
     )
     t = Tree(as_newick, format=args.eteFormat)
 
@@ -313,6 +314,7 @@ def _do_run_phastSim(
 def run_phastSim(
     ancestral_sequence: str,
     phylogeny_df: str,
+    taxon_label: str = "id",
 ) -> pd.DataFrame:
     """Shim function to run phastSim without subprocess."""
 
@@ -332,6 +334,7 @@ def run_phastSim(
         res = _do_run_phastSim(
             ancestral_sequence=ancestral_sequence,
             phylogeny_df=phylogeny_df,
+            taxon_label=taxon_label,
         )
 
     # restore "-" characters
