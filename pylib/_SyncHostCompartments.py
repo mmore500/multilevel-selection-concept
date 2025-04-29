@@ -58,6 +58,8 @@ class SyncHostCompartments:
             num_doublings = int(
                 np.floor(np.log2(variant_flavor.withinhost_r_wt))
             )
+            if not num_doublings > 0:
+                raise ValueError
             p_per_doubling = 1.0 - np.power(
                 1.0 - variant_flavor.p_wt_to_mut, 1 / num_doublings
             )
@@ -85,7 +87,7 @@ class SyncHostCompartments:
             new_muts = np.zeros_like(compartments[:, offset])
             for __ in range(num_doublings):
                 compartments[:, offset] *= wt_growth_per_doubling
-                new_muts *= wt_growth_per_doubling
+                new_muts *= mut_growth_per_doubling
                 num_mutants = np.random.binomial(
                     compartments[:, offset].astype(int),
                     p_per_doubling,
@@ -93,7 +95,7 @@ class SyncHostCompartments:
                 compartments[:, offset] -= num_mutants
                 new_muts += num_mutants
 
-            compartments[:, offset] += new_muts
+            compartments[:, offset + 1] += new_muts
 
         # apply within-host carrying capacity
         compartments /= (
