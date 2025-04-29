@@ -7,6 +7,7 @@ import uuid
 import covasim as cv
 from hstrat import _auxiliary_lib as hstrat_aux
 import pandas as pd
+from tqdm import tqdm
 from tqdm.contrib import tmap as tqdm_tmap
 
 from .._SyncHostCompartments import SyncHostCompartments
@@ -174,6 +175,7 @@ def _add_sequence_diffs(phylo_df: pd.DataFrame):
     phylo_df["sequence_diff"] = diff_sequences(
         phylo_df["sequence"],
         ancestral_sequence=ancestral_sequence,
+        progress_wrap=tqdm,
     )
     del phylo_df["sequence"]
 
