@@ -29,7 +29,6 @@ class SyncHostCompartments:
     def __call__(self: "SyncHostCompartments", sim: cv.Sim) -> None:
         compartments = self._host_compartments
         people = sim.people
-        random_p = np.random.rand(*people["infectious_variant"].shape)
 
         ## sync covasim to host compartments
         #######################################################################
@@ -59,6 +58,10 @@ class SyncHostCompartments:
             num_doublings = int(
                 np.floor(np.log2(variant_flavor.withinhost_r_wt))
             )
+            p_per_doubling = 1.0 - np.power(
+                1.0 - variant_flavor.p_wt_to_mut, 1 / num_doublings
+            )
+
             wt_growth_per_doubling = variant_flavor.withinhost_r_wt ** (
                 1 / num_doublings
             )
@@ -80,12 +83,12 @@ class SyncHostCompartments:
                 < 1e-6
             )
             new_muts = np.zeros_like(compartments[:, offset])
-            for doubling in range(num_doublings):
+            for __ in range(num_doublings):
                 compartments[:, offset] *= wt_growth_per_doubling
                 new_muts *= wt_growth_per_doubling
                 num_mutants = np.random.binomial(
                     compartments[:, offset].astype(int),
-                    variant_flavor.p_wt_to_mut / num_doublings,
+                    p_per_doubling,
                 )
                 compartments[:, offset] -= num_mutants
                 new_muts += num_mutants
