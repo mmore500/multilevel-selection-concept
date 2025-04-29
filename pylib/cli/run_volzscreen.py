@@ -350,7 +350,7 @@ if __name__ == "__main__":
             "replicate_uuid", observed=True
         )
         if "cfg_assigned_replicate_uuid" not in cfg
-        or uid == cfg["cfg_assigned_replicate_uuid"]
+        or str(uid) == cfg["cfg_assigned_replicate_uuid"]
     ]
     res = [_process_replicate(phylo_df, cfg) for phylo_df in tqdm(work)]
 
