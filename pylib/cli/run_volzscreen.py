@@ -1,5 +1,6 @@
 import functools
 import itertools as it
+from multiprocessing import Pool
 import pprint
 import sys
 import typing
@@ -328,6 +329,19 @@ def _process_diff(
     return records
 
 
+# one-time phylo_df holder for worker initializer
+_phylo_df = None
+
+
+def _init_worker(df: pd.DataFrame) -> None:
+    global _phylo_df
+    _phylo_df = df
+
+
+def _process_diff_worker(args: tuple) -> typing.List[dict]:
+    return _process_diff(_phylo_df, *args)
+
+
 def _process_replicate(
     phylo_df: pd.DataFrame,
     cfg: dict,
@@ -349,28 +363,23 @@ def _process_replicate(
         phylo_df["num_leaves"] > min_leaves
     ) & (phylo_df["num_leaves_sibling"] > min_leaves)
 
-    for (site, from_, to), mask in mask_sequence_diffs(
-        ancestral_sequence=phylo_df["ancestral_sequence"]
-        .dropna()
-        .unique()
-        .astype(str)
-        .item(),
-        sequence_diffs=phylo_df["sequence_diff"],
-        sparsify_mask=True,
-        mut_count_thresh=cfg["cfg_mut_count_thresh"],
-        mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
-        progress_wrap=tqdm,
-    ):
-        print(f"{site=} {from_=} {to=}")
-        records.extend(
-            _process_diff(
-                phylo_df=phylo_df,
-                mask=mask,
-                site=site,
-                from_=from_,
-                to=to,
-            ),
+    with Pool(initializer=_init_worker, initargs=(phylo_df,)) as pool:
+        diffs = mask_sequence_diffs(
+            ancestral_sequence=phylo_df["ancestral_sequence"]
+            .dropna()
+            .unique()
+            .astype(str)
+            .item(),
+            sequence_diffs=phylo_df["sequence_diff"],
+            sparsify_mask=True,
+            mut_count_thresh=cfg["cfg_mut_count_thresh"],
+            mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
+            progress_wrap=tqdm,
         )
+        task_iter = ((mask, site, frm, to) for (site, frm, to), mask in diffs)
+
+        for result in pool.imap_unordered(_process_diff_worker, task_iter):
+            records.extend(result)
 
     return pd.DataFrame(records)
 
