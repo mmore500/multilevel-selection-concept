@@ -48,9 +48,8 @@ def _shut_up():
 @_with_work_dir(suffix="_phastSim")
 def _do_run_phastSim(
     ancestral_sequence: str,
-    phylogeny_df: str,
+    phylo_newick: str,
     *,
-    taxon_label: str,
     work_dir: pathlib.Path,
 ) -> pl.DataFrame:
     """Shim function to run phastSim without subprocess."""
@@ -135,10 +134,7 @@ def _do_run_phastSim(
             )
             args.eteFormat = 1
 
-    as_newick = hstrat_aux.alifestd_as_newick_asexual(
-        phylogeny_df, taxon_label=taxon_label
-    )
-    t = Tree(as_newick, format=args.eteFormat)
+    t = Tree(phylo_newick, format=args.eteFormat)
 
     # save information about the categories of each site on a file
     if args.createInfo:
@@ -330,11 +326,16 @@ def run_phastSim(
     if ancestral_sequence != "".join(ancestral_sequence.split()):
         raise ValueError("Ancestral sequence contains whitespace")
 
+    print(f"{len(phylogeny_df)=}, {len(ancestral_sequence)=}")
+    with hstrat_aux.log_context_duration("alifestd_as_newick_asexual", print):
+        as_newick = hstrat_aux.alifestd_as_newick_asexual(
+            phylogeny_df, taxon_label=taxon_label
+        )
+
     with hstrat_aux.log_context_duration("_do_run_phastSim", print):
         res = _do_run_phastSim(
             ancestral_sequence=ancestral_sequence,
-            phylogeny_df=phylogeny_df,
-            taxon_label=taxon_label,
+            phylo_newick=as_newick,
         )
 
     # restore "-" characters
