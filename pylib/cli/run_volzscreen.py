@@ -363,7 +363,8 @@ if __name__ == "__main__":
             "replicate_uuid", observed=True
         )
     ]
-    res = [*Parallel(backend="loky", verbose=50)(jobs)]
+    print(f"{len(jobs)=}")
+    res = [*Parallel(backend="loky", n_jobs=-1, verbose=50)(jobs)]
 
     with hstrat_aux.log_context_duration("finalize phylo_df", logger=print):
         screen_df = pd.concat(
