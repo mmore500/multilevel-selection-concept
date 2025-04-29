@@ -13,8 +13,10 @@ import numpy as np
 import pandas as pd
 import polars as pl
 from scipy import stats as scipy_stats
+from sklearn.exceptions import ConvergenceWarning as SklearnConvergenceWarning
 from tqdm import tqdm
 
+from .._LokyBackendWithInitializer import LokyBackendWithInitializer
 from .._glimpse_df import glimpse_df
 from .._mask_sequence_diffs import mask_sequence_diffs
 from .._read_config import read_config
@@ -167,7 +169,14 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
             hstrat_aux.alifestd_mark_clade_logistic_growth_sister_asexual(
                 phylo_df,
                 mutate=True,
-                parallel_backend="loky",
+                parallel_backend=LokyBackendWithInitializer(
+                    initializer=warnings.filterwarnings,
+                    initargs=(
+                        "ignore",  # action
+                        "",  # message
+                        SklearnConvergenceWarning,  # category
+                    ),
+                ),
                 work_mask=work_mask,
             )
         )
