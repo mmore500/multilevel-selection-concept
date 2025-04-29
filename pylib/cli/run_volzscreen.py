@@ -284,6 +284,10 @@ def _process_replicate(
 
     records = []
     phylo_df = phylo_df.copy().reset_index(drop=True)
+    fil = phylo_df["sequence_diff"].str.startswith('{"0": ')
+    print(
+        f"{phylo_df.loc[fil, 'sequence_diff'].str.slice(0, 10).value_counts()}"
+    )
     glimpse_df(phylo_df, logger=print)
 
     phylo_df = _prep_phylo(phylo_df, cfg)
