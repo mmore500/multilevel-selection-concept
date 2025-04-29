@@ -2,6 +2,7 @@
 
 from functools import wraps
 from io import StringIO
+import itertools as it
 import pathlib
 import tempfile
 
@@ -9,6 +10,7 @@ from ete3 import Tree
 from hstrat import _auxiliary_lib as hstrat_aux
 import numpy as np
 import pandas as pd
+import polars as pl
 import phastSim.phastSim as phastSim
 
 
@@ -300,7 +302,7 @@ def run_phastSim(
     assert len(lines) == 0 or lines[0].startswith(">")
     assert len(lines) == 0 or not lines[1].startswith(">")
 
-    res = pd.DataFrame(
+    res = pl.DataFrame(
         {
             "id": [int(line[1:]) for line in lines[0::2]],
             "sequence": [line for line in lines[1::2]],
@@ -309,15 +311,34 @@ def run_phastSim(
 
     # restore "-" characters
     with hstrat_aux.log_context_duration("restore dashes", print):
-        for i in dash_indices:
-            res["sequence"] = (
-                res["sequence"].str[:i] + "-" + res["sequence"].str[i:]
+        segments = [
+            pl.col("sequence").str.slice(
+                # shift start forward by 1 for every dash removed (i > 0)
+                apos - i + int(bool(i)),
+                # length is the gap between dashes
+                bpos - apos - int(bool(i)),
             )
+            for i, (apos, bpos) in enumerate(
+                it.pairwise(
+                    [
+                        0,
+                        *dash_indices,
+                        len(ancestral_sequence_),
+                    ],
+                )
+            )
+        ]
+        res = (
+            res.lazy()
+            .with_columns(sequence=pl.concat_str(segments, separator="-"))
+            .collect()
+        )
 
-    assert res["sequence"].str.len().unique().squeeze() == len(
+    assert res["sequence"].str.len_chars().unique().item() == len(
         ancestral_sequence_,
     )
 
     assert len(res) == hstrat_aux.alifestd_count_leaf_nodes(phylogeny_df)
+    assert all(res["sequence"].first()[pos] == "-" for pos in dash_indices)
 
-    return res
+    return res.to_pandas()
