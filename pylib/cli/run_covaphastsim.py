@@ -7,7 +7,7 @@ import uuid
 import covasim as cv
 from hstrat import _auxiliary_lib as hstrat_aux
 import pandas as pd
-from tqdm.contrib.concurrent import process_map as tqdm_process_map
+from tqdm.contrib import tmap as tqdm_tmap
 
 from .._SyncHostCompartments import SyncHostCompartments
 from .._VariantFlavor import VariantFlavor
@@ -136,7 +136,7 @@ def _generate_sequences(
         seq_df = generate_dummy_sequences_phastSim(
             pd.concat([phylo_df, dummy_leaves], ignore_index=True),
             ancestral_sequences=reference_sequences,
-            progress_map=tqdm_process_map,
+            progress_map=tqdm_tmap,
         )
         seq_df["id"] -= id_delta  # revert dummy leaves back to true nodes
 
