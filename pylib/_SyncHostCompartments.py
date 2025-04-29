@@ -15,7 +15,8 @@ class SyncHostCompartments:
         *,
         pop_size: int,
         variant_flavors: list[VariantFlavor],
-        host_capacity: float = 100.0,
+        # see https://doi.org/10.1073/pnas.2024815118
+        host_capacity: float = 1e10,
     ) -> None:
         # overall wildtype,
         # then mut/wildtype per flavor
@@ -49,8 +50,47 @@ class SyncHostCompartments:
         # grow strains
         for i, variant_flavor in enumerate(self._variant_flavors):
             offset = i * 2 + 1
-            compartments[:, offset] *= variant_flavor.withinhost_r_wt
             compartments[:, offset + 1] *= variant_flavor.withinhost_r_mut
+
+        # handle luria-delbruck dynamics
+        for i, variant_flavor in enumerate(self._variant_flavors):
+            offset = i * 2 + 1
+
+            num_doublings = int(
+                np.floor(np.log2(variant_flavor.withinhost_r_wt))
+            )
+            wt_growth_per_doubling = variant_flavor.withinhost_r_wt ** (
+                1 / num_doublings
+            )
+            mut_growth_per_doubling = variant_flavor.withinhost_r_mut ** (
+                1 / num_doublings
+            )
+            assert (
+                abs(
+                    wt_growth_per_doubling**num_doublings
+                    - variant_flavor.withinhost_r_wt
+                )
+                < 1e-6
+            )
+            assert (
+                abs(
+                    mut_growth_per_doubling**num_doublings
+                    - variant_flavor.withinhost_r_mut
+                )
+                < 1e-6
+            )
+            new_muts = np.zeros_like(compartments[:, offset])
+            for doubling in range(num_doublings):
+                compartments[:, offset] *= wt_growth_per_doubling
+                new_muts *= wt_growth_per_doubling
+                num_mutants = np.random.binomial(
+                    compartments[:, offset].astype(int),
+                    variant_flavor.p_wt_to_mut / num_doublings,
+                )
+                compartments[:, offset] -= num_mutants
+                new_muts += num_mutants
+
+            compartments[:, offset] += new_muts
 
         # apply within-host carrying capacity
         compartments /= (
@@ -60,18 +100,6 @@ class SyncHostCompartments:
             )
             / self._host_capacity
         )
-
-        # introduce low-transmissibility variants thru spontaneous mutation
-        # of high-transmissibility variants
-        # e.g., gamma -> gamma' and delta -> delta'
-        for i, variant_flavor in enumerate(self._variant_flavors):
-            offset = i * 2 + 1
-            p_unit = 1.0 - variant_flavor.p_wt_to_mut
-            p = 1.0 - np.power(p_unit, compartments[:, offset])
-            compartments[:, offset + 1] = np.maximum(
-                random_p < p,
-                compartments[:, offset + 1],
-            )
 
         ## sync host compartments to covasim "infectious variant"
         #######################################################################
