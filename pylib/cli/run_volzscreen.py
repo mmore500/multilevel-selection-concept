@@ -285,6 +285,11 @@ def _process_diff(
     to: str,
 ) -> typing.List[dict]:
     mut_uuid = str(uuid.uuid4())
+    # unsparsify mask
+    mask_ = np.zeros(len(phylo_df), dtype=bool)
+    mask_[mask] = True
+    mask = mask_
+
     screen_masks = screen_mutation_defined_nodes(
         phylo_df,
         has_mutation=mask,
@@ -351,6 +356,7 @@ def _process_replicate(
         .astype(str)
         .item(),
         sequence_diffs=phylo_df["sequence_diff"],
+        sparsify_mask=True,
         mut_count_thresh=cfg["cfg_mut_count_thresh"],
         mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
         progress_wrap=tqdm,
