@@ -206,7 +206,11 @@ if __name__ == "__main__":
         cfg=cfg,
         reference_sequences=reference_sequences,
     )
-    print(f"{seq_df['sequence'].str.slice(0, 1).value_counts()=}")
+
+    fil = phylo_df["sequence_diff"].str.startswith('{"0": ')
+    print(
+        f"{phylo_df.loc[fil, 'sequence_diff'].str.slice(0, 10).value_counts()}"
+    )
     glimpse_df(seq_df, logger=print)
 
     with hstrat_aux.log_context_duration("phylo_df.merge", logger=print):
