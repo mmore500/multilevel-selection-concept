@@ -5,7 +5,7 @@ import numpy as np
 import polars as pl
 
 
-def diff_sequences(
+def _diff_sequences_batch(
     sequences: typing.Sequence[str],
     *,
     ancestral_sequence: str,
@@ -79,3 +79,45 @@ def diff_sequences(
 
     with hstrat_aux.log_context_duration("res.collect", logger=print):
         return res.collect().to_series()
+
+
+def diff_sequences(
+    sequences: typing.Sequence[str],
+    *,
+    ancestral_sequence: str,
+    batch_size: int = 20_000,
+    progress_wrap: typing.Callable = lambda x: x,
+    quote_keys: bool = True,
+) -> pl.Series:
+    """
+    Compare sequences to an ancestral sequence and return a diff string.
+
+    Parameters
+    ----------
+    sequences : typing.Sequence[str]
+        The sequences to compare.
+    ancestral_sequence : str
+        The ancestral sequence.
+    batch_size : int, default 20_000
+        The number of sequences to process in each batch.
+    progress_wrap : typing.Callable, default lambda x: x
+        Pass tqdm or equivalent to display progress bar.
+    quote_keys : bool, default True
+        Whether to quote the keys in the diff string.
+
+    Returns
+    -------
+    pl.Series
+        A series of diff strings for each sequence.
+    """
+    # batch in order to avoid memory exposion
+    return pl.concat(
+        [
+            _diff_sequences_batch(
+                sequences[i : i + batch_size],
+                ancestral_sequence=ancestral_sequence,
+                quote_keys=quote_keys,
+            )
+            for i in progress_wrap(range(0, len(sequences), batch_size))
+        ],
+    )
