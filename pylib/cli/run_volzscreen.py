@@ -17,6 +17,7 @@ from scipy import stats as scipy_stats
 from sklearn.exceptions import ConvergenceWarning as SklearnConvergenceWarning
 from tqdm import tqdm
 
+from .. import _nansilent as ns
 from .._LokyBackendWithInitializer import LokyBackendWithInitializer
 from .._glimpse_df import glimpse_df
 from .._mask_sequence_diffs import mask_sequence_diffs
@@ -246,14 +247,14 @@ def _calc_screen_result(
             "phylo_df_background_len": len(phylo_df_background),
             "phyo_df_screened_len": len(phylo_df_screened),
             "tb_stat": stat,
-            "screened_nanmin": np.nanmin(screened[stat].values),
-            "screened_nanmax": np.nanmax(screened[stat].values),
+            "screened_nanmin": ns.nanmin(screened[stat].values),
+            "screened_nanmax": ns.nanmax(screened[stat].values),
             "screened_min": np.min(screened[stat].values),
             "screened_max": np.max(screened[stat].values),
-            "screened_nanmean": np.nanmean(screened[stat].values),
-            "screened_nanvar": np.nanvar(screened[stat].values),
-            "screened_nanstd": np.nanstd(screened[stat].values),
-            "screened_nanmedian": np.nanmedian(screened[stat].values),
+            "screened_nanmean": ns.nanmean(screened[stat].values),
+            "screened_nanvar": ns.nanvar(screened[stat].values),
+            "screened_nanstd": ns.nanstd(screened[stat].values),
+            "screened_nanmedian": ns.nanmedian(screened[stat].values),
             "screened_mean": np.mean(screened[stat].values),
             "screened_var": np.var(screened[stat].values),
             "screened_std": np.std(screened[stat].values),
@@ -261,14 +262,14 @@ def _calc_screen_result(
             "screened_skew": screened[stat].skew(),
             "screened_kurt": screened[stat].kurt(),
             "screened_N": len(screened),
-            "background_nanmin": np.nanmin(background[stat].values),
-            "background_nanmax": np.nanmax(background[stat].values),
+            "background_nanmin": ns.nanmin(background[stat].values),
+            "background_nanmax": ns.nanmax(background[stat].values),
             "background_min": np.min(background[stat].values),
             "background_max": np.max(background[stat].values),
-            "background_nanmean": np.nanmean(background[stat].values),
-            "background_nanvar": np.nanvar(background[stat].values),
-            "background_nanstd": np.nanstd(background[stat].values),
-            "background_nanmedian": np.nanmedian(background[stat].values),
+            "background_nanmean": ns.nanmean(background[stat].values),
+            "background_nanvar": ns.nanvar(background[stat].values),
+            "background_nanstd": ns.nanstd(background[stat].values),
+            "background_nanmedian": ns.nanmedian(background[stat].values),
             "background_mean": np.mean(background[stat].values),
             "background_var": np.var(background[stat].values),
             "background_std": np.std(background[stat].values),
