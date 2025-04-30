@@ -206,6 +206,8 @@ def _calc_screen_result(
     mut_char_pos: int,
     mut_char_ref: str,
     mut_char_var: str,
+    mut_freq: float,
+    mut_nobs: int,
     mut_uuid: str,
     phylo_df: pd.DataFrame,
     phylo_df_background: pd.DataFrame,
@@ -242,6 +244,8 @@ def _calc_screen_result(
             "mut_char_pos": mut_char_pos,
             "mut_char_ref": mut_char_ref,
             "mut_char_var": mut_char_var,
+            "mut_freq": mut_freq,
+            "mut_nobs": mut_nobs,
             "mut_uuid": mut_uuid,
             "screen_name": screen_name,
             "phylo_df_background_len": len(phylo_df_background),
@@ -324,6 +328,9 @@ def _process_diff(
     mask_ = np.zeros(len(phylo_df), dtype=bool)
     mask_[mask] = True
     mask = mask_
+    mut_nobs = mask.sum()
+    mut_freq = mut_nobs / hstrat_aux.alifestd_count_leaf_nodes(phylo_df)
+    assert 0 <= mut_freq <= 1
 
     screen_masks = screen_mutation_defined_nodes(
         phylo_df,
@@ -347,6 +354,8 @@ def _process_diff(
                 mut_char_ref=from_,
                 mut_char_pos=site,
                 mut_char_var=to,
+                mut_freq=mut_freq,
+                mut_nobs=mut_nobs,
                 mut_uuid=mut_uuid,
                 phylo_df=phylo_df,
                 phylo_df_background=phylo_df[
