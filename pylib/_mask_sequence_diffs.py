@@ -86,6 +86,7 @@ def mask_sequence_diffs(
     with hstrat_aux.log_context_duration("np.split", logger=print):
         boundaries = csc.indptr[1:-1]
         columns = np.split(csc.indices, boundaries)
+        assert len(columns) == len(mut_unique)
 
     with hstrat_aux.log_context_duration("indices", logger=print):
         indices = np.flatnonzero(is_frequent_mut)
