@@ -400,8 +400,18 @@ def _process_replicate(
         .item(),
         sequence_diffs=phylo_df["sequence_diff"],
         sparsify_mask=True,
-        mut_count_thresh=cfg["cfg_mut_count_thresh"],
-        mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
+        mut_count_thresh=(
+            cfg["cfg_mut_count_thresh_lb"],
+            cfg["cfg_mut_count_thresh_ub"],
+        ),
+        mut_freq_thresh=(
+            cfg["cfg_mut_freq_thresh_lb"],
+            cfg["cfg_mut_freq_thresh_ub"],
+        ),
+        mut_quant_thresh=(
+            cfg["cfg_mut_quant_thresh_lb"],
+            cfg["cfg_mut_quant_thresh_ub"],
+        ),
         progress_wrap=tqdm,
     )
 
