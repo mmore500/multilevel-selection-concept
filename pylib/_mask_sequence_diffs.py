@@ -1,6 +1,7 @@
 import io
 import typing
 
+from hstrat import _auxiliary_lib as hstrat_aux
 import numpy as np
 import polars as pl
 from scipy.sparse import coo_matrix
@@ -51,33 +52,44 @@ def mask_sequence_diffs(
         f"{int(mut_counts[0])=}",
     )
 
-    mut_count_thresh = max(
-        mut_count_thresh,
-        np.quantile(mut_counts, mut_quart_thresh),
-    )
-    is_frequent_mut = mut_counts >= mut_count_thresh
+    with hstrat_aux.log_context_duration("is_frequent_mut", logger=print):
+        mut_count_thresh = max(
+            mut_count_thresh,
+            np.quantile(mut_counts, mut_quart_thresh),
+        )
+        is_frequent_mut = mut_counts >= mut_count_thresh
 
-    seq_diff_sizes = diffs["diffs"].str.count_matches(":").fill_null(0)
-    seq_diff_rows = np.repeat(np.arange(len(seq_diff_sizes)), seq_diff_sizes)
-    assert len(seq_diff_rows) == len(mut_uids)
+    with hstrat_aux.log_context_duration("seq_diff_rows", logger=print):
+        seq_diff_sizes = diffs["diffs"].str.count_matches(":").fill_null(0)
+        seq_diff_rows = np.repeat(
+            np.arange(len(seq_diff_sizes)), seq_diff_sizes
+        )
+        assert len(seq_diff_rows) == len(mut_uids)
 
     # construct from three arrays:
     # - data[:] the entries of the matrix, in any order
     # - i[:] the row indices of the matrix entries
     # - j[:] the column indices of the matrix entries
-    values = np.ones_like(seq_diff_rows, dtype=bool)
-    row_indices = seq_diff_rows
-    col_indices = mut_inverse
-    coo = coo_matrix(
-        (values, (row_indices, col_indices)),
-        shape=(len(sequence_diffs), mut_unique.size),
-    ).tocsc()
+    with hstrat_aux.log_context_duration("coo_matrix", logger=print):
+        values = np.ones_like(seq_diff_rows, dtype=bool)
+        row_indices = seq_diff_rows
+        col_indices = mut_inverse
+        coo = coo_matrix(
+            (values, (row_indices, col_indices)),
+            shape=(len(sequence_diffs), mut_unique.size),
+        )
 
-    for idx in np.flatnonzero(is_frequent_mut):
+    with hstrat_aux.log_context_duration("coo.tocsr", logger=print):
+        csr = coo.tocsr()
+
+    with hstrat_aux.log_context_duration("indices", logger=print):
+        indices = np.flatnonzero(is_frequent_mut)
+
+    for idx in indices:
         if not sparsify_mask:
-            mask = coo[:, idx].toarray().ravel().view(bool)
+            mask = csr[:, idx].toarray().ravel().view(bool)
         else:
-            mask = coo[:, idx].nonzero()[0]
+            mask = csr[:, idx].nonzero()[0]
 
         mut_uid = mut_unique[idx]
         pos, mut_char_var = int(mut_uid >> 8), chr(mut_uid & 0xFF)
