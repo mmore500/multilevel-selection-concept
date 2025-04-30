@@ -1,6 +1,5 @@
 import functools
 import itertools as it
-from multiprocessing import Pool
 import pprint
 import sys
 import typing
@@ -10,6 +9,7 @@ import warnings
 from hstrat import _auxiliary_lib as hstrat_aux
 from hstrat import dataframe as hstrat_df
 from hstrat import hstrat
+import joblib
 import numpy as np
 import pandas as pd
 import polars as pl
@@ -363,25 +363,11 @@ def _process_diff(
     return records
 
 
-# one-time phylo_df holder for worker initializer
-_phylo_df = None
-
-
-def _init_worker(df: pd.DataFrame) -> None:
-    global _phylo_df
-    _phylo_df = df
-
-
-def _process_diff_worker(args: tuple) -> typing.List[dict]:
-    return _process_diff(_phylo_df, *args)
-
-
 def _process_replicate(
     phylo_df: pd.DataFrame,
     cfg: dict,
 ) -> pd.DataFrame:
 
-    records = []
     phylo_df = phylo_df.copy().reset_index(drop=True)
     fil = phylo_df["sequence_diff"].str.startswith('{"0": ')
     print(
@@ -409,13 +395,23 @@ def _process_replicate(
         mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
         progress_wrap=tqdm,
     )
-    task_iter = ((mask, site, frm, to) for (site, frm, to), mask in diffs_iter)
 
-    with Pool(initializer=_init_worker, initargs=(phylo_df,)) as pool:
-        for result in pool.imap_unordered(_process_diff_worker, task_iter):
-            records.extend(result)
+    def _process_diff_worker(*args: tuple) -> typing.List[dict]:
+        return _process_diff(phylo_df, *args)
 
-    return pd.DataFrame(records)
+    tasks = [
+        joblib.delayed(_process_diff_worker)(mask, site, frm, to)
+        for (site, frm, to), mask in diffs_iter
+    ]
+
+    results = joblib.Parallel(
+        n_jobs=-1,
+        backend="loky",
+        batch_size=100,
+        verbose=50,
+    )(tasks)
+
+    return pd.DataFrame([*it.chain(*results)])
 
 
 if __name__ == "__main__":
