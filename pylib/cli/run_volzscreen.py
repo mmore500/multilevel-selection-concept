@@ -271,16 +271,16 @@ def _calc_screen_result(
             "screened_kurt": screened[stat].kurt(),
             "screened_N": len(screened),
             "background_nanmin": ns.nanmin(
-                background[stat].values.astype(np.float), initial=np.inf
+                background[stat].values.astype(float), initial=np.inf
             ),
             "background_nanmax": ns.nanmax(
-                background[stat].values.astype(np.float), initial=-np.inf
+                background[stat].values.astype(float), initial=-np.inf
             ),
             "background_min": np.min(
-                background[stat].values.astype(np.float), initial=np.inf
+                background[stat].values.astype(float), initial=np.inf
             ),
             "background_max": np.max(
-                background[stat].values.astype(np.float), initial=-np.inf
+                background[stat].values.astype(float), initial=-np.inf
             ),
             "background_nanmean": ns.nanmean(background[stat].values),
             "background_nanvar": ns.nanvar(background[stat].values),
