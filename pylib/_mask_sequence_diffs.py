@@ -3,6 +3,7 @@ import typing
 
 import numpy as np
 import polars as pl
+from scipy.sparse import coo_matrix
 
 
 def mask_sequence_diffs(
@@ -39,7 +40,9 @@ def mask_sequence_diffs(
     char_vals = np.array(mut_tokens[1::2], dtype="S1").view(np.uint8)
     mut_uids = pos_vals.astype(np.uint64) << 8 | char_vals
 
-    (mut_unique, mut_counts) = np.unique(mut_uids, return_counts=True)
+    (mut_unique, mut_inverse, mut_counts) = np.unique(
+        mut_uids, return_inverse=True, return_counts=True
+    )
     print(
         f"{ancestral_sequence[0]=} "
         f"{int(mut_unique[0])=} "
@@ -58,13 +61,25 @@ def mask_sequence_diffs(
     seq_diff_rows = np.repeat(np.arange(len(seq_diff_sizes)), seq_diff_sizes)
     assert len(seq_diff_rows) == len(mut_uids)
 
-    for mut_uid in progress_wrap(mut_unique[is_frequent_mut]):
-        if not sparsify_mask:
-            mask = np.zeros(len(sequence_diffs), dtype=bool)
-            mask[seq_diff_rows[mut_uid == mut_uids]] = True
-        else:
-            mask = seq_diff_rows[mut_uid == mut_uids].copy()
+    # construct from three arrays:
+    # - data[:] the entries of the matrix, in any order
+    # - i[:] the row indices of the matrix entries
+    # - j[:] the column indices of the matrix entries
+    values = np.ones_like(seq_diff_rows, dtype=bool)
+    row_indices = seq_diff_rows
+    col_indices = mut_inverse
+    coo = coo_matrix(
+        (values, (row_indices, col_indices)),
+        shape=(len(sequence_diffs), mut_unique.size),
+    ).tocsc()
 
+    for idx in np.flatnonzero(is_frequent_mut):
+        if not sparsify_mask:
+            mask = coo[:, idx].toarray().ravel().view(bool)
+        else:
+            mask = coo[:, idx].nonzero()[0]
+
+        mut_uid = mut_unique[idx]
         pos, mut_char_var = int(mut_uid >> 8), chr(mut_uid & 0xFF)
         mut_char_ref = ancestral_sequence[pos]
 
