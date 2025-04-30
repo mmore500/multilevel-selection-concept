@@ -79,17 +79,23 @@ def mask_sequence_diffs(
             shape=(len(sequence_diffs), mut_unique.size),
         )
 
-    with hstrat_aux.log_context_duration("coo.tocsr", logger=print):
-        csr = coo.tocsr()
+    with hstrat_aux.log_context_duration("coo.tocsc", logger=print):
+        csc = coo.tocsc()
+
+    # adapted from https://scicomp.stackexchange.com/a/35243
+    with hstrat_aux.log_context_duration("np.split", logger=print):
+        boundaries = csc.indptr[1:-1]
+        columns = np.split(csc.indices, boundaries)
 
     with hstrat_aux.log_context_duration("indices", logger=print):
         indices = np.flatnonzero(is_frequent_mut)
 
     for idx in indices:
         if not sparsify_mask:
-            mask = csr[:, idx].toarray().ravel().view(bool)
+            mask = np.zeros(len(sequence_diffs), dtype=bool)
+            mask[columns[idx]] = True
         else:
-            mask = csr[:, idx].nonzero()[0]
+            mask = columns[idx]
 
         mut_uid = mut_unique[idx]
         pos, mut_char_var = int(mut_uid >> 8), chr(mut_uid & 0xFF)
