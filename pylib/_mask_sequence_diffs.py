@@ -91,7 +91,7 @@ def mask_sequence_diffs(
     with hstrat_aux.log_context_duration("indices", logger=print):
         indices = np.flatnonzero(is_frequent_mut)
 
-    for idx in indices:
+    for idx in progress_wrap(indices):
         if not sparsify_mask:
             mask = np.zeros(len(sequence_diffs), dtype=bool)
             mask[columns[idx]] = True
