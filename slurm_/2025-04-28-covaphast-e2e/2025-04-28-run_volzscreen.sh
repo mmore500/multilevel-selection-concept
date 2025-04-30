@@ -216,7 +216,7 @@ echo "cpuinfo ----------------------------------------------------- \${SECONDS}"
 cat /proc/cpuinfo || :
 
 echo "do work ----------------------------------------------------- \${SECONDS}"
-python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:c15f696a2de4f32a040516511063d68c4c187a0241ab68b16a8fec0a58c444fd python3 -m pylib.cli.run_volzscreen
+python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:4c1b22e325ed4c2f3e547b1165441eada390ecda9db949ac47a550e0fb00d225 python3 -m pylib.cli.run_volzscreen
 
 import itertools as it
 import os
