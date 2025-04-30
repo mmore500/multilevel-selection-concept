@@ -247,10 +247,18 @@ def _calc_screen_result(
             "phylo_df_background_len": len(phylo_df_background),
             "phyo_df_screened_len": len(phylo_df_screened),
             "tb_stat": stat,
-            "screened_nanmin": ns.nanmin(screened[stat].values),
-            "screened_nanmax": ns.nanmax(screened[stat].values),
-            "screened_min": np.min(screened[stat].values),
-            "screened_max": np.max(screened[stat].values),
+            "screened_nanmin": ns.nanmin(
+                screened[stat].values.astype(float), initial=np.inf
+            ),
+            "screened_nanmax": ns.nanmax(
+                screened[stat].values.astype(float), initial=-np.inf
+            ),
+            "screened_min": np.min(
+                screened[stat].values.astype(float), initial=np.inf
+            ),
+            "screened_max": np.max(
+                screened[stat].values.astype(float), initial=-np.inf
+            ),
             "screened_nanmean": ns.nanmean(screened[stat].values),
             "screened_nanvar": ns.nanvar(screened[stat].values),
             "screened_nanstd": ns.nanstd(screened[stat].values),
@@ -262,10 +270,18 @@ def _calc_screen_result(
             "screened_skew": screened[stat].skew(),
             "screened_kurt": screened[stat].kurt(),
             "screened_N": len(screened),
-            "background_nanmin": ns.nanmin(background[stat].values),
-            "background_nanmax": ns.nanmax(background[stat].values),
-            "background_min": np.min(background[stat].values),
-            "background_max": np.max(background[stat].values),
+            "background_nanmin": ns.nanmin(
+                background[stat].values.astype(np.float), initial=np.inf
+            ),
+            "background_nanmax": ns.nanmax(
+                background[stat].values.astype(np.float), initial=-np.inf
+            ),
+            "background_min": np.min(
+                background[stat].values.astype(np.float), initial=np.inf
+            ),
+            "background_max": np.max(
+                background[stat].values.astype(np.float), initial=-np.inf
+            ),
             "background_nanmean": ns.nanmean(background[stat].values),
             "background_nanvar": ns.nanvar(background[stat].values),
             "background_nanstd": ns.nanstd(background[stat].values),
