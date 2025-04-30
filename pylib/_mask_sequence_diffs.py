@@ -1,4 +1,5 @@
 import io
+import sys
 import typing
 
 from hstrat import _auxiliary_lib as hstrat_aux
@@ -11,11 +12,19 @@ def mask_sequence_diffs(
     *,
     ancestral_sequence: str,
     sequence_diffs: typing.Sequence[str],
-    mut_count_thresh: int = 0,
-    mut_quart_thresh: float = 0.0,
+    mut_count_thresh: typing.Tuple[int, int] = (0, sys.maxsize),
+    mut_freq_thresh: typing.Tuple[float, float] = (0.0, 1.0),
+    mut_quant_thresh: typing.Tuple[float, float] = (0.0, 1.0),
     progress_wrap: typing.Callable = lambda x: x,
     sparsify_mask: bool = False,
 ) -> typing.Iterable[typing.Tuple[typing.Tuple[int, str, str], np.ndarray]]:
+    if not (
+        len(mut_freq_thresh) == 2
+        and len(mut_count_thresh) == 2
+        and len(mut_quant_thresh) == 2
+    ):
+        raise ValueError
+
     diffs = pl.DataFrame({"diffs": sequence_diffs}, schema={"diffs": pl.Utf8})
 
     mut_tokens = (
@@ -52,12 +61,23 @@ def mask_sequence_diffs(
         f"{int(mut_counts[0])=}",
     )
 
-    with hstrat_aux.log_context_duration("is_frequent_mut", logger=print):
-        mut_count_thresh = max(
-            mut_count_thresh,
-            np.quantile(mut_counts, mut_quart_thresh),
+    with hstrat_aux.log_context_duration("is_valid_mut", logger=print):
+        mut_freq = mut_counts / len(sequence_diffs)
+        is_valid_mut = (np.clip(mut_freq, *mut_freq_thresh) == mut_freq) & (
+            np.clip(mut_counts, *mut_count_thresh) == mut_counts
         )
-        is_frequent_mut = mut_counts >= mut_count_thresh
+        print(f"{is_valid_mut[0]=}")
+        print(f"{(mut_counts[is_valid_mut] < mut_counts[0]).mean()=}")
+
+        mut_quant_thresh = tuple(
+            np.quantile(mut_counts[is_valid_mut], mut_quant_thresh),
+        )
+        assert len(mut_quant_thresh) == 2
+        is_valid_mut = is_valid_mut & (
+            np.clip(mut_counts, *mut_quant_thresh) == mut_counts
+        )
+
+    print(f"{len(is_valid_mut)=} {is_valid_mut.sum()=} {is_valid_mut[0]=}")
 
     with hstrat_aux.log_context_duration("seq_diff_rows", logger=print):
         seq_diff_sizes = diffs["diffs"].str.count_matches(":").fill_null(0)
@@ -89,7 +109,7 @@ def mask_sequence_diffs(
         assert len(columns) == len(mut_unique)
 
     with hstrat_aux.log_context_duration("indices", logger=print):
-        indices = np.flatnonzero(is_frequent_mut)
+        indices = np.flatnonzero(is_valid_mut)
 
     for idx in progress_wrap(indices):
         if not sparsify_mask:
