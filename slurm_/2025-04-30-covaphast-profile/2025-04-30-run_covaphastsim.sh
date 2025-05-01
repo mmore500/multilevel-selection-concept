@@ -193,8 +193,8 @@ echo "SBATCH_FILE ${SBATCH_FILE}"
 cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=100G
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=50G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
