@@ -114,7 +114,7 @@ gitpython==3.1.44
     # via sciris
 google==3.0.0
     # via phastsim
-hstrat==1.20.5
+hstrat @ git+https://github.com/mmore500/hstrat.git@930e1f9b8fb984efdab633ec2f37928d2a71ee81#egg=hstrat
     # via -r requirements.in
 hurry-filesize==0.9
     # via nbmetalog
@@ -359,7 +359,7 @@ polars==1.26.0
     #   downstream
     #   hstrat
     #   joinem
-polars-u64-idx==1.28.1
+polars-u64-idx==1.29.0
     # via hstrat
 prettytable==3.16.0
     # via hstrat
@@ -456,7 +456,7 @@ seaborn==0.13.2
     #   backstrip
     #   hstrat
     #   pecking
-setuptools==80.0.0
+setuptools==80.1.0
     # via
     #   dendropy
     #   hurry-filesize
