@@ -53,6 +53,7 @@ def test_run_volzscreen_covaphastsim_smoke(hsurf_bits: int):
         check=True,
         env={"PYTHONPATH": f"{pwd}"},
         input=f"""
+cfg_num_mut_sites: 1
 cfg_p_wt_to_mut: 0.01
 cfg_pop_size: 4000
 cfg_refseqs: "{assets}/alignedsequences.csv"
