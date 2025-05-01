@@ -1,5 +1,6 @@
 from collections import defaultdict
 import pprint
+import random
 import sys
 import typing
 
@@ -86,6 +87,7 @@ def _setup_sim(
             ],
             variants=flavored_variants,
             pop_size=cfg["cfg_pop_size"],
+            seed=random.getrandbits(32),
         ),
         variant_flavors,
     )
