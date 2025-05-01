@@ -144,9 +144,30 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
 @_log_context_duration("_calc_tb_stats", logger=print)
 def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
+
+    with hstrat_aux.log_context_duration(
+        "alifestd_mask_monomorphic_clades_asexual", logger=print
+    ):
+        phylo_df = hstrat_aux.alifestd_mask_monomorphic_clades_asexual(
+            phylo_df,
+            mutate=True,
+            trait_mask=phylo_df["is_leaf"].copy(),
+            trait_values=phylo_df["sequence_diff"],
+        )
+
+    assert hstrat_aux.alifestd_is_working_format_asexual(phylo_df, mutate=True)
+    phylo_df.reset_index(drop=True, inplace=True)
+
     min_leaves = cfg["cfg_clade_size_thresh"]
-    work_mask = (phylo_df["num_leaves"] > min_leaves) & (
-        phylo_df["num_leaves_sibling"] > min_leaves
+    work_mask = (
+        (phylo_df["num_leaves"] > min_leaves)
+        & (phylo_df["num_leaves_sibling"] > min_leaves)
+        & (
+            ~phylo_df.loc[
+                phylo_df["ancestor_id"],
+                "alifestd_mask_monomorphic_clades_asexual",
+            ].values
+        )
     )
     # sister statistics
     calc_dr = (
@@ -161,6 +182,19 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
         phylo_df["clade duration ratio"] = np.log(
             phylo_df["clade_subtended_duration_ratio_sister"],
         )
+
+    with hstrat_aux.log_context_duration(
+        "alifestd_mark_clade_fblr_growth_sister_asexual",
+        logger=print,
+    ):
+        phylo_df = hstrat_aux.alifestd_mark_clade_fblr_growth_sister_asexual(
+            phylo_df,
+            mutate=True,
+            parallel_backend="loky",
+            progress_wrap=tqdm,
+            work_mask=work_mask.copy(),
+        )
+        phylo_df["clade fblr ratio"] = phylo_df["clade_fblr_growth_sister"]
 
     with hstrat_aux.log_context_duration(
         "alifestd_mark_clade_logistic_growth_sister_asexual",
@@ -178,7 +212,8 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
                         SklearnConvergenceWarning,  # category
                     ),
                 ),
-                work_mask=work_mask,
+                progress_wrap=tqdm,
+                work_mask=work_mask.copy(),
             )
         )
         phylo_df["clade growth ratio"] = phylo_df[
@@ -339,6 +374,7 @@ def _process_diff(
 
     stats = (
         "clade duration ratio",
+        "clade fblr ratio",
         "clade growth ratio",
         "clade size ratio",
         "num_leaves",
@@ -425,15 +461,16 @@ def _process_replicate(
 
     results = joblib.Parallel(
         n_jobs=-1,
+        batch_size=10,
         backend="loky",
-        batch_size=100,
         verbose=50,
-    )(tasks)
+    )(tqdm(tasks))
 
     return pd.DataFrame([*it.chain(*results)])
 
 
 if __name__ == "__main__":
+    hstrat_aux.configure_prod_logging()
     cfg = read_config(sys.stdin)
     cfg["screen_uuid"] = str(uuid.uuid4())
     pprint.PrettyPrinter(depth=4).pprint(cfg)
