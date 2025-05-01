@@ -2,7 +2,6 @@ from collections import defaultdict
 import pprint
 import sys
 import typing
-import uuid
 
 import covasim as cv
 from hstrat import _auxiliary_lib as hstrat_aux
@@ -26,6 +25,7 @@ from .._read_config import read_config
 from .._seed_global_rngs import seed_global_rngs
 from .._shrink_df import shrink_df
 from .._shuffle_string import shuffle_string
+from .._strong_uuid4_str import strong_uuid4_str
 
 
 def _get_reference_sequences(
@@ -191,7 +191,7 @@ def _add_sequence_diffs(phylo_df: pd.DataFrame):
 if __name__ == "__main__":
 
     cfg = read_config(sys.stdin)
-    cfg["replicate_uuid"] = str(uuid.uuid4())
+    cfg["replicate_uuid"] = strong_uuid4_str()
     pprint.PrettyPrinter(depth=4).pprint(cfg)
     seed_global_rngs(cfg["trt_seed"])
 
