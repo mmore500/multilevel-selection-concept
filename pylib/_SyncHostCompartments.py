@@ -110,12 +110,14 @@ class SyncHostCompartments:
         #######################################################################
         # sample current infectious variant from compartments
         compartments_ = compartments.copy()
+        np.nan_to_num(compartments_, copy=False)
+        assert np.isfinite(compartments_).all()
         compartments_ *= np.random.rand(*compartments.shape)
 
         for i, variant_flavor in enumerate(self._variant_flavors):
             offset = i * 2 + 1
-            compartments[:, offset] *= variant_flavor.active_strain_factor_wt
-            compartments[
+            compartments_[:, offset] *= variant_flavor.active_strain_factor_wt
+            compartments_[
                 :, offset + 1
             ] *= variant_flavor.active_strain_factor_mut
 
