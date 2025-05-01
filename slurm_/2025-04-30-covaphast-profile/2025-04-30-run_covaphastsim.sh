@@ -221,10 +221,10 @@ import itertools as it
 import os
 
 replicates = it.product(
-    [("Sben", "Gdel"), ("Sneu", "Gneu")],
     range(1_000_000),
+    [("Sben", "Gdel"), ("Sneu", "Gneu")],
 )
-(S, G), replicate = next(
+replicate, (S, G) = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
 )
 
