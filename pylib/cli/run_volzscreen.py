@@ -144,9 +144,30 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
 @_log_context_duration("_calc_tb_stats", logger=print)
 def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
+
+    with hstrat_aux.log_context_duration(
+        "alifestd_mask_monomorphic_clades_asexual", logger=print
+    ):
+        phylo_df = hstrat_aux.alifestd_mask_monomorphic_clades_asexual(
+            phylo_df,
+            mutate=True,
+            trait_mask=phylo_df["is_leaf"].copy(),
+            trait_values=phylo_df["sequence_diff"],
+        )
+
+    assert hstrat_aux.alifestd_is_working_format_asexual(phylo_df, mutate=True)
+    phylo_df.reset_index(drop=True, inplace=True)
+
     min_leaves = cfg["cfg_clade_size_thresh"]
-    work_mask = (phylo_df["num_leaves"] > min_leaves) & (
-        phylo_df["num_leaves_sibling"] > min_leaves
+    work_mask = (
+        (phylo_df["num_leaves"] > min_leaves)
+        & (phylo_df["num_leaves_sibling"] > min_leaves)
+        & (
+            ~phylo_df.loc[
+                phylo_df["ancestor_id"],
+                "alifestd_mask_monomorphic_clades_asexual",
+            ].values
+        )
     )
     # sister statistics
     calc_dr = (
