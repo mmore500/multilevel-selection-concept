@@ -88,7 +88,7 @@ def _setup_sim(
             ],
             variants=flavored_variants,
             pop_size=cfg["cfg_pop_size"],
-            seed=random.getrandbits(32),
+            seed=cfg["trt_seed"],
         ),
         variant_flavors,
     )
