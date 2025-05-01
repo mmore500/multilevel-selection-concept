@@ -346,6 +346,7 @@ def _calc_screen_result(
                     c.startswith("cfg_")
                     or c.startswith("trt_")
                     or c.startswith("replicate_")
+                    or c.startswith("SLURM_")
                 )
             },
         }
