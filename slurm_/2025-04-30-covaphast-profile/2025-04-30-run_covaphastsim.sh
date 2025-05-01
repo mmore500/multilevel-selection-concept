@@ -229,7 +229,7 @@ replicates = it.product(
 )
 
 trt_mutmx_active_strain_factor = {"Gdel": 0.5, "Gneu": 1.0, "Gben": None}[G]
-trt_mutmx_rel_beta = {"Gdel": 0.5, "Gneu": 1.0, "Gben": None}[G]
+trt_mutmx_rel_beta = {"Gdel": 1.0, "Gneu": 1.0, "Gben": None}[G]
 trt_mutmx_withinhost_r = {"Sdel": None, "Sneu": 1.0, "Sben": 2.0}[S]
 
 cfg = f"""
