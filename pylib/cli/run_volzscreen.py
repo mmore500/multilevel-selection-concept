@@ -178,7 +178,8 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
                         SklearnConvergenceWarning,  # category
                     ),
                 ),
-                work_mask=work_mask,
+                progress_wrap=tqdm,
+                work_mask=work_mask.copy(),
             )
         )
         phylo_df["clade growth ratio"] = phylo_df[
@@ -425,15 +426,16 @@ def _process_replicate(
 
     results = joblib.Parallel(
         n_jobs=-1,
+        batch_size=10,
         backend="loky",
-        batch_size=100,
         verbose=50,
-    )(tasks)
+    )(tqdm(tasks))
 
     return pd.DataFrame([*it.chain(*results)])
 
 
 if __name__ == "__main__":
+    hstrat_aux.configure_prod_logging()
     cfg = read_config(sys.stdin)
     cfg["screen_uuid"] = str(uuid.uuid4())
     pprint.PrettyPrinter(depth=4).pprint(cfg)
