@@ -237,7 +237,7 @@ cfg_num_mut_sites: 1
 cfg_p_wt_to_mut: {2.74e-6 / 3}  # divide by 3 possible alt nucleotides
 cfg_pop_size: {67_000_000 // 100}
 cfg_maxseqlen: 390
-cfg_refseqs: "https://osf.io/hp25c/download"
+cfg_refseqs: "https://osf.io/s9xhr/download"  # homogenized seqs for testing
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
 replicate_num: {replicate}
