@@ -3,7 +3,6 @@ import itertools as it
 import pprint
 import sys
 import typing
-import uuid
 import warnings
 
 from hstrat import _auxiliary_lib as hstrat_aux
@@ -24,6 +23,7 @@ from .._read_config import read_config
 from .._screen_mutation_defined_nodes import screen_mutation_defined_nodes
 from .._seed_global_rngs import seed_global_rngs
 from .._shrink_df import shrink_df
+from .._strong_uuid4_str import strong_uuid4_str
 
 
 # have to redefine for joblib compat
@@ -358,7 +358,7 @@ def _process_diff(
     from_: str,
     to: str,
 ) -> typing.List[dict]:
-    mut_uuid = str(uuid.uuid4())
+    mut_uuid = strong_uuid4_str()
     # unsparsify mask
     mask_ = np.zeros(len(phylo_df), dtype=bool)
     mask_[mask] = True
@@ -472,7 +472,7 @@ def _process_replicate(
 if __name__ == "__main__":
     hstrat_aux.configure_prod_logging()
     cfg = read_config(sys.stdin)
-    cfg["screen_uuid"] = str(uuid.uuid4())
+    cfg["screen_uuid"] = strong_uuid4_str()
     pprint.PrettyPrinter(depth=4).pprint(cfg)
     seed_global_rngs(cfg["screen_num"])
 
