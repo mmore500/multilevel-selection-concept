@@ -246,6 +246,12 @@ trt_mutmx_rel_beta: {trt_mutmx_rel_beta}
 trt_mutmx_withinhost_r: {trt_mutmx_withinhost_r}
 trt_name: "{S}/{G}"
 trt_seed: \${SLURM_ARRAY_TASK_ID:-0}
+SLURM_JOB_ID: \${SLURM_JOB_ID:-null}
+SLURM_ARRAY_JOB_ID: \${SLURM_ARRAY_JOB_ID:-null}
+SLURM_ARRAY_TASK_ID: \${SLURM_ARRAY_TASK_ID:-null}
+SLURM_ARRAY_TASK_COUNT: \${SLURM_ARRAY_TASK_COUNT:-null}
+SLURM_ARRAY_TASK_MAX: \${SLURM_ARRAY_TASK_MAX:-null}
+SLURM_ARRAY_TASK_MIN: \${SLURM_ARRAY_TASK_MIN:-null}
 """
 
 print(cfg)
