@@ -233,7 +233,7 @@ uuids = sorted(
 replicates = it.product(
     uuids,
     [0, 16],
-    [100_000, 1_000_000],
+    [1_000_000, 100_000],
 )
 assigned_uuid, hsurf_bits, ndownsamp = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
