@@ -1,16 +1,19 @@
+import random
 import typing
 
 from hstrat import _auxiliary_lib as hstrat_aux
 import pandas as pd
 
 from ._run_phastSim import run_phastSim
+from ._seed_global_rngs import seed_global_rngs
 
 
 def _worker(
     args: typing.Tuple[int, pd.DataFrame, typing.Dict[str, str]],
 ) -> pd.DataFrame:
     """Worker for phastSim simulation."""
-    flavor_origin, group_df, ancestral_sequences = args
+    flavor_origin, group_df, ancestral_sequences, seed = args
+    seed_global_rngs(seed)
     group_df = group_df.copy().reset_index(drop=True)
     group_df.loc[
         group_df["id"] == flavor_origin, "ancestor_id"
@@ -98,7 +101,12 @@ def generate_dummy_sequences_phastSim(
 
     groups = list(phylogeny_df.groupby("variant_flavor_origin", sort=False))
     args = [
-        (flavor_origin, group_df, ancestral_sequences)
+        (
+            flavor_origin,
+            group_df,
+            ancestral_sequences,
+            random.getrandbits(32),
+        )
         for flavor_origin, group_df in groups
     ]
 
