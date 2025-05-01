@@ -9,7 +9,6 @@ import tempfile
 
 from ete3 import Tree
 from hstrat import _auxiliary_lib as hstrat_aux
-import numpy as np
 import pandas as pd
 import phastSim.phastSim as phastSim
 import polars as pl
