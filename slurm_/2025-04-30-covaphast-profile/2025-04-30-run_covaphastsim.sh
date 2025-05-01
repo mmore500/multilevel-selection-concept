@@ -237,7 +237,7 @@ cfg = f"""
 cfg_p_wt_to_mut: 2.74e-5
 cfg_pop_size: {67_000_000 // 100}
 cfg_maxseqlen: 390
-cfg_refseqs: "https://osf.io/hp25c/download"
+cfg_refseqs: "https://osf.io/7s9z8/download"
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
 replicate_num: {replicate}
