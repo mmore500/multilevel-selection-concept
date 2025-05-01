@@ -19,6 +19,7 @@ def test_run_covaphastsim_smoke():
         check=True,
         env={"PYTHONPATH": f"{pwd}"},
         input=f"""
+cfg_num_mut_sites: 1
 cfg_p_wt_to_mut: 0.01
 cfg_pop_size: 10000
 cfg_refseqs: "{assets}/alignedsequences.csv"
