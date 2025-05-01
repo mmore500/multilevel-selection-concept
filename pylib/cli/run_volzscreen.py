@@ -184,6 +184,19 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
         )
 
     with hstrat_aux.log_context_duration(
+        "alifestd_mark_clade_fblr_growth_sister_asexual",
+        logger=print,
+    ):
+        phylo_df = hstrat_aux.alifestd_mark_clade_fblr_growth_sister_asexual(
+            phylo_df,
+            mutate=True,
+            parallel_backend="loky",
+            progress_wrap=tqdm,
+            work_mask=work_mask.copy(),
+        )
+        phylo_df["clade fblr ratio"] = phylo_df["clade_fblr_growth_sister"]
+
+    with hstrat_aux.log_context_duration(
         "alifestd_mark_clade_logistic_growth_sister_asexual",
         logger=print,
     ):
@@ -361,6 +374,7 @@ def _process_diff(
 
     stats = (
         "clade duration ratio",
+        "clade fblr ratio",
         "clade growth ratio",
         "clade size ratio",
         "num_leaves",
