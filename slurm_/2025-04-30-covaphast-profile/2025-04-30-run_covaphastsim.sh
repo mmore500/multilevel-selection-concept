@@ -229,13 +229,12 @@ replicates = it.product(
 )
 
 trt_mutmx_active_strain_factor = {"Gdel": 0.5, "Gneu": 1.0, "Gben": None}[G]
-trt_mutmx_rel_beta = {"Gdel": 0.5, "Gneu": 1.0, "Gben": None}[G]
+trt_mutmx_rel_beta = {"Gdel": 1.0, "Gneu": 1.0, "Gben": None}[G]
 trt_mutmx_withinhost_r = {"Sdel": None, "Sneu": 1.0, "Sben": 2.0}[S]
 
 cfg = f"""
 cfg_num_mut_sites: 1
-# cfg_p_wt_to_mut: 2.74e-6 / 3  # divide by 3 possible alt nucleotides
-cfg_p_wt_to_mut: 2.74e-5
+cfg_p_wt_to_mut: 2.74e-6 / 3  # divide by 3 possible alt nucleotides
 cfg_pop_size: {67_000_000 // 100}
 cfg_maxseqlen: 390
 cfg_refseqs: "https://osf.io/7s9z8/download"
