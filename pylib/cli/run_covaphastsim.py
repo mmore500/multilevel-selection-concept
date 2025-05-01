@@ -25,6 +25,7 @@ from .._make_wt_specs_uk import make_wt_specs_uk
 from .._read_config import read_config
 from .._seed_global_rngs import seed_global_rngs
 from .._shrink_df import shrink_df
+from .._shuffle_string import shuffle_string
 
 
 def _get_reference_sequences(
@@ -68,7 +69,8 @@ def _setup_sim(
         mut_active_strain_factor=lambda x: (
             x.active_strain_factor * cfg["trt_mutmx_active_strain_factor"]
         ),
-        p_wt_to_mut=lambda __: cfg["cfg_p_wt_to_mut"],
+        p_wt_to_mut=lambda __: cfg["cfg_p_wt_to_mut"]
+        * cfg["cfg_num_mut_sites"],
         suffix_mut=cfg["cfg_suffix_mut"],
         suffix_wt=cfg["cfg_suffix_wt"],
     )
@@ -147,15 +149,19 @@ def _generate_sequences(
         )
 
     with hstrat_aux.log_context_duration("prepend sequence", logger=print):
+
+        suffix = cfg["cfg_suffix_wt"] * (cfg["cfg_num_mut_sites"] - 1)
+
         seq_df["sequence"] = (
             seq_df["variant"]
             .str.contains(cfg["cfg_suffix_mut"])
             .map(
                 {
-                    True: cfg["cfg_suffix_mut"],
-                    False: cfg["cfg_suffix_wt"],
+                    True: cfg["cfg_suffix_mut"] + suffix,
+                    False: cfg["cfg_suffix_wt"] + suffix,
                 },
             )
+            .apply(shuffle_string)
             + seq_df["sequence"]
         )
 
