@@ -34,11 +34,13 @@ def mask_sequence_diffs(
         return
 
     print(
-        f"{ancestral_sequence[0]=} "
-        f"{int(mut_unique[0])=} "
-        f"{int(mut_unique[0] >> 8)=} "
-        f"{chr(mut_unique[0] & 0xFF)=} "
+        f"{ancestral_sequence[0]=} ",
+        f"{int(mut_unique[0])=}",
+        f"{int(mut_unique[0] >> 8)=}",
+        f"{chr(mut_unique[0] & 0xFF)=}",
         f"{int(mut_counts[0])=}",
+        f"{int(mut_counts[0]) / len(sequence_diffs)=}",
+        sep="\n",
     )
 
     with hstrat_aux.log_context_duration("is_valid_mut", logger=print):
