@@ -352,7 +352,7 @@ def _calc_screen_result(
         }
 
 
-def _process_diff(
+def _process_mut(
     phylo_df: pd.DataFrame,
     mask: np.ndarray,
     site: int,
@@ -452,11 +452,11 @@ def _process_replicate(
         progress_wrap=tqdm,
     )
 
-    def _process_diff_worker(*args: tuple) -> typing.List[dict]:
-        return _process_diff(phylo_df, *args)
+    def _process_mut_worker(*args: tuple) -> typing.List[dict]:
+        return _process_mut(phylo_df, *args)
 
     tasks = [
-        joblib.delayed(_process_diff_worker)(mask, site, frm, to)
+        joblib.delayed(_process_mut_worker)(mask, site, frm, to)
         for (site, frm, to), mask in diffs_iter
     ]
 
@@ -465,7 +465,7 @@ def _process_replicate(
         batch_size=10,
         backend="loky",
         verbose=50,
-    )(tqdm(tasks))
+    )(tqdm(tasks, desc="process mutations"))
 
     return pd.DataFrame([*it.chain(*results)])
 
@@ -489,7 +489,10 @@ if __name__ == "__main__":
         if "cfg_assigned_replicate_uuid" not in cfg
         or str(uid) == cfg["cfg_assigned_replicate_uuid"]
     ]
-    res = [_process_replicate(phylo_df, cfg) for phylo_df in tqdm(work)]
+    res = [
+        _process_replicate(phylo_df, cfg)
+        for phylo_df in tqdm(work, desc="process replicate")
+    ]
 
     with hstrat_aux.log_context_duration("finalize phylo_df", logger=print):
         screen_df = pd.concat(res)
