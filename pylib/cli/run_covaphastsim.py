@@ -8,6 +8,7 @@ import covasim as cv
 from hstrat import _auxiliary_lib as hstrat_aux
 import numpy as np
 import pandas as pd
+from retry import retry
 from tqdm import tqdm
 from tqdm.contrib import tmap as tqdm_tmap
 
@@ -30,6 +31,7 @@ from .._shuffle_string import shuffle_string
 from .._strong_uuid4_str import strong_uuid4_str
 
 
+@retry(tries=5, logger=print)
 def _get_reference_sequences(
     cfg: dict,
 ) -> typing.Dict[str, str]:
