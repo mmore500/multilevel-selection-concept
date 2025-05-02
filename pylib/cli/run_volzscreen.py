@@ -12,6 +12,7 @@ import joblib
 import numpy as np
 import pandas as pd
 import polars as pl
+from retry import retry
 from scipy import stats as scipy_stats
 from sklearn.exceptions import ConvergenceWarning as SklearnConvergenceWarning
 from tqdm import tqdm
@@ -478,7 +479,8 @@ if __name__ == "__main__":
     seed_global_rngs(cfg["screen_num"])
 
     with hstrat_aux.log_context_duration("pd.read_parquet", logger=print):
-        refphylos_df = pd.read_parquet(cfg["cfg_refphylos"])
+        read_parquet = retry(tries=5, logger=print)(pd.read_parquet)
+        refphylos_df = read_parquet(cfg["cfg_refphylos"])
         glimpse_df(refphylos_df, logger=print)
 
     work = [
