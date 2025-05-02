@@ -160,7 +160,7 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     phylo_df.reset_index(drop=True, inplace=True)
 
     min_leaves = cfg["cfg_clade_size_thresh"]
-    work_mask = (
+    phylo_df["work_mask"] = (
         (phylo_df["num_leaves"] > min_leaves)
         & (phylo_df["num_leaves_sibling"] > min_leaves)
         & (
@@ -193,7 +193,7 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
             mutate=True,
             parallel_backend="loky",
             progress_wrap=tqdm,
-            work_mask=work_mask.copy(),
+            work_mask=phylo_df["work_mask"].values.copy(),
         )
         phylo_df["clade fblr ratio"] = phylo_df["clade_fblr_growth_sister"]
 
@@ -214,7 +214,7 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
                     ),
                 ),
                 progress_wrap=tqdm,
-                work_mask=work_mask.copy(),
+                work_mask=phylo_df["work_mask"].values.copy(),
             )
         )
         phylo_df["clade growth ratio"] = phylo_df[
@@ -428,10 +428,10 @@ def _process_mut(
                 mut_uuid=mut_uuid,
                 phylo_df=phylo_df,
                 phylo_df_background=phylo_df[
-                    phylo_df["clade_size_thresh_mask"] & ~screen_mask
+                    phylo_df["work_mask"].values & ~screen_mask
                 ],
                 phylo_df_screened=phylo_df[
-                    phylo_df["clade_size_thresh_mask"] & screen_mask
+                    phylo_df["work_mask"].values & screen_mask
                 ],
                 screen_name=screen_name,
                 stat=stat,
@@ -455,11 +455,6 @@ def _process_replicate(
 
     phylo_df = _prep_phylo(phylo_df, cfg)
     phylo_df = _calc_tb_stats(phylo_df, cfg)
-
-    min_leaves = cfg["cfg_clade_size_thresh"]
-    phylo_df["clade_size_thresh_mask"] = (
-        phylo_df["num_leaves"] > min_leaves
-    ) & (phylo_df["num_leaves_sibling"] > min_leaves)
 
     diffs_iter = mask_sequence_diffs(
         ancestral_sequence=phylo_df["ancestral_sequence"]
