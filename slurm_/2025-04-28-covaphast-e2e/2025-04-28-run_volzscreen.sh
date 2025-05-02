@@ -104,6 +104,7 @@ for attempt in {1..5}; do
         'pandas==2.*' \
         'polars==1.28.*' \
         'pyarrow==16.*' \
+        'retry==0.9.*' \
         'scipy==1.*' \
         'tqdm==4.*' \
         "${BATCHDIR_JOBSOURCE}" \
@@ -223,11 +224,14 @@ import os
 import sys
 
 import pandas as pd
+from retry import retry
+
 
 refphylos = "https://osf.io/58v9c/download"
 
+read_parquet = retry(tries=5, logger=print)(pd.read_parquet)
 uuids = sorted(
-    pd.read_parquet(refphylos)["replicate_uuid"].unique().astype(str),
+    read_parquet(refphylos)["replicate_uuid"].unique().astype(str),
 )
 
 replicates = it.product(
