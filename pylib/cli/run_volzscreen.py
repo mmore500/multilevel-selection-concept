@@ -290,18 +290,6 @@ def _calc_screen_result(
         warnings.simplefilter("ignore", category=RuntimeWarning)
         trinom_stat = np.nanmean(np.sign(screened[stat]))
 
-    screened_fill0 = screened[stat].fillna(0)
-    trinom_n_fill0 = len(screened_fill0)
-    trinom_kpos_fill0 = (screened_fill0 > 0).sum()
-    trinom_kneg_fill0 = (screened_fill0 < 0).sum()
-    trinom_ktie_fill0 = (screened_fill0 == 0).sum()
-    trinom_p_fill0 = trinomtest_fast(
-        screened_fill0, mu=0.0, nan_policy="raise"
-    )
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", category=RuntimeWarning)
-        trinom_stat_fill0 = np.sign(screened_fill0).mean()
-
     with warnings.catch_warnings(), np.errstate(invalid="ignore"):
         warnings.simplefilter("ignore", category=RuntimeWarning)
         return {
@@ -400,12 +388,6 @@ def _calc_screen_result(
             "trinom_ktie": trinom_ktie,
             "trinom_p": trinom_p,
             "trinom_stat": trinom_stat,
-            "trinom_n_fill0": trinom_n_fill0,
-            "trinom_kpos_fill0": trinom_kpos_fill0,
-            "trinom_kneg_fill0": trinom_kneg_fill0,
-            "trinom_ktie_fill0": trinom_ktie_fill0,
-            "trinom_p_fill0": trinom_p_fill0,
-            "trinom_stat_fill0": trinom_stat_fill0,
             **{
                 c: phylo_df[c].dropna().unique().astype(str).item()
                 for c in phylo_df.columns
