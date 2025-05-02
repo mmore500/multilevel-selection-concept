@@ -197,8 +197,6 @@ if __name__ == "__main__":
     cfg["replicate_uuid"] = strong_uuid4_str()
     pprint.PrettyPrinter(depth=4).pprint(cfg)
     seed_global_rngs(cfg["trt_seed"])
-    cfg["py_random_state1"] = str(random.getstate())
-    cfg["np_random_state1"] = str(np.random.get_state())
     cfg["py_random_sample1"] = random.getrandbits(32)
     cfg["np_random_sample1"] = np.random.randint(2**32)
 
@@ -242,8 +240,6 @@ if __name__ == "__main__":
     glimpse_df(seq_df, logger=print)
 
     with hstrat_aux.log_context_duration("finalize phylo_df", logger=print):
-        phylo_df["py_random_state2"] = str(random.getstate())
-        phylo_df["np_random_state2"] = str(np.random.get_state())
         phylo_df["py_random_sample2"] = random.getrandbits(32)
         phylo_df["np_random_sample2"] = np.random.randint(2**32)
         phylo_df["mls0_group_id"] = phylo_df["id"]
