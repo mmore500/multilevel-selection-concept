@@ -25,6 +25,7 @@ from .._screen_mutation_defined_nodes import screen_mutation_defined_nodes
 from .._seed_global_rngs import seed_global_rngs
 from .._shrink_df import shrink_df
 from .._strong_uuid4_str import strong_uuid4_str
+from .._trinomtest import trinomtest_fast
 
 
 # have to redefine for joblib compat
@@ -262,15 +263,16 @@ def _calc_screen_result(
             screened[stat], background[stat], alternative="two-sided"
         )
         mw_U_dropna, mw_p_dropna = scipy_stats.mannwhitneyu(
-            screened[stat].dropna(),
-            background[stat].dropna(),
+            screened[stat],
+            background[stat],
+            nan_policy="omit",
             alternative="two-sided",
         )
     n0, n1 = len(screened), len(background)
     cliffs_delta = 1 - 2 * (mw_U / (n0 * n1))
     cliffs_delta_dropna = 1 - 2 * (mw_U_dropna / (n0 * n1))
-    binom_n = (screened[stat] != 0).sum()
-    binom_k = (screened[stat] > 0).sum()
+    binom_n = (screened[stat].dropna() != 0).sum()
+    binom_k = (screened[stat].dropna() > 0).sum()
     if binom_n != 0:
         binom_result = scipy_stats.binomtest(binom_k, n=binom_n, p=0.5)
         binom_p = binom_result.pvalue
@@ -278,6 +280,27 @@ def _calc_screen_result(
     else:
         binom_p = np.nan
         binom_stat = np.nan
+
+    trinom_n = len(screened[stat].dropna())
+    trinom_kpos = (screened[stat] > 0).sum()
+    trinom_kneg = (screened[stat] < 0).sum()
+    trinom_ktie = (screened[stat] == 0).sum()
+    trinom_p = trinomtest_fast(screened[stat], mu=0.0, nan_policy="omit")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        trinom_stat = np.nanmean(np.sign(screened[stat]))
+
+    screened_fill0 = screened[stat].fillna(0)
+    trinom_n_fill0 = len(screened_fill0)
+    trinom_kpos_fill0 = (screened_fill0 > 0).sum()
+    trinom_kneg_fill0 = (screened_fill0 < 0).sum()
+    trinom_ktie_fill0 = (screened_fill0 == 0).sum()
+    trinom_p_fill0 = trinomtest_fast(
+        screened_fill0, mu=0.0, nan_policy="raise"
+    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        trinom_stat_fill0 = np.sign(screened_fill0).mean()
 
     with warnings.catch_warnings(), np.errstate(invalid="ignore"):
         warnings.simplefilter("ignore", category=RuntimeWarning)
@@ -371,6 +394,18 @@ def _calc_screen_result(
             "binom_k": binom_k,
             "binom_p": binom_p,
             "binom_stat": binom_stat,
+            "trinom_n": trinom_n,
+            "trinom_kpos": trinom_kpos,
+            "trinom_kneg": trinom_kneg,
+            "trinom_ktie": trinom_ktie,
+            "trinom_p": trinom_p,
+            "trinom_stat": trinom_stat,
+            "trinom_n_fill0": trinom_n_fill0,
+            "trinom_kpos_fill0": trinom_kpos_fill0,
+            "trinom_kneg_fill0": trinom_kneg_fill0,
+            "trinom_ktie_fill0": trinom_ktie_fill0,
+            "trinom_p_fill0": trinom_p_fill0,
+            "trinom_stat_fill0": trinom_stat_fill0,
             **{
                 c: phylo_df[c].dropna().unique().astype(str).item()
                 for c in phylo_df.columns
