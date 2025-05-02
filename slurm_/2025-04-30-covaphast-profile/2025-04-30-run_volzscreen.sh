@@ -254,10 +254,10 @@ assigned_uuid, hsurf_bits, ndownsamp = next(
 cfg = f"""
 cfg_assigned_replicate_uuid: "{assigned_uuid}"
 cfg_clade_size_thresh: 0
-cfg_mut_count_thresh_lb: 5
+cfg_mut_count_thresh_lb: 0
 cfg_mut_count_thresh_ub: {sys.maxsize}
 cfg_mut_freq_thresh_lb: 0.0
-cfg_mut_freq_thresh_ub: 0.05
+cfg_mut_freq_thresh_ub: 1.0
 cfg_mut_quant_thresh_lb: 0.0
 cfg_mut_quant_thresh_ub: 1.0
 cfg_refphylos: "{refphylos}"
