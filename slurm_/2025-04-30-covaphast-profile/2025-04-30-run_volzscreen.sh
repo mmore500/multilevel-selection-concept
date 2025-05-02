@@ -224,7 +224,7 @@ import sys
 
 import pandas as pd
 
-refphylos = "https://osf.io/58v9c/download"
+refphylos = "https://osf.io/2guwm/download"
 
 uuids = sorted(
     pd.read_parquet(refphylos)["replicate_uuid"].unique().astype(str),
