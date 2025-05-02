@@ -5,7 +5,11 @@ import numpy as np
 from scipy import stats as scipy_stats
 
 
-def trinomtest_fast(data: typing.Sequence[numbers.Real], mu: numbers.Real = 0):
+def trinomtest_fast(
+    data: typing.Sequence[numbers.Real],
+    mu: numbers.Real = 0,
+    nan_policy: typing.Literal["propagate", "omit", "raise"] = "propagate",
+) -> float:
     """Calculate the two-tailed p-value for a trinomial test, under the null
     hypothesis that the data have median mu.
 
@@ -20,6 +24,13 @@ def trinomtest_fast(data: typing.Sequence[numbers.Real], mu: numbers.Real = 0):
     https://peterstatistics.com/Packages/python-docs/stikpetP/tests/test_trinomial_os.html
     """
     data = np.asarray(data) - mu
+    if nan_policy == "omit":
+        data = data[~np.isnan(data)]  # remove NaNs
+    elif np.isnan(data).any():
+        if nan_policy == "raise":
+            raise ValueError("NaN values found in data")
+        elif nan_policy == "propagate":
+            return np.nan
 
     n = len(data)
     nd = abs(np.sign(data).astype(int).sum())
@@ -38,8 +49,10 @@ def trinomtest_fast(data: typing.Sequence[numbers.Real], mu: numbers.Real = 0):
 
 
 def trinomtest_naive(
-    data: typing.Sequence[numbers.Real], mu: numbers.Real = 0
-):
+    data: typing.Sequence[numbers.Real],
+    mu: numbers.Real = 0,
+    nan_policy: typing.Literal["propagate", "omit", "raise"] = "propagate",
+) -> float:
     """Calculate the two-tailed p-value for a trinomial test, under the null
     hypothesis that the data have median mu.
 
@@ -54,6 +67,14 @@ def trinomtest_naive(
     https://peterstatistics.com/Packages/python-docs/stikpetP/tests/test_trinomial_os.html
     """
     data = np.asarray(data) - mu
+
+    if nan_policy == "omit":
+        data = data[~np.isnan(data)]  # remove NaNs
+    elif np.isnan(data).any():
+        if nan_policy == "raise":
+            raise ValueError("NaN values found in data")
+        elif nan_policy == "propagate":
+            return np.nan
 
     n = len(data)
     nd = abs(np.sign(data).astype(int).sum())

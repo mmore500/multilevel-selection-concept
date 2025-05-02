@@ -100,9 +100,39 @@ def test_empirical_sensitivity(loc: float):
 
 @pytest.mark.parametrize("loc", [-10.0, -0.3, 0.0, 0.3, 10.0])
 @pytest.mark.parametrize("sample_size", range(20))
-def fuzz_naive_vs_fast(loc: float, sample_size: int):
+def test_fuzz_naive_vs_fast(loc: float, sample_size: int):
     for _ in range(20):
         data = np.random.normal(loc=loc, scale=1.0, size=sample_size)
         p_fast = trinomtest_fast(data, mu=0.0)
         p_naive = trinomtest_naive(data, mu=0.0)
-        assert p_fast == pytest.approx(p_naive)
+        assert p_fast == pytest.approx(p_naive, nan_ok=True)
+
+
+@pytest.mark.parametrize("loc", [-10.0, -0.3, 0.0, 0.3, 10.0])
+@pytest.mark.parametrize("sample_size", range(20))
+def test_fuzz_omit_nans(loc: float, sample_size: int):
+    data = np.random.normal(loc=loc, scale=1.0, size=sample_size)
+    expected = pytest.approx(trinomtest_fast(data, mu=0.0), nan_ok=True)
+
+    data1 = [*data, np.nan]
+    assert trinomtest_fast(data1, nan_policy="omit", mu=0.0) == expected
+    assert trinomtest_naive(data1, nan_policy="omit", mu=0.0) == expected
+
+    data2 = [np.nan, *data]
+    assert trinomtest_fast(data2, nan_policy="omit", mu=0.0) == expected
+    assert trinomtest_naive(data2, nan_policy="omit", mu=0.0) == expected
+
+
+@pytest.mark.parametrize("loc", [-10.0, -0.3, 0.0, 0.3, 10.0])
+@pytest.mark.parametrize("sample_size", range(20))
+def test_fuzz_propagate_nans(loc: float, sample_size: int):
+    data = np.random.normal(loc=loc, scale=1.0, size=sample_size)
+    expected = pytest.approx(np.nan, nan_ok=True)
+
+    data1 = [*data, np.nan]
+    assert trinomtest_fast(data1, nan_policy="propagate", mu=0.0) == expected
+    assert trinomtest_naive(data1, nan_policy="propagate", mu=0.0) == expected
+
+    data2 = [np.nan, *data]
+    assert trinomtest_fast(data2, nan_policy="propagate", mu=0.0) == expected
+    assert trinomtest_naive(data2, nan_policy="propagate", mu=0.0) == expected

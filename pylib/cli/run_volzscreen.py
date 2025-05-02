@@ -263,8 +263,9 @@ def _calc_screen_result(
             screened[stat], background[stat], alternative="two-sided"
         )
         mw_U_dropna, mw_p_dropna = scipy_stats.mannwhitneyu(
-            screened[stat].dropna(),
-            background[stat].dropna(),
+            screened[stat],
+            background[stat],
+            nan_policy="omit",
             alternative="two-sided",
         )
     n0, n1 = len(screened), len(background)
@@ -284,10 +285,10 @@ def _calc_screen_result(
     trinom_kpos = (screened[stat] > 0).sum()
     trinom_kneg = (screened[stat] < 0).sum()
     trinom_ktie = (screened[stat] == 0).sum()
-    trinom_p = trinomtest_fast(screened[stat].dropna(), mu=0.0)
+    trinom_p = trinomtest_fast(screened[stat], mu=0.0, nan_policy="omit")
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=RuntimeWarning)
-        trinom_stat = np.sign(screened[stat].dropna()).mean()
+        trinom_stat = np.nanmean(np.sign(screened[stat]))
 
     with warnings.catch_warnings(), np.errstate(invalid="ignore"):
         warnings.simplefilter("ignore", category=RuntimeWarning)
