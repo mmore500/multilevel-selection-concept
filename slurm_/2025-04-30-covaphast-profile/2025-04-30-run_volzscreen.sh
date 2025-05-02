@@ -19,6 +19,9 @@ echo "SOURCE_REVISION ${SOURCE_REVISION}"
 SOURCE_REMOTE_URL="$(git config --get remote.origin.url)"
 echo "SOURCE_REMOTE_URL ${SOURCE_REMOTE_URL}"
 
+CONTAINER_URI="docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:6cccf54dcaf219279172cf471666850c84733794a098ca1537e14b30f449aa69"
+echo "CONTAINER_URI ${CONTAINER_URI}"
+
 echo "initialization telemetry ==============================================="
 echo "date $(date)"
 echo "hostname $(hostname)"
@@ -29,6 +32,8 @@ module purge || :
 module load Python/3.10.8 || :
 echo "python3.10 $(which python3.10)"
 echo "python3.10 --version $(python3.10 --version)"
+echo "singularity $(which singularity)"
+echo "singularity --version $(singularity --version)"
 
 echo "setup HOME dirs ========================================================"
 mkdir -p "${HOME}/joblatest"
@@ -118,6 +123,9 @@ echo "setup dependencies ========================================== \${SECONDS}"
 source "${BATCHDIR_ENV}/bin/activate"
 python3.10 -m uv pip freeze
 
+# prime singularity cache
+singularity exec "${CONTAINER_URI}" echo "hello from singularity"
+
 echo "sbatch preamble ========================================================="
 JOB_PREAMBLE=$(cat << EOF
 set -e
@@ -175,6 +183,8 @@ module purge || :
 module load Python/3.10.8 || :
 echo "python3.10 \$(which python3.10)"
 echo "python3.10 --version \$(python3.10 --version)"
+echo "singularity \$(which singularity)"
+echo "singularity --version \$(singularity --version)"
 
 echo "setup dependencies- ----------------------------------------- \${SECONDS}"
 source "${BATCHDIR_ENV}/bin/activate"
@@ -216,7 +226,7 @@ echo "cpuinfo ----------------------------------------------------- \${SECONDS}"
 cat /proc/cpuinfo || :
 
 echo "do work ----------------------------------------------------- \${SECONDS}"
-python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:6cccf54dcaf219279172cf471666850c84733794a098ca1537e14b30f449aa69 python3 -m pylib.cli.run_volzscreen
+python3 << EOF_ | singularity exec "${CONTAINER_URI}" python3 -m pylib.cli.run_volzscreen
 
 import itertools as it
 import os
