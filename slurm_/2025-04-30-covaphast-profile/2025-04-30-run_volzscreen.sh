@@ -212,7 +212,7 @@ cat > "${SBATCH_FILE}" << EOF
 #SBATCH --mail-type=FAIL,TIME_LIMIT
 #SBATCH --account=beacon
 #SBATCH --requeue
-#SBATCH --array=0-23
+#SBATCH --array=0-29
 
 ${JOB_PREAMBLE}
 
@@ -236,7 +236,7 @@ import pandas as pd
 from retry import retry
 
 
-refphylos = "https://osf.io/2guwm/download"
+refphylos = "https://osf.io/5t827/download"
 
 read_parquet = retry(tries=5, logger=print)(pd.read_parquet)
 uuids = sorted(
@@ -246,7 +246,7 @@ uuids = sorted(
 replicates = it.product(
     uuids,
     [0, 16],
-    [1_000_000, 100_000],
+    [1_000_000],
 )
 assigned_uuid, hsurf_bits, ndownsamp = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
