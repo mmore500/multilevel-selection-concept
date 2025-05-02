@@ -233,11 +233,14 @@ import os
 import sys
 
 import pandas as pd
+from retry import retry
+
 
 refphylos = "https://osf.io/2guwm/download"
 
+read_parquet = retry(tries=5, logger=print)(pd.read_parquet)
 uuids = sorted(
-    pd.read_parquet(refphylos)["replicate_uuid"].unique().astype(str),
+    read_parquet(refphylos)["replicate_uuid"].unique().astype(str),
 )
 
 replicates = it.product(
