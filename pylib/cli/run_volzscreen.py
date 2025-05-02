@@ -261,8 +261,14 @@ def _calc_screen_result(
         mw_U, mw_p = scipy_stats.mannwhitneyu(
             screened[stat], background[stat], alternative="two-sided"
         )
+        mw_U_dropna, mw_p_dropna = scipy_stats.mannwhitneyu(
+            screened[stat].dropna(),
+            background[stat].dropna(),
+            alternative="two-sided",
+        )
     n0, n1 = len(screened), len(background)
     cliffs_delta = 1 - 2 * (mw_U / (n0 * n1))
+    cliffs_delta_dropna = 1 - 2 * (mw_U_dropna / (n0 * n1))
     binom_n = (screened[stat] != 0).sum()
     binom_k = (screened[stat] > 0).sum()
     if binom_n != 0:
@@ -310,6 +316,17 @@ def _calc_screen_result(
             "screened_skew": screened[stat].skew(),
             "screened_kurt": screened[stat].kurt(),
             "screened_N": len(screened),
+            "screened_num_isna": screened[stat].isna().sum(),
+            "screened_num_isfinite": np.isfinite(screened[stat]).sum(),
+            "screened_num_notfinite": (~np.isfinite(screened[stat])).sum(),
+            "screened_num_notna": screened[stat].notna().sum(),
+            "screened_num_nonzero": (screened[stat] != 0).sum(),
+            "screened_num_pos": (screened[stat] > 0).sum(),
+            "screened_num_neg": (screened[stat] < 0).sum(),
+            "screened_num_notnan": screened[stat].notna().sum(),
+            "screened_num_posinf": (screened[stat] == np.inf).sum(),
+            "screened_num_neginf": (screened[stat] == -np.inf).sum(),
+            "screened_numnan": screened[stat].isna().sum(),
             "background_nanmin": np.nanmin(
                 background[stat].values.astype(float), initial=np.inf
             ),
@@ -333,9 +350,23 @@ def _calc_screen_result(
             "background_skew": background[stat].skew(),
             "background_kurt": background[stat].kurt(),
             "background_N": len(background),
+            "background_num_isna": background[stat].isna().sum(),
+            "background_num_isfinite": np.isfinite(background[stat]).sum(),
+            "background_num_notfinite": (~np.isfinite(background[stat])).sum(),
+            "background_num_notna": background[stat].notna().sum(),
+            "background_num_nonzero": (background[stat] != 0).sum(),
+            "background_num_pos": (background[stat] > 0).sum(),
+            "background_num_neg": (background[stat] < 0).sum(),
+            "background_num_notnan": background[stat].notna().sum(),
+            "background_num_posinf": (background[stat] == np.inf).sum(),
+            "background_num_neginf": (background[stat] == -np.inf).sum(),
+            "background_numnan": background[stat].isna().sum(),
             "mw_U": mw_U,
             "mw_p": mw_p,
             "cliffs_delta": cliffs_delta,
+            "mw_U_dropna": mw_U_dropna,
+            "mw_p_dropna": mw_p_dropna,
+            "cliffs_delta_dropna": cliffs_delta_dropna,
             "binom_n": binom_n,
             "binom_k": binom_k,
             "binom_p": binom_p,
