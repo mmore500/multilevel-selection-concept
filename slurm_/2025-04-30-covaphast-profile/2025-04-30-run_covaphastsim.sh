@@ -193,8 +193,8 @@ echo "SBATCH_FILE ${SBATCH_FILE}"
 cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=100G
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=50G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
@@ -234,9 +234,8 @@ trt_mutmx_withinhost_r = {"Sdel": None, "Sneu": 1.0, "Sben": 2.0}[S]
 
 cfg = f"""
 cfg_num_mut_sites: 1
-# cfg_p_wt_to_mut: {2.74e-6 / 3}  # divide by 3 possible alt nucleotides
-cfg_p_wt_to_mut: {2.74e-5}  # divide by 3 possible alt nucleotides
-cfg_pop_size: {67_000_000 // 500}
+cfg_p_wt_to_mut: {2.74e-6}  # should divide by 3 possible alt nucleotides?
+cfg_pop_size: {67_000_000 // 100}
 cfg_maxseqlen: 390
 cfg_refseqs: "https://osf.io/s9xhr/download"  # homogenized seqs for testing
 cfg_suffix_mut: "'"
