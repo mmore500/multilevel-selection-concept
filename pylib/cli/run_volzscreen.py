@@ -443,6 +443,15 @@ def _process_mut(
     screen_masks = screen_mutation_defined_nodes(
         phylo_df,
         has_mutation=mask,
+        screens=(
+            "combined_f20n50",
+            "combined_f20n75",
+            "naive50",
+            "naive75",
+            "fisher20",
+            "ctrl_fisher20",
+            "ctrl_naive75",
+        ),
     )
 
     stats = (
