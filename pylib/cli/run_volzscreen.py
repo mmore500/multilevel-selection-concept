@@ -1,5 +1,6 @@
 import functools
 import itertools as it
+import logging
 import pprint
 import sys
 import typing
@@ -161,6 +162,8 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     assert hstrat_aux.alifestd_is_working_format_asexual(phylo_df, mutate=True)
     phylo_df.reset_index(drop=True, inplace=True)
 
+    phylo_df = hstrat_aux.alifestd_mark_sister_asexual(phylo_df, mutate=True)
+
     min_leaves = cfg["cfg_clade_size_thresh"]
     phylo_df["work_mask"] = (
         (phylo_df["num_leaves"] > min_leaves)
@@ -172,6 +175,11 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
             ].values
         )
     )
+    phylo_df["work_mask"] |= phylo_df.loc[
+        phylo_df["sister_id"].values,
+        "work_mask",
+    ].values  # ensure sisters of all included nodes are included
+
     # sister statistics
     calc_dr = (
         hstrat_aux.alifestd_mark_clade_subtended_duration_ratio_sister_asexual
@@ -565,7 +573,9 @@ if __name__ == "__main__":
     cfg["screen_uuid"] = strong_uuid4_str()
 
     with hstrat_aux.log_context_duration("pd.read_parquet", logger=print):
-        read_parquet = retry(tries=5, logger=print)(pd.read_parquet)
+        read_parquet = retry(tries=5, logger=logging.getLogger(__name__))(
+            pd.read_parquet
+        )
         refphylos_df = read_parquet(cfg["cfg_refphylos"])
         glimpse_df(refphylos_df, logger=print)
 
