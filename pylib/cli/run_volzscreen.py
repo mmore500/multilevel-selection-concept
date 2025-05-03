@@ -18,6 +18,7 @@ from sklearn.exceptions import ConvergenceWarning as SklearnConvergenceWarning
 from tqdm import tqdm
 
 from .._LokyBackendWithInitializer import LokyBackendWithInitializer
+from .._filter_warnings import filter_warnings
 from .._glimpse_df import glimpse_df
 from .._mask_sequence_diffs import mask_sequence_diffs
 from .._read_config import read_config
@@ -238,6 +239,10 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     return phylo_df
 
 
+@filter_warnings(
+    "ignore", category=scipy_stats._axis_nan_policy.SmallSampleWarning
+)
+@filter_warnings("ignore", category=RuntimeWarning)
 def _calc_screen_result(
     *,
     mut_char_pos: int,
@@ -255,19 +260,15 @@ def _calc_screen_result(
 
     background, screened = phylo_df_background, phylo_df_screened
 
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore", category=scipy_stats._axis_nan_policy.SmallSampleWarning
-        )
-        mw_U, mw_p = scipy_stats.mannwhitneyu(
-            screened[stat], background[stat], alternative="two-sided"
-        )
-        mw_U_dropna, mw_p_dropna = scipy_stats.mannwhitneyu(
-            screened[stat],
-            background[stat],
-            nan_policy="omit",
-            alternative="two-sided",
-        )
+    mw_U, mw_p = scipy_stats.mannwhitneyu(
+        screened[stat], background[stat], alternative="two-sided"
+    )
+    mw_U_dropna, mw_p_dropna = scipy_stats.mannwhitneyu(
+        screened[stat],
+        background[stat],
+        nan_policy="omit",
+        alternative="two-sided",
+    )
     n0, n1 = len(screened), len(background)
     cliffs_delta = 1 - 2 * (mw_U / (n0 * n1))
     cliffs_delta_dropna = 1 - 2 * (mw_U_dropna / (n0 * n1))
@@ -298,125 +299,121 @@ def _calc_screen_result(
     trinom_p_fill0 = trinomtest_fast(
         screened_fill0, mu=0.0, nan_policy="raise"
     )
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", category=RuntimeWarning)
-        trinom_stat_fill0 = np.sign(screened_fill0).mean()
+    trinom_stat_fill0 = np.sign(screened_fill0).mean()
 
-    with warnings.catch_warnings(), np.errstate(invalid="ignore"):
-        warnings.simplefilter("ignore", category=RuntimeWarning)
-        return {
-            "mut": repr((mut_char_pos, mut_char_ref, mut_char_var)),
-            "mut_char_pos": mut_char_pos,
-            "mut_char_ref": mut_char_ref,
-            "mut_char_var": mut_char_var,
-            "mut_freq": mut_freq,
-            "mut_nobs": mut_nobs,
-            "mut_uuid": mut_uuid,
-            "screen_name": screen_name,
-            "phylo_df_background_len": len(phylo_df_background),
-            "phyo_df_screened_len": len(phylo_df_screened),
-            "tb_stat": stat,
-            "screened_nanmin": np.nanmin(
-                screened[stat].values.astype(float), initial=np.inf
-            ),
-            "screened_nanmax": np.nanmax(
-                screened[stat].values.astype(float), initial=-np.inf
-            ),
-            "screened_min": np.min(
-                screened[stat].values.astype(float), initial=np.inf
-            ),
-            "screened_max": np.max(
-                screened[stat].values.astype(float), initial=-np.inf
-            ),
-            "screened_nanmean": np.nanmean(screened[stat].values),
-            "screened_nanvar": np.nanvar(screened[stat].values),
-            "screened_nanstd": np.nanstd(screened[stat].values),
-            "screened_nanmedian": np.nanmedian(screened[stat].values),
-            "screened_mean": np.mean(screened[stat].values),
-            "screened_var": np.var(screened[stat].values),
-            "screened_std": np.std(screened[stat].values),
-            "screened_median": np.median(screened[stat].values),
-            "screened_skew": screened[stat].skew(),
-            "screened_kurt": screened[stat].kurt(),
-            "screened_N": len(screened),
-            "screened_num_isna": screened[stat].isna().sum(),
-            "screened_num_isfinite": np.isfinite(screened[stat]).sum(),
-            "screened_num_notfinite": (~np.isfinite(screened[stat])).sum(),
-            "screened_num_notna": screened[stat].notna().sum(),
-            "screened_num_nonzero": (screened[stat] != 0).sum(),
-            "screened_num_pos": (screened[stat] > 0).sum(),
-            "screened_num_neg": (screened[stat] < 0).sum(),
-            "screened_num_notnan": screened[stat].notna().sum(),
-            "screened_num_posinf": (screened[stat] == np.inf).sum(),
-            "screened_num_neginf": (screened[stat] == -np.inf).sum(),
-            "screened_numnan": screened[stat].isna().sum(),
-            "background_nanmin": np.nanmin(
-                background[stat].values.astype(float), initial=np.inf
-            ),
-            "background_nanmax": np.nanmax(
-                background[stat].values.astype(float), initial=-np.inf
-            ),
-            "background_min": np.min(
-                background[stat].values.astype(float), initial=np.inf
-            ),
-            "background_max": np.max(
-                background[stat].values.astype(float), initial=-np.inf
-            ),
-            "background_nanmean": np.nanmean(background[stat].values),
-            "background_nanvar": np.nanvar(background[stat].values),
-            "background_nanstd": np.nanstd(background[stat].values),
-            "background_nanmedian": np.nanmedian(background[stat].values),
-            "background_mean": np.mean(background[stat].values),
-            "background_var": np.var(background[stat].values),
-            "background_std": np.std(background[stat].values),
-            "background_median": np.median(background[stat].values),
-            "background_skew": background[stat].skew(),
-            "background_kurt": background[stat].kurt(),
-            "background_N": len(background),
-            "background_num_isna": background[stat].isna().sum(),
-            "background_num_isfinite": np.isfinite(background[stat]).sum(),
-            "background_num_notfinite": (~np.isfinite(background[stat])).sum(),
-            "background_num_notna": background[stat].notna().sum(),
-            "background_num_nonzero": (background[stat] != 0).sum(),
-            "background_num_pos": (background[stat] > 0).sum(),
-            "background_num_neg": (background[stat] < 0).sum(),
-            "background_num_notnan": background[stat].notna().sum(),
-            "background_num_posinf": (background[stat] == np.inf).sum(),
-            "background_num_neginf": (background[stat] == -np.inf).sum(),
-            "background_numnan": background[stat].isna().sum(),
-            "mw_U": mw_U,
-            "mw_p": mw_p,
-            "cliffs_delta": cliffs_delta,
-            "mw_U_dropna": mw_U_dropna,
-            "mw_p_dropna": mw_p_dropna,
-            "cliffs_delta_dropna": cliffs_delta_dropna,
-            "binom_n": binom_n,
-            "binom_k": binom_k,
-            "binom_p": binom_p,
-            "binom_stat": binom_stat,
-            "trinom_n": trinom_n,
-            "trinom_kpos": trinom_kpos,
-            "trinom_kneg": trinom_kneg,
-            "trinom_ktie": trinom_ktie,
-            "trinom_p": trinom_p,
-            "trinom_stat": trinom_stat,
-            "trinom_n_fill0": trinom_n_fill0,
-            "trinom_kpos_fill0": trinom_kpos_fill0,
-            "trinom_kneg_fill0": trinom_kneg_fill0,
-            "trinom_ktie_fill0": trinom_ktie_fill0,
-            "trinom_p_fill0": trinom_p_fill0,
-            "trinom_stat_fill0": trinom_stat_fill0,
-            **{
-                c: phylo_df[c].dropna().unique().astype(str).item()
-                for c in phylo_df.columns
-                if (
-                    c.startswith("cfg_")
-                    or c.startswith("trt_")
-                    or c.startswith("replicate_")
-                    or c.startswith("SLURM_")
-                )
-            },
-        }
+    return {
+        "mut": repr((mut_char_pos, mut_char_ref, mut_char_var)),
+        "mut_char_pos": mut_char_pos,
+        "mut_char_ref": mut_char_ref,
+        "mut_char_var": mut_char_var,
+        "mut_freq": mut_freq,
+        "mut_nobs": mut_nobs,
+        "mut_uuid": mut_uuid,
+        "screen_name": screen_name,
+        "phylo_df_background_len": len(phylo_df_background),
+        "phyo_df_screened_len": len(phylo_df_screened),
+        "tb_stat": stat,
+        "screened_nanmin": np.nanmin(
+            screened[stat].values.astype(float), initial=np.inf
+        ),
+        "screened_nanmax": np.nanmax(
+            screened[stat].values.astype(float), initial=-np.inf
+        ),
+        "screened_min": np.min(
+            screened[stat].values.astype(float), initial=np.inf
+        ),
+        "screened_max": np.max(
+            screened[stat].values.astype(float), initial=-np.inf
+        ),
+        "screened_nanmean": np.nanmean(screened[stat].values),
+        "screened_nanvar": np.nanvar(screened[stat].values),
+        "screened_nanstd": np.nanstd(screened[stat].values),
+        "screened_nanmedian": np.nanmedian(screened[stat].values),
+        "screened_mean": np.mean(screened[stat].values),
+        "screened_var": np.var(screened[stat].values),
+        "screened_std": np.std(screened[stat].values),
+        "screened_median": np.median(screened[stat].values),
+        "screened_skew": screened[stat].skew(),
+        "screened_kurt": screened[stat].kurt(),
+        "screened_N": len(screened),
+        "screened_num_isna": screened[stat].isna().sum(),
+        "screened_num_isfinite": np.isfinite(screened[stat]).sum(),
+        "screened_num_notfinite": (~np.isfinite(screened[stat])).sum(),
+        "screened_num_notna": screened[stat].notna().sum(),
+        "screened_num_nonzero": (screened[stat] != 0).sum(),
+        "screened_num_pos": (screened[stat] > 0).sum(),
+        "screened_num_neg": (screened[stat] < 0).sum(),
+        "screened_num_notnan": screened[stat].notna().sum(),
+        "screened_num_posinf": (screened[stat] == np.inf).sum(),
+        "screened_num_neginf": (screened[stat] == -np.inf).sum(),
+        "screened_numnan": screened[stat].isna().sum(),
+        "background_nanmin": np.nanmin(
+            background[stat].values.astype(float), initial=np.inf
+        ),
+        "background_nanmax": np.nanmax(
+            background[stat].values.astype(float), initial=-np.inf
+        ),
+        "background_min": np.min(
+            background[stat].values.astype(float), initial=np.inf
+        ),
+        "background_max": np.max(
+            background[stat].values.astype(float), initial=-np.inf
+        ),
+        "background_nanmean": np.nanmean(background[stat].values),
+        "background_nanvar": np.nanvar(background[stat].values),
+        "background_nanstd": np.nanstd(background[stat].values),
+        "background_nanmedian": np.nanmedian(background[stat].values),
+        "background_mean": np.mean(background[stat].values),
+        "background_var": np.var(background[stat].values),
+        "background_std": np.std(background[stat].values),
+        "background_median": np.median(background[stat].values),
+        "background_skew": background[stat].skew(),
+        "background_kurt": background[stat].kurt(),
+        "background_N": len(background),
+        "background_num_isna": background[stat].isna().sum(),
+        "background_num_isfinite": np.isfinite(background[stat]).sum(),
+        "background_num_notfinite": (~np.isfinite(background[stat])).sum(),
+        "background_num_notna": background[stat].notna().sum(),
+        "background_num_nonzero": (background[stat] != 0).sum(),
+        "background_num_pos": (background[stat] > 0).sum(),
+        "background_num_neg": (background[stat] < 0).sum(),
+        "background_num_notnan": background[stat].notna().sum(),
+        "background_num_posinf": (background[stat] == np.inf).sum(),
+        "background_num_neginf": (background[stat] == -np.inf).sum(),
+        "background_numnan": background[stat].isna().sum(),
+        "mw_U": mw_U,
+        "mw_p": mw_p,
+        "cliffs_delta": cliffs_delta,
+        "mw_U_dropna": mw_U_dropna,
+        "mw_p_dropna": mw_p_dropna,
+        "cliffs_delta_dropna": cliffs_delta_dropna,
+        "binom_n": binom_n,
+        "binom_k": binom_k,
+        "binom_p": binom_p,
+        "binom_stat": binom_stat,
+        "trinom_n": trinom_n,
+        "trinom_kpos": trinom_kpos,
+        "trinom_kneg": trinom_kneg,
+        "trinom_ktie": trinom_ktie,
+        "trinom_p": trinom_p,
+        "trinom_stat": trinom_stat,
+        "trinom_n_fill0": trinom_n_fill0,
+        "trinom_kpos_fill0": trinom_kpos_fill0,
+        "trinom_kneg_fill0": trinom_kneg_fill0,
+        "trinom_ktie_fill0": trinom_ktie_fill0,
+        "trinom_p_fill0": trinom_p_fill0,
+        "trinom_stat_fill0": trinom_stat_fill0,
+        **{
+            c: phylo_df[c].dropna().unique().astype(str).item()
+            for c in phylo_df.columns
+            if (
+                c.startswith("cfg_")
+                or c.startswith("trt_")
+                or c.startswith("replicate_")
+                or c.startswith("SLURM_")
+            )
+        },
+    }
 
 
 def _process_mut(
