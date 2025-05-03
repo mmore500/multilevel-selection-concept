@@ -1,4 +1,5 @@
 from collections import defaultdict
+import logging
 import pprint
 import random
 import sys
@@ -31,7 +32,7 @@ from .._shuffle_string import shuffle_string
 from .._strong_uuid4_str import strong_uuid4_str
 
 
-@retry(tries=5, logger=print)
+@retry(tries=5, logger=logging.getLogger(__name__))
 def _get_reference_sequences(
     cfg: dict,
 ) -> typing.Dict[str, str]:
