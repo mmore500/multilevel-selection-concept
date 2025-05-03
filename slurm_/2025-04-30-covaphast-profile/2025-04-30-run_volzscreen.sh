@@ -229,6 +229,7 @@ echo "do work ----------------------------------------------------- \${SECONDS}"
 python3 << EOF_ | singularity exec "${CONTAINER_URI}" python3 -m pylib.cli.run_volzscreen
 
 import itertools as it
+import logging
 import os
 import sys
 
@@ -238,7 +239,7 @@ from retry import retry
 
 refphylos = "https://osf.io/n52sh/download"
 
-read_parquet = retry(tries=5, logger=print)(pd.read_parquet)
+read_parquet = retry(tries=5, logger=logging.getLogger(__name__))(pd.read_parquet)
 uuids = sorted(
     read_parquet(refphylos)["replicate_uuid"].unique().astype(str),
 )
