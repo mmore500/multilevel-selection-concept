@@ -48,14 +48,9 @@ class SyncHostCompartments:
                 compartments[:, variant],
             )
 
-        # update host compartments
+        # update host compartments using luria-delbruck dynamics
         #######################################################################
-        # grow strains
-        for i, variant_flavor in enumerate(self._variant_flavors):
-            offset = i * 2 + 1
-            compartments[:, offset + 1] *= variant_flavor.withinhost_r_mut
 
-        # handle luria-delbruck dynamics
         for i, variant_flavor in enumerate(self._variant_flavors):
             offset = i * 2 + 1
 
@@ -88,18 +83,21 @@ class SyncHostCompartments:
                 )
                 < 1e-6
             )
-            new_muts = np.zeros_like(compartments[:, offset])
             for __ in range(num_doublings):
                 compartments[:, offset] *= wt_growth_per_doubling
-                new_muts *= mut_growth_per_doubling
+                compartments[:, offset + 1] *= mut_growth_per_doubling
                 num_mutants = np.random.binomial(
                     compartments[:, offset].astype(int),
                     p_per_doubling,
                 )
+                num_reversions = np.random.binomial(
+                    compartments[:, offset + 1].astype(int),
+                    p_per_doubling,
+                )
                 compartments[:, offset] -= num_mutants
-                new_muts += num_mutants
-
-            compartments[:, offset + 1] += new_muts
+                compartments[:, offset + 1] += num_mutants
+                compartments[:, offset] += num_reversions
+                compartments[:, offset + 1] -= num_reversions
 
         # apply within-host carrying capacity
         compartments /= (
