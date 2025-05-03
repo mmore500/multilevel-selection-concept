@@ -529,17 +529,11 @@ def _process_replicate(
     return pd.DataFrame([*it.chain(*results)])
 
 
-if __name__ == "__main__":
-    hstrat_aux.configure_prod_logging()
-    cfg = read_config(sys.stdin)
-    cfg["screen_uuid"] = strong_uuid4_str()
+def main(refphylos_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
+    cfg = cfg.copy()
+
     pprint.PrettyPrinter(depth=4).pprint(cfg)
     seed_global_rngs(cfg["screen_num"])
-
-    with hstrat_aux.log_context_duration("pd.read_parquet", logger=print):
-        read_parquet = retry(tries=5, logger=print)(pd.read_parquet)
-        refphylos_df = read_parquet(cfg["cfg_refphylos"])
-        glimpse_df(refphylos_df, logger=print)
 
     work = [
         phylo_df
@@ -561,6 +555,21 @@ if __name__ == "__main__":
             screen_df[k] = v
 
         screen_df = shrink_df(screen_df, inplace=True)
+
+    return screen_df
+
+
+if __name__ == "__main__":
+    hstrat_aux.configure_prod_logging()
+    cfg = read_config(sys.stdin)
+    cfg["screen_uuid"] = strong_uuid4_str()
+
+    with hstrat_aux.log_context_duration("pd.read_parquet", logger=print):
+        read_parquet = retry(tries=5, logger=print)(pd.read_parquet)
+        refphylos_df = read_parquet(cfg["cfg_refphylos"])
+        glimpse_df(refphylos_df, logger=print)
+
+    screen_df = main(refphylos_df, cfg)
 
     glimpse_df(screen_df.head(), logger=print)
     glimpse_df(screen_df.tail(), logger=print)
