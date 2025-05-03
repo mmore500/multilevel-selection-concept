@@ -38,6 +38,10 @@ class SyncHostCompartments:
 
         # ensure host compartments are initialized w/ covasim infectious variant
         num_variants = self._host_compartments.shape[1]
+        assert (
+            not (people["infectious_variant"] <= 0).any()
+            and not (people["infectious_variant"] >= num_variants).any()
+        )
         for variant in range(1, num_variants):
             compartments[:, variant] = np.maximum(
                 people["infectious_variant"] == variant,
