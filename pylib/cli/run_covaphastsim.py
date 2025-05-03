@@ -193,10 +193,9 @@ def _add_sequence_diffs(phylo_df: pd.DataFrame):
     return phylo_df
 
 
-if __name__ == "__main__":
+def main(cfg: dict) -> pd.DataFrame:
+    cfg = cfg.copy()
 
-    cfg = read_config(sys.stdin)
-    cfg["replicate_uuid"] = strong_uuid4_str()
     pprint.PrettyPrinter(depth=4).pprint(cfg)
     seed_global_rngs(cfg["trt_seed"])
     cfg["py_random_sample1"] = random.getrandbits(32)
@@ -253,6 +252,16 @@ if __name__ == "__main__":
             phylo_df[k] = v
 
         phylo_df = shrink_df(phylo_df, inplace=True)
+
+    return phylo_df
+
+
+if __name__ == "__main__":
+    hstrat_aux.configure_prod_logging()
+    cfg = read_config(sys.stdin)
+    cfg["replicate_uuid"] = strong_uuid4_str()
+
+    phylo_df = main(cfg)
 
     glimpse_df(phylo_df.head(), logger=print)
     glimpse_df(phylo_df.tail(), logger=print)
