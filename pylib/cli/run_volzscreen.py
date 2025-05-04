@@ -175,10 +175,11 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
             ].values
         )
     )
-    phylo_df["work_mask"] |= phylo_df.loc[
-        phylo_df["sister_id"].values,
-        "work_mask",
-    ].values  # ensure sisters of all included nodes are included
+    # ensure sisters of all included nodes are included
+    assert np.all(
+        phylo_df["work_mask"].values
+        == phylo_df.loc[phylo_df["sister_id"].values, "work_mask"].values
+    )
 
     # sister statistics
     calc_dr = (
