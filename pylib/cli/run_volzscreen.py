@@ -170,7 +170,7 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
         & (phylo_df["num_leaves_sibling"] >= min_leaves)
         & (
             ~phylo_df.loc[
-                phylo_df["ancestor_id"],
+                phylo_df["ancestor_id"].values,
                 "alifestd_mask_monomorphic_clades_asexual",
             ].values
         )
