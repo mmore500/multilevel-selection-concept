@@ -25,7 +25,7 @@ def test_run_volzscreen_smoke(hsurf_bits: int):
         check=True,
         env={"PYTHONPATH": f"{pwd}"},
         input=f"""
-cfg_clade_size_thresh: 0
+cfg_clade_size_thresh: "[0]"
 cfg_mut_count_thresh_lb: 5
 cfg_mut_count_thresh_ub: {sys.maxsize}
 cfg_mut_freq_thresh_lb: 0.0
@@ -77,7 +77,7 @@ trt_seed: 1
         check=True,
         env={"PYTHONPATH": pwd},
         input=f"""
-cfg_clade_size_thresh: 0
+cfg_clade_size_thresh: "[0]
 cfg_mut_count_thresh_lb: 5
 cfg_mut_count_thresh_ub: {sys.maxsize}
 cfg_mut_freq_thresh_lb: 0.0
