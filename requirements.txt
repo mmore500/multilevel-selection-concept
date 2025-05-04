@@ -40,7 +40,7 @@ biopython==1.85
     #   -r requirements.in
     #   alifedata-phyloinformatics-convert
     #   phastsim
-bitarray==3.3.1
+bitarray==3.3.2
     # via
     #   bitstring
     #   hstrat
@@ -353,7 +353,7 @@ platformdirs==4.3.7
     #   jupyter-core
 pluggy==1.5.0
     # via pytest
-polars==1.26.0
+polars==1.29.0
     # via
     #   -r requirements.in
     #   downstream
@@ -458,7 +458,7 @@ seaborn==0.13.2
     #   backstrip
     #   hstrat
     #   pecking
-setuptools==80.1.0
+setuptools==80.2.0
     # via
     #   dendropy
     #   hurry-filesize
