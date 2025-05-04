@@ -12,48 +12,45 @@ def screen_mutation_defined_nodes(
 ) -> dict:
     phylo_df.reset_index(drop=True, inplace=True)
 
+    trait_absent = (~has_mutation) & phylo_df["is_leaf"].values
+    trait_present = has_mutation & phylo_df["is_leaf"].values
+
     # trait screening --- trait-defined
-    screen_trait_defined_fisher20 = (
+    fisher20 = (
         hstrat_aux.alifestd_screen_trait_defined_clades_fisher_asexual(
             phylo_df,
             mutate=True,
-            mask_trait_absent=(~has_mutation) & phylo_df["is_leaf"],
-            mask_trait_present=has_mutation & phylo_df["is_leaf"],
+            mask_trait_absent=trait_absent.copy(),
+            mask_trait_present=trait_present.copy(),
         )
         < 0.2
-    )
+    ).copy()
     # pick furthest-down significant node, for consecutive clades
     # i..e, if there is a pocket of trait-having leaves, several inner nodes
     # above may test as significant, but we want the furthest down
     assert hstrat_aux.alifestd_is_working_format_asexual(phylo_df)
-    screen_trait_defined_fisher20[
-        phylo_df["ancestor_id"].to_numpy()
-    ] &= ~screen_trait_defined_fisher20
+    fisher20[phylo_df["ancestor_id"].values] &= ~fisher20
 
-    screen_trait_defined_naive50 = (
+    naive50 = (
         hstrat_aux.alifestd_screen_trait_defined_clades_naive_asexual(
             phylo_df,
             mutate=True,
-            mask_trait_absent=(~has_mutation) & phylo_df["is_leaf"],
-            mask_trait_present=has_mutation & phylo_df["is_leaf"],
+            mask_trait_absent=trait_absent.copy(),
+            mask_trait_present=trait_present.copy(),
             defining_mut_thresh=0.50,
             defining_mut_sister_thresh=0.50,
         )
-    )
-    screen_trait_defined_naive75 = (
+    ).copy()
+    naive75 = (
         hstrat_aux.alifestd_screen_trait_defined_clades_naive_asexual(
             phylo_df,
             mutate=True,
-            mask_trait_absent=(~has_mutation) & phylo_df["is_leaf"],
-            mask_trait_present=has_mutation & phylo_df["is_leaf"],
+            mask_trait_absent=trait_absent.copy(),
+            mask_trait_present=trait_present.copy(),
             defining_mut_thresh=0.75,
             defining_mut_sister_thresh=0.75,
         )
-    )
-
-    fisher20 = screen_trait_defined_fisher20
-    naive50 = screen_trait_defined_naive50
-    naive75 = screen_trait_defined_naive75
+    ).copy()
 
     recipes = {
         "combined": lambda: fisher20 & naive75,
@@ -68,4 +65,4 @@ def screen_mutation_defined_nodes(
         "ctrl_naive75": lambda: np.random.permutation(naive75.copy()),
     }
 
-    return {item: recipes[item]() for item in screens}
+    return {item: recipes[item]().copy() for item in screens}
