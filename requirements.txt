@@ -360,7 +360,9 @@ polars==1.29.0
     #   hstrat
     #   joinem
 polars-u64-idx==1.29.0
-    # via hstrat
+    # via
+    #   -r requirements.in
+    #   hstrat
 prettytable==3.16.0
     # via hstrat
 prompt-toolkit==3.0.51
