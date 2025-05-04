@@ -66,16 +66,16 @@ def mask_sequence_diffs(
 
     for idx in progress_wrap(indices):
         if not sparsify_mask:
-            mask = np.zeros(len(sequence_diffs), dtype=bool)
-            mask[columns[idx]] = True
+            mut_mask = np.zeros(len(sequence_diffs), dtype=bool)
+            mut_mask[columns[idx]] = True
         else:
-            mask = columns[idx]
+            mut_mask = columns[idx]
 
         mut_uid = mut_unique[idx]
-        pos, mut_char_var = int(mut_uid >> 8), chr(mut_uid & 0xFF)
-        mut_char_ref = ancestral_sequence[pos]
+        mut_char_pos, mut_char_var = int(mut_uid >> 8), chr(mut_uid & 0xFF)
+        mut_char_ref = ancestral_sequence[mut_char_pos]
 
-        assert mut_char_var != ancestral_sequence[pos]
+        assert mut_char_var != ancestral_sequence[mut_char_pos]
         assert isinstance(mut_char_var, str) and len(mut_char_var) == 1
         assert isinstance(mut_char_ref, str) and len(mut_char_ref) == 1
-        yield (pos, mut_char_ref, mut_char_var), mask
+        yield (mut_char_pos, mut_char_ref, mut_char_var), mut_mask
