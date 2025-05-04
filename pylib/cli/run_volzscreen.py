@@ -166,8 +166,8 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
     min_leaves = cfg["cfg_clade_size_thresh"]
     phylo_df["work_mask"] = (
-        (phylo_df["num_leaves"] > min_leaves)
-        & (phylo_df["num_leaves_sibling"] > min_leaves)
+        (phylo_df["num_leaves"] >= min_leaves)
+        & (phylo_df["num_leaves_sibling"] >= min_leaves)
         & (
             ~phylo_df.loc[
                 phylo_df["ancestor_id"],
