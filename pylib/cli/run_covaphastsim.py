@@ -22,8 +22,10 @@ from .._generate_dummy_sequences_phastSim import (
 )
 from .._glimpse_df import glimpse_df
 from .._make_cv_sim_uk import make_cv_sim_uk
+from .._make_cv_sim_vanilla import make_cv_sim_vanilla
 from .._make_flavored_variants import make_flavored_variants
 from .._make_variant_flavors import make_variant_flavors
+from .._make_wt_specs_single import make_wt_specs_single
 from .._make_wt_specs_uk import make_wt_specs_uk
 from .._read_config import read_config
 from .._seed_global_rngs import seed_global_rngs
@@ -62,7 +64,14 @@ def _setup_sim(
     # rel_crit_prob
     # rel_death_prob
 
-    wt_specs = make_wt_specs_uk(reference_sequences=reference_sequences)
+    make_wt_specs = {
+        "make_wt_specs_uk": make_wt_specs_uk,
+        "make_wt_specs_single": make_wt_specs_single,
+    }[cfg["cfg_make_wt_specs_recipe"]]
+
+    wt_specs = make_wt_specs(
+        reference_sequences=reference_sequences,
+    )
     variant_flavors = make_variant_flavors(
         wt_specs,
         mut_variant=lambda x: {
@@ -81,8 +90,13 @@ def _setup_sim(
     )
     flavored_variants = make_flavored_variants(variant_flavors)
 
+    make_sim = {
+        "make_cv_sim_uk": make_cv_sim_uk,
+        "make_cv_sim_vanilla": make_cv_sim_vanilla,
+    }[cfg["cfg_make_cv_sim_recipe"]]
+
     return (
-        make_cv_sim_uk(
+        make_sim(
             preinterventions=[
                 SyncHostCompartments(
                     variant_flavors=variant_flavors,
