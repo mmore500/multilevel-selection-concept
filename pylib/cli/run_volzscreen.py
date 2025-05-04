@@ -429,23 +429,23 @@ def _calc_screen_result(
 def _process_mut(
     phylo_df: pd.DataFrame,
     cfg: dict,
-    mask: np.ndarray,
-    site: int,
-    from_: str,
-    to: str,
+    mut_mask_sparse: np.ndarray,
+    mut_char_pos: int,
+    mut_char_ref: str,
+    mut_char_var: str,
 ) -> typing.List[dict]:
     mut_uuid = strong_uuid4_str()
     # unsparsify mask
-    mask_ = np.zeros(len(phylo_df), dtype=bool)
-    mask_[mask] = True
-    mask = mask_
-    mut_nobs = mask.sum()
+    mut_mask_dense = np.zeros(len(phylo_df), dtype=bool)
+    mut_mask_dense[mut_mask_sparse] = True
+    mut_nobs = mut_mask_dense.sum()
+    assert mut_nobs == len(mut_mask_sparse)
     mut_freq = mut_nobs / hstrat_aux.alifestd_count_leaf_nodes(phylo_df)
     assert 0 <= mut_freq <= 1
 
     screen_masks = screen_mutation_defined_nodes(
         phylo_df,
-        has_mutation=mask,
+        has_mutation=mut_mask_dense,
         screens=(
             "combined_f20n50",
             "combined_f20n75",
@@ -473,20 +473,28 @@ def _process_mut(
         for screen_min_leaves in eval(cfg["cfg_clade_size_thresh"]):
             work_mask = (
                 phylo_df["work_mask"].values
-                & (phylo_df["num_leaves"] >= screen_min_leaves)
-                & (phylo_df["num_leaves_sibling"] >= screen_min_leaves)
+                & (phylo_df["num_leaves"].values >= screen_min_leaves)
+                & (phylo_df["num_leaves_sibling"].values >= screen_min_leaves)
+            )
+            phylo_df_background = (
+                phylo_df[work_mask & ~screen_mask]
+                .copy()
+                .reset_index(drop=True)
+            )
+            phylo_df_screened = (
+                phylo_df[work_mask & screen_mask].copy().reset_index(drop=True)
             )
             records.append(
                 _calc_screen_result(
-                    mut_char_ref=from_,
-                    mut_char_pos=site,
-                    mut_char_var=to,
+                    mut_char_ref=mut_char_ref,
+                    mut_char_pos=mut_char_pos,
+                    mut_char_var=mut_char_var,
                     mut_freq=mut_freq,
                     mut_nobs=mut_nobs,
                     mut_uuid=mut_uuid,
                     phylo_df=phylo_df,
-                    phylo_df_background=phylo_df[work_mask & ~mask],
-                    phylo_df_screened=phylo_df[work_mask & mask],
+                    phylo_df_background=phylo_df_background,
+                    phylo_df_screened=phylo_df_screened,
                     screen_min_leaves=screen_min_leaves,
                     screen_name=screen_name,
                     stat=stat,
@@ -538,8 +546,10 @@ def _process_replicate(
         return _process_mut(phylo_df, cfg, *args)
 
     tasks = [
-        joblib.delayed(_process_mut_worker)(mask, site, frm, to)
-        for (site, frm, to), mask in diffs_iter
+        joblib.delayed(_process_mut_worker)(
+            mut_mask, mut_char_pos, mut_char_ref, mut_char_var
+        )
+        for (mut_char_pos, mut_char_ref, mut_char_var), mut_mask in diffs_iter
     ]
 
     results = joblib.Parallel(
