@@ -164,7 +164,7 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
     phylo_df = hstrat_aux.alifestd_mark_sister_asexual(phylo_df, mutate=True)
 
-    min_leaves = cfg["cfg_clade_size_thresh"]
+    min_leaves = min(eval(cfg["cfg_clade_size_thresh"]))
     phylo_df["work_mask"] = (
         (phylo_df["num_leaves"] >= min_leaves)
         & (phylo_df["num_leaves_sibling"] >= min_leaves)
@@ -262,6 +262,7 @@ def _calc_screen_result(
     phylo_df: pd.DataFrame,
     phylo_df_background: pd.DataFrame,
     phylo_df_screened: pd.DataFrame,
+    screen_min_leaves: int,
     screen_name: str,
     stat: str,
 ) -> typing.Dict[str, typing.Any]:
@@ -318,6 +319,7 @@ def _calc_screen_result(
         "mut_nobs": mut_nobs,
         "mut_uuid": mut_uuid,
         "screen_name": screen_name,
+        "screen_min_leaves": screen_min_leaves,
         "phylo_df_background_len": len(phylo_df_background),
         "phyo_df_screened_len": len(phylo_df_screened),
         "tb_stat": stat,
@@ -426,6 +428,7 @@ def _calc_screen_result(
 
 def _process_mut(
     phylo_df: pd.DataFrame,
+    cfg: dict,
     mask: np.ndarray,
     site: int,
     from_: str,
@@ -467,25 +470,28 @@ def _process_mut(
     for stat, (screen_name, screen_mask) in it.product(
         stats, screen_masks.items()
     ):
-        records.append(
-            _calc_screen_result(
-                mut_char_ref=from_,
-                mut_char_pos=site,
-                mut_char_var=to,
-                mut_freq=mut_freq,
-                mut_nobs=mut_nobs,
-                mut_uuid=mut_uuid,
-                phylo_df=phylo_df,
-                phylo_df_background=phylo_df[
-                    phylo_df["work_mask"].values & ~screen_mask
-                ],
-                phylo_df_screened=phylo_df[
-                    phylo_df["work_mask"].values & screen_mask
-                ],
-                screen_name=screen_name,
-                stat=stat,
-            ),
-        )
+        for screen_min_leaves in eval(cfg["cfg_clade_size_thresh"]):
+            work_mask = (
+                phylo_df["work_mask"].values
+                & (phylo_df["num_leaves"] >= screen_min_leaves)
+                & (phylo_df["num_leaves_sibling"] >= screen_min_leaves)
+            )
+            records.append(
+                _calc_screen_result(
+                    mut_char_ref=from_,
+                    mut_char_pos=site,
+                    mut_char_var=to,
+                    mut_freq=mut_freq,
+                    mut_nobs=mut_nobs,
+                    mut_uuid=mut_uuid,
+                    phylo_df=phylo_df,
+                    phylo_df_background=phylo_df[work_mask & ~mask],
+                    phylo_df_screened=phylo_df[work_mask & mask],
+                    screen_min_leaves=screen_min_leaves,
+                    screen_name=screen_name,
+                    stat=stat,
+                ),
+            )
 
     return records
 
@@ -529,7 +535,7 @@ def _process_replicate(
     )
 
     def _process_mut_worker(*args: tuple) -> typing.List[dict]:
-        return _process_mut(phylo_df, *args)
+        return _process_mut(phylo_df, cfg, *args)
 
     tasks = [
         joblib.delayed(_process_mut_worker)(mask, site, frm, to)
