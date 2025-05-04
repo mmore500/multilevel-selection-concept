@@ -51,8 +51,6 @@ def screen_mutation_defined_nodes(
         )
     )
 
-    screens = list(screens)
-
     fisher20 = screen_trait_defined_fisher20
     naive50 = screen_trait_defined_naive50
     naive75 = screen_trait_defined_naive75
