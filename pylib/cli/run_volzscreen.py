@@ -468,9 +468,9 @@ def _process_mut(
             | phylo_df["variant"].str.endswith("+").values.astype(bool)
         ).all()
     ):
-        screen_masks["covaphast_ground_truth"] = phylo_df[
-            "variant"
-        ].str.endswith("'").values.astype(bool) & phylo_df.loc[
+        screen_masks["covaphast_variant"] = phylo_df["variant"].str.endswith(
+            "'"
+        ).values.astype(bool) & phylo_df.loc[
             phylo_df["ancestor_id"].values, "variant"
         ].str.endswith(
             "+"
@@ -487,7 +487,7 @@ def _process_mut(
             phylo_df.loc[phylo_df["ancestor_id"].values, "sequence_diff"],
         )
 
-        screen_masks["sequence_ground_truth"] = (
+        screen_masks["sequence_diff"] = (
             (sdpl.str.json_path_match(f"$.{mut_char_pos}") == mut_char_var)
             .fill_null(False)
             .to_numpy()
