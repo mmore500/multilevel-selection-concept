@@ -19,7 +19,7 @@ echo "SOURCE_REVISION ${SOURCE_REVISION}"
 SOURCE_REMOTE_URL="$(git config --get remote.origin.url)"
 echo "SOURCE_REMOTE_URL ${SOURCE_REMOTE_URL}"
 
-CONTAINER_URI="docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:df2bda518a014950b8bfb578d6f07081ce2c1ef7966566393002348007eb593e"
+CONTAINER_URI="docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:36d4b52e56c7304ab823dcc614e0bcf32fbd7e358268e401bb9a173fc3cbaec1"
 echo "CONTAINER_URI ${CONTAINER_URI}"
 
 echo "initialization telemetry ==============================================="
