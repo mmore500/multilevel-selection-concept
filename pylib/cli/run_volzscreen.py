@@ -458,6 +458,24 @@ def _process_mut(
         ),
     )
 
+    if (
+        "variant" in phylo_df.columns
+        and phylo_df["variant"].str.len().all()
+        and (
+            phylo_df["variant"].str.endswith("'").values.astype(bool)
+            | phylo_df["variant"].str.endswith("+").values.astype(bool)
+        ).all()
+    ):
+        screen_masks["covaphast_ground_truth"] = phylo_df[
+            "variant"
+        ].str.endswith("'").values.astype(bool) & phylo_df.loc[
+            phylo_df["ancestor_id"].values, "variant"
+        ].str.endswith(
+            "+"
+        ).values.astype(
+            bool
+        )
+
     stats = (
         "clade duration ratio",
         "clade fblr ratio",
