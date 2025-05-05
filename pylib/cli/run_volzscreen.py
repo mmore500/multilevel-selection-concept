@@ -459,7 +459,9 @@ def _process_mut(
     )
 
     if (
-        "variant" in phylo_df.columns
+        mut_char_ref == "+"
+        and mut_char_var == "'"
+        and "variant" in phylo_df.columns
         and phylo_df["variant"].str.len().all()
         and (
             phylo_df["variant"].str.endswith("'").values.astype(bool)
