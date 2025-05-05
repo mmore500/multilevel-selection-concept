@@ -255,6 +255,7 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 @filter_warnings("ignore", category=RuntimeWarning)
 def _calc_screen_result(
     *,
+    dist_df: pd.DataFrame,
     mut_char_pos: int,
     mut_char_ref: str,
     mut_char_var: str,
@@ -314,15 +315,10 @@ def _calc_screen_result(
 
     beq_nanmax = (
         bootstrap_extrema_quantile(
-            data=np.concatenate(
-                (
-                    screened[stat].values,
-                    background[stat].values,
-                ),
-            ).ravel(),
-            sample_value=screened[stat].max(),
+            data=dist_df[stat].values,
+            sample_value=np.nanmax(screened[stat].values),
             sample_size=len(screened[stat]),
-            n_bootstrap=1_000,
+            n_bootstrap=2_000,
             extrema=np.nanmax,
         )
         if len(screened[stat]) > 0
@@ -448,6 +444,7 @@ def _calc_screen_result(
 
 def _process_mut(
     phylo_df: pd.DataFrame,
+    dist_df: np.ndarray,
     cfg: dict,
     mut_mask_sparse: np.ndarray,
     mut_char_pos: int,
@@ -545,6 +542,7 @@ def _process_mut(
             )
             records.append(
                 _calc_screen_result(
+                    dist_df=dist_df,
                     mut_char_ref=mut_char_ref,
                     mut_char_pos=mut_char_pos,
                     mut_char_var=mut_char_var,
@@ -601,8 +599,22 @@ def _process_replicate(
         progress_wrap=tqdm,
     )
 
+    phylo_df = hstrat_aux.alifestd_mark_origin_time_delta_asexual(
+        phylo_df, mutate=True
+    )
+    dist_ids = np.repeat(
+        phylo_df["id"].values,
+        phylo_df["origin_time_delta"].values.astype(int),
+    )
+    dist_df = phylo_df.loc[dist_ids].copy()
+
     def _process_mut_worker(*args: tuple) -> typing.List[dict]:
-        return _process_mut(phylo_df, cfg, *args)
+        return _process_mut(
+            phylo_df,
+            dist_df,
+            cfg,
+            *args,
+        )
 
     tasks = [
         joblib.delayed(_process_mut_worker)(
