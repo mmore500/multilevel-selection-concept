@@ -318,8 +318,19 @@ def _calc_screen_result(
             data=dist_df[stat].values,
             sample_value=np.nanmax(screened[stat].values),
             sample_size=len(screened[stat]),
-            n_bootstrap=2_000,
+            n_bootstrap=500,
             extrema=np.nanmax,
+        )
+        if len(screened[stat]) > 0
+        else np.nan
+    )
+    beq_nanmean = (
+        bootstrap_extrema_quantile(
+            data=dist_df[stat].values,
+            sample_value=np.nanmax(screened[stat].values),
+            sample_size=len(screened[stat]),
+            n_bootstrap=500,
+            extrema=np.nanmean,
         )
         if len(screened[stat]) > 0
         else np.nan
@@ -429,6 +440,7 @@ def _calc_screen_result(
         "trinom_p_fill0": trinom_p_fill0,
         "trinom_stat_fill0": trinom_stat_fill0,
         "beq_nanmax": beq_nanmax,
+        "beq_nanmean": beq_nanmean,
         **{
             c: phylo_df[c].dropna().unique().astype(str).item()
             for c in phylo_df.columns
