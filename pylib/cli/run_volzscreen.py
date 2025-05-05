@@ -19,6 +19,7 @@ from sklearn.exceptions import ConvergenceWarning as SklearnConvergenceWarning
 from tqdm import tqdm
 
 from .._LokyBackendWithInitializer import LokyBackendWithInitializer
+from .._bootstrap_extrema_quantile import bootstrap_extrema_quantile
 from .._filter_warnings import filter_warnings
 from .._glimpse_df import glimpse_df
 from .._mask_sequence_diffs import mask_sequence_diffs
@@ -311,6 +312,23 @@ def _calc_screen_result(
     )
     trinom_stat_fill0 = np.sign(screened_fill0).mean()
 
+    beq_nanmax = (
+        bootstrap_extrema_quantile(
+            data=np.concatenate(
+                (
+                    screened[stat].values,
+                    background[stat].values,
+                ),
+            ).ravel(),
+            sample_value=screened[stat].max(),
+            sample_size=len(screened[stat]),
+            n_bootstrap=1_000,
+            extrema=np.nanmax,
+        )
+        if len(screened[stat]) > 0
+        else np.nan
+    )
+
     return {
         "mut": repr((mut_char_pos, mut_char_ref, mut_char_var)),
         "mut_char_pos": mut_char_pos,
@@ -414,6 +432,7 @@ def _calc_screen_result(
         "trinom_ktie_fill0": trinom_ktie_fill0,
         "trinom_p_fill0": trinom_p_fill0,
         "trinom_stat_fill0": trinom_stat_fill0,
+        "beq_nanmax": beq_nanmax,
         **{
             c: phylo_df[c].dropna().unique().astype(str).item()
             for c in phylo_df.columns
