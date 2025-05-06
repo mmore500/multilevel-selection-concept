@@ -138,45 +138,56 @@ class SyncHostCompartmentsSimple:
         log = people.infection_log
 
         for entry in log[self._infection_log_pos :]:
-            if entry["source"] is None:
+            source, target, variant = (
+                entry["source"],
+                entry["target"],
+                entry["variant"],
+            )
+
+            self._infection_days[target] = entry["date"]
+            if source is None:
                 continue
 
             flavor = mit.one(
                 f.label
                 for f in self._variant_flavors
-                if entry["variant"].startswith(f.label)
+                if variant.startswith(f.label)
             )
-            self._infection_days[entry["target"]] = entry["date"]
-            elapsed_days = (
-                entry["date"] - self._infection_days[entry["source"]]
-            )
+            elapsed_days = entry["date"] - self._infection_days[source]
 
-            if np.isnan(
-                people["exposed_variant"][entry["target"]]
-            ) and np.isnan(people["infectious_variant"][entry["target"]]):
+            if np.isnan(people["exposed_variant"][target]) and np.isnan(
+                people["infectious_variant"][target]
+            ):
                 warnings.warn(
                     "exposed_variant and infectious_variant are both NaN"
                 )
-            if entry["variant"].endswith("+"):
+                continue
+
+            if variant.endswith("+"):
                 lookup = self._0to1_transition_probabilities
                 transition_p = lookup[flavor][elapsed_days]
-                assert people["exposed_variant"][entry["target"]] % 2 == 1
-                people["exposed_variant"][entry["target"]] += (
-                    np.random.rand() < transition_p
-                )
-            elif entry["variant"].endswith("'"):
+                assert people["exposed_variant"][target] % 2 == 1
+                delta = np.random.rand() < transition_p
+                people["exposed_variant"][target] += delta
+                people["infectious_variant"][target] += delta
+                entry["variant"] = variant[:-1] + "'"
+            elif variant.endswith("'"):
                 lookup = self._1to0_transition_probabilities
                 transition_p = lookup[flavor][elapsed_days]
-                assert people["exposed_variant"][entry["target"]] % 2 == 0
-                people["exposed_variant"][entry["target"]] -= (
-                    np.random.rand() < transition_p
-                )
+                assert people["exposed_variant"][target] % 2 == 0
+                delta = np.random.rand() < transition_p
+                people["exposed_variant"][target] -= delta
+                people["infectious_variant"][target] -= delta
+                entry["variant"] = variant[:-1] + "+"
             else:
                 raise ValueError("Unsupported variant suffix")
 
-            if not np.isnan(people["infectious_variant"][entry["target"]]):
-                people["infectious_variant"][entry["target"]] = people[
+            if not (
+                np.isnan(people["infectious_variant"][target])
+                or np.isnan(people["exposed_variant"][target])
+            ):
+                people["infectious_variant"][target] = people[
                     "exposed_variant"
-                ][entry["target"]]
+                ][target]
 
         self._infection_log_pos = len(log)
