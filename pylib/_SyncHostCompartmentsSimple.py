@@ -21,12 +21,9 @@ def _elapse_day(
 
     wt_growth_per_doubling = f.withinhost_r_wt ** (1 / num_doublings)
     mut_growth_per_doubling = f.withinhost_r_mut ** (1 / num_doublings)
+    assert abs(wt_growth_per_doubling**num_doublings - f.withinhost_r_wt) < 1e-6
     assert (
-        abs(wt_growth_per_doubling**num_doublings - f.withinhost_r_wt) < 1e-6
-    )
-    assert (
-        abs(mut_growth_per_doubling**num_doublings - f.withinhost_r_mut)
-        < 1e-6
+        abs(mut_growth_per_doubling**num_doublings - f.withinhost_r_mut) < 1e-6
     )
 
     offset = 0
@@ -170,7 +167,8 @@ class SyncHostCompartmentsSimple:
                 delta = np.random.rand() < transition_p
                 people["exposed_variant"][target] += delta
                 people["infectious_variant"][target] += delta
-                entry["variant"] = variant[:-1] + "'"
+                if delta:
+                    entry["variant"] = variant[:-1] + "'"
             elif variant.endswith("'"):
                 lookup = self._1to0_transition_probabilities
                 transition_p = lookup[flavor][elapsed_days]
@@ -178,7 +176,8 @@ class SyncHostCompartmentsSimple:
                 delta = np.random.rand() < transition_p
                 people["exposed_variant"][target] -= delta
                 people["infectious_variant"][target] -= delta
-                entry["variant"] = variant[:-1] + "+"
+                if delta:
+                    entry["variant"] = variant[:-1] + "+"
             else:
                 raise ValueError("Unsupported variant suffix")
 
