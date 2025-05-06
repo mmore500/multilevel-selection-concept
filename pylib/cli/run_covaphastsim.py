@@ -13,7 +13,7 @@ from retry import retry
 from tqdm import tqdm
 from tqdm.contrib import tmap as tqdm_tmap
 
-from .._SyncHostCompartments import SyncHostCompartments
+from .._SyncHostCompartmentsSimple import SyncHostCompartmentsSimple
 from .._VariantFlavor import VariantFlavor
 from .._cv_infection_log_to_alstd_df import cv_infection_log_to_alstd_df
 from .._diff_sequences import diff_sequences
@@ -98,7 +98,7 @@ def _setup_sim(
     return (
         make_sim(
             preinterventions=[
-                SyncHostCompartments(
+                SyncHostCompartmentsSimple(
                     variant_flavors=variant_flavors,
                     pop_size=cfg["cfg_pop_size"],
                 ),
