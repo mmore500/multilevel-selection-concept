@@ -51,6 +51,8 @@ def _elapse_day(
             / host_capacity
         )
 
+    return compartments
+
 
 def _bootstrap_transition_probabilities(
     flavor: VariantFlavor,
@@ -74,7 +76,7 @@ def _bootstrap_transition_probabilities(
 
         sampled_strains = np.argmax(compartments_, axis=1)
         res.append((sampled_strains != init).mean())
-        _elapse_day(
+        compartments = _elapse_day(
             compartments,
             flavor=flavor,
             host_capacity=host_capacity,
