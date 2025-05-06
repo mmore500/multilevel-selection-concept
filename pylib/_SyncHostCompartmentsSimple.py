@@ -1,3 +1,5 @@
+import warnings
+
 import covasim as cv
 import more_itertools as mit
 import numpy as np
@@ -149,7 +151,12 @@ class SyncHostCompartmentsSimple:
                 entry["date"] - self._infection_days[entry["source"]]
             )
 
-            assert not np.isnan(people["exposed_variant"][entry["target"]])
+            if np.isnan(
+                people["exposed_variant"][entry["target"]]
+            ) and np.isnan(people["infectious_variant"][entry["target"]]):
+                warnings.warn(
+                    "exposed_variant and infectious_variant are both NaN"
+                )
             if entry["variant"].endswith("+"):
                 lookup = self._0to1_transition_probabilities
                 transition_p = lookup[flavor][elapsed_days]
