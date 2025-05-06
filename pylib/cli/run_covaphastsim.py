@@ -13,13 +13,11 @@ from retry import retry
 from tqdm import tqdm
 from tqdm.contrib import tmap as tqdm_tmap
 
-from .._SyncHostCompartments import SyncHostCompartments
+from .._SyncHostCompartmentsSimple import SyncHostCompartmentsSimple
 from .._VariantFlavor import VariantFlavor
 from .._cv_infection_log_to_alstd_df import cv_infection_log_to_alstd_df
 from .._diff_sequences import diff_sequences
-from .._generate_dummy_sequences_phastSim import (
-    generate_dummy_sequences_phastSim,
-)
+from .._generate_dummy_sequences_simple import generate_dummy_sequences_simple
 from .._glimpse_df import glimpse_df
 from .._make_cv_sim_uk import make_cv_sim_uk
 from .._make_cv_sim_vanilla import make_cv_sim_vanilla
@@ -98,7 +96,7 @@ def _setup_sim(
     return (
         make_sim(
             preinterventions=[
-                SyncHostCompartments(
+                SyncHostCompartmentsSimple(
                     variant_flavors=variant_flavors,
                     pop_size=cfg["cfg_pop_size"],
                 ),
@@ -154,9 +152,9 @@ def _generate_sequences(
     dummy_leaves["id"] += id_delta
 
     with hstrat_aux.log_context_duration(
-        "generate_dummy_sequences_phastSim", logger=print
+        "generate_dummy_sequences_simple", logger=print
     ):
-        seq_df = generate_dummy_sequences_phastSim(
+        seq_df = generate_dummy_sequences_simple(
             pd.concat([phylo_df, dummy_leaves], ignore_index=True),
             ancestral_sequences=reference_sequences,
             progress_map=tqdm_tmap,
