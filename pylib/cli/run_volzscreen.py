@@ -349,6 +349,10 @@ def _calc_screen_result(
         "phylo_df_background_len": len(phylo_df_background),
         "phyo_df_screened_len": len(phylo_df_screened),
         "tb_stat": stat,
+        "screened_frac0": (screened[stat].values == 0).mean(),
+        "screened_frac1": (screened[stat].values == 1).mean(),
+        "screened_frac2": (screened[stat].values == 2).mean(),
+        "screened_frac3": (screened[stat].values == 3).mean(),
         "screened_nanmin": np.nanmin(
             screened[stat].values.astype(float), initial=np.inf
         ),
