@@ -1,1 +1,43 @@
 \section{Conclusion} \label{sec:conclusion}
+
+In this work, we have evaluated two quantitative methodologies for detecting the presence of multilevel selection effects within an evolving population.
+The goal of this work is to validate the sensitivity and accuracy of these methods and identify potential limiting factors with respect to the scenarios in which they can be employed.
+
+The first approach is due to Francesci and Volz.
+It allows for the presence of multilevel selection to be detected, and the specific genome sites to be identified.
+Although the evidence presented by this approach directly isn't as presice or conclusive, the fact that it identifies mutational loci is particularly valuable.
+In ALife systems, it is often feasible to pursue follow-on knockout experiments in order to assess the nature of the phenomenon in a powerful manner.
+In order to categorize candidate mutations to screen for, the ancestor or consensus must be well-defined, which may be a difficult challenge for very-fast evolving populations.
+However, in many alife systems it is actually possible to directly ovserve mutational events rather than having to infer them against a wildtype background so this issue may be moot. 
+
+
+The second approach is based on mathematical formalism of the statistical effects of interactions between selection effects and changes in population composition.
+Under this framing, the multilevel selection dynamics can be connected to expexted structural artifactsin phylogeny structure within groups versus between groups.
+Notably, unlike the Francesci and Volz approach, this method is agnostic to sequence data.
+
+Both approaches require phylogeny data.
+In the Francesci and Volz approach, this phylogeny data must be accompanied by sequence data.
+Sufficient population size and sampled tip count is necessary in order to observe multiple independent originations of the same mutation.
+This may become difficult in scenarios where mutation rates are very low or the quantity of candidate genome sites is very high (although perhaps systematic assays injecting mutations at an elevated rate within a simulated population could be devised).
+
+In the Price Equation approach, the phylogeny data must include comarator taxa sampled from within the same group, as well as explicit definitions of the hypothesized groups.
+In future work, it would be interesting to explore clustering methods to hypothesize groups to allow this method to be applied to unlabeled data.
+
+\subsection{Future Work}
+
+Multilevel selection is of core interest within artificial life research.
+What constitutes an organism is a fundamental question within artificial life and one that the field is uniquely suited to investigate.
+For some experiments, it is advantageous to study individuality in terms of phenomena that arise de novo within a simulation --- and therefore must be detected --- rather than being coded in a priori.
+Transitions in individuality have also been highlighted with respect to open-ended evolution.
+Again, within this framing the key question of interest is with regard to phenomena that cannot be predicted a priori and therefore can be difficult to recognize and quantify.
+For this purpose, assessment of open-ended properties of systems can be made much more rigorous by incorporating the methodologies assessed in this work.
+In particular, given the fundamental role of replication within evolutionary dynamics, phylogeny-based methods are quite generic and can be readily generalized over a broad swath of systems --- allthough there may some challenges for truly low-level systems where no fundamental replicator unit is defined a priori and therefore must be discerned on-the-fly.
+
+A need for methods to collect phylogenies and also a need for high-throughput methods to study phylogenies.
+We have created the hstrat and phylotrack libraries in order to facilitate collection of phylogeny data within artificial life simulations.
+With regard to the need for high performance phyloanalysis infrastructure, this need is actually shared with the larger bioinformatics community -- therefore, we should be collaborating on a shared open source tools infrastructure.
+
+In service of present work, we have utilized phyloanalysis tools built around the alife data standard, and uniting it with the powerful high-throughput dataframe ecosystem of existing tools.
+In addition to exploring cutting-edge computational approximations transformed analysis that took upwards of 40 hours to one that can be completed on the order of minutes.
+In other work, we hace scaled this approach for processing applications on billion tip phylogenies, and there is strong potential to develop this as a broader part of the high-performance phylogenetics ecosustem.
+As pursued in present work, there is also substantial potential for there to be collaborations exploiting the capability of artificial life systems to generate rich ground truth data as a testbed for bioinformatics statistics, as was pursued in present work.
