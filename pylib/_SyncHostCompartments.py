@@ -9,6 +9,7 @@ class SyncHostCompartments:
     _host_capacity: float
     _host_compartments: np.ndarray
     _variant_flavors: list[VariantFlavor]
+    _infection_log_pos: int
 
     def __init__(
         self: "SyncHostCompartments",
@@ -25,32 +26,41 @@ class SyncHostCompartments:
         self._host_capacity = host_capacity
         self._host_compartments = np.zeros(shape, dtype=float)
         self._variant_flavors = variant_flavors
+        self._infection_log_pos = 0
 
     def __call__(self: "SyncHostCompartments", sim: cv.Sim) -> None:
         compartments = self._host_compartments
         people = sim.people
+        log = people.infection_log
+        var_lookup = {v: k for k, v in sim["variant_map"].items()}
+        num_variants = self._host_compartments.shape[1]
+        assert len(var_lookup) == num_variants
 
         ## sync covasim to host compartments
         #######################################################################
-        # zero out non-infectious/exposed compartments
         mask = ~(people["infectious"] | people["exposed"])
         compartments[mask, :] = 0.0
+        for entry in log[self._infection_log_pos :]:
+            _source, target, variant = (
+                entry["source"],
+                entry["target"],
+                entry["variant"],
+            )
+            # zero out non-infectious/exposed compartments
+            compartments[target, :] = 0.0
 
-        # ensure host compartments are initialized w/ covasim infectious variant
-        num_variants = self._host_compartments.shape[1]
+            # init w/ covasim infectious variant
+            compartments[target, var_lookup[variant]] = 1.0
+
+        self._infection_log_pos = len(log)
+
         assert (
             not (people["infectious_variant"] <= 0).any()
             and not (people["infectious_variant"] >= num_variants).any()
         )
-        for variant in range(1, num_variants):
-            compartments[:, variant] = np.maximum(
-                people["infectious_variant"] == variant,
-                compartments[:, variant],
-            )
 
         # update host compartments using luria-delbruck dynamics
         #######################################################################
-
         for i, variant_flavor in enumerate(self._variant_flavors):
             offset = i * 2 + 1
 
