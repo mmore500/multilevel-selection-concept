@@ -105,6 +105,12 @@ def _hsurf_fudge_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 @_log_context_duration("_prep_phylo", logger=print)
 def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
+    phylo_df.drop(
+        columns=["is_leaf", "is_root", "node_depth", "num_children"],
+        errors="ignore",
+        inplace=True,
+    )
+
     phylo_df["origin_time"] = phylo_df["divergence_from_root"]
 
     phylo_df = hstrat_aux.alifestd_to_working_format(phylo_df, mutate=False)
@@ -113,8 +119,6 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     del phylo_df["ancestor_list"]
 
     # clean tree topology
-    phylo_df = alifestd_add_inner_leaves_wf(phylo_df, mutate=True)
-
     phylo_df = alifestd_downsample_tips_asexual_wf(
         phylo_df, n_downsample=cfg["trt_n_downsample"]
     )
@@ -125,12 +129,12 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     if cfg["trt_hsurf_bits"]:
         phylo_df = _hsurf_fudge_phylo(phylo_df, cfg)
 
-    phylo_df = alifestd_splay_polytomies_wf(phylo_df, mutate=True)
-    phylo_df.drop(columns=["is_leaf"], inplace=True, errors="ignore")
-
     phylo_df = alifestd_collapse_unifurcations_wf(phylo_df, mutate=True)
-
     phylo_df = alifestd_delete_unifurcating_roots_asexual_wf(
+        phylo_df, mutate=True
+    )
+    phylo_df = alifestd_splay_polytomies_wf(phylo_df, mutate=True)
+    assert hstrat_aux.alifestd_is_strictly_bifurcating_asexual(
         phylo_df, mutate=True
     )
 
@@ -144,11 +148,25 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     )
     phylo_df = hstrat_aux.alifestd_mark_roots(phylo_df, mutate=True)
 
+    phylo_df.drop(
+        columns=["is_leaf", "is_root", "node_depth", "num_children"],
+        errors="ignore",
+        inplace=True,
+    )
+
     return phylo_df
 
 
 @_log_context_duration("_calc_tb_stats", logger=print)
 def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
+
+    phylo_df.drop(
+        columns=["is_leaf", "is_root", "node_depth", "num_children"],
+        errors="ignore",
+        inplace=True,
+    )
+
+    phylo_df = hstrat_aux.alifestd_mark_leaves(phylo_df, mutate=True)
 
     with hstrat_aux.log_context_duration(
         "alifestd_mask_monomorphic_clades_asexual", logger=print
@@ -161,6 +179,9 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
         )
 
     assert hstrat_aux.alifestd_is_working_format_asexual(phylo_df, mutate=True)
+    assert hstrat_aux.alifestd_is_strictly_bifurcating_asexual(
+        phylo_df, mutate=True
+    )
     phylo_df.reset_index(drop=True, inplace=True)
 
     phylo_df = hstrat_aux.alifestd_mark_sister_asexual(phylo_df, mutate=True)
