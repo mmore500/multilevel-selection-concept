@@ -13,7 +13,7 @@ from retry import retry
 from tqdm import tqdm
 from tqdm.contrib import tmap as tqdm_tmap
 
-from .._SyncHostCompartmentsSimple import SyncHostCompartmentsSimple
+from .._SyncHostCompartments import SyncHostCompartments
 from .._VariantFlavor import VariantFlavor
 from .._cv_infection_log_to_alstd_df import cv_infection_log_to_alstd_df
 from .._diff_sequences import diff_sequences
@@ -45,6 +45,7 @@ def _get_reference_sequences(
             reference_sequences["Aligned Sequence"]
             .str.replace(r"\s+", "", regex=True)
             .str.slice(0, cfg.get("cfg_maxseqlen", None))
+            .str.slice(0, cfg.get("trt_maxseqlen", None))
             .values,
         ),
     )
@@ -96,7 +97,7 @@ def _setup_sim(
     return (
         make_sim(
             preinterventions=[
-                SyncHostCompartmentsSimple(
+                SyncHostCompartments(
                     variant_flavors=variant_flavors,
                     pop_size=cfg["cfg_pop_size"],
                 ),
@@ -120,6 +121,11 @@ def _extract_phylo(
 
     with hstrat_aux.log_context_duration("alifestd_join_roots", logger=print):
         phylo_df = hstrat_aux.alifestd_join_roots(phylo_df, mutate=True)
+
+    with hstrat_aux.log_context_duration("aliestd_add_inner_niblings_asexual"):
+        phylo_df = hstrat_aux.alifestd_add_inner_niblings_asexual(
+            phylo_df, mutate=True
+        )
 
     with hstrat_aux.log_context_duration(
         "alifestd_to_working_format", logger=print
@@ -145,21 +151,15 @@ def _generate_sequences(
     reference_sequences: typing.Dict[str, str],
 ) -> pd.DataFrame:
 
-    # workaround to generate sequences for all nodes, not just leaves
-    dummy_leaves = phylo_df.copy()
-    dummy_leaves["ancestor_id"] = dummy_leaves["id"]
-    id_delta = phylo_df["id"].max() + 1
-    dummy_leaves["id"] += id_delta
-
+    # generate sequences just for leaves
     with hstrat_aux.log_context_duration(
         "generate_dummy_sequences_simple", logger=print
     ):
         seq_df = generate_dummy_sequences_simple(
-            pd.concat([phylo_df, dummy_leaves], ignore_index=True),
+            phylo_df,
             ancestral_sequences=reference_sequences,
             progress_map=tqdm_tmap,
         )
-        seq_df["id"] -= id_delta  # revert dummy leaves back to true nodes
 
     with hstrat_aux.log_context_duration("extract variant", logger=print):
         seq_df["variant"] = seq_df["id"].map(
@@ -167,7 +167,6 @@ def _generate_sequences(
         )
 
     with hstrat_aux.log_context_duration("prepend sequence", logger=print):
-
         suffix = cfg["cfg_suffix_wt"] * (cfg["cfg_num_mut_sites"] - 1)
 
         seq_df["sequence"] = (
@@ -187,17 +186,26 @@ def _generate_sequences(
     return seq_df
 
 
-def _add_sequence_diffs(phylo_df: pd.DataFrame):
+def _add_sequence_diffs(phylo_df: pd.DataFrame) -> pd.DataFrame:
     assert hstrat_aux.alifestd_is_topologically_sorted(phylo_df)
     assert hstrat_aux.alifestd_count_root_nodes(phylo_df) == 1
 
-    phylo_df = phylo_df.set_index("id", drop=False)
-    ancestral_sequence = phylo_df.at[0, "sequence"]
-    phylo_df["ancestral_sequence"] = ancestral_sequence
-    assert phylo_df["sequence"].str.len().nunique() == 1
+    phylo_df = hstrat_aux.alifestd_mark_node_depth_asexual(
+        phylo_df, mutate=True
+    )
+    phylo_df = hstrat_aux.alifestd_mark_leaves(phylo_df, mutate=True)
 
-    phylo_df["sequence_diff"] = diff_sequences(
-        phylo_df["sequence"],
+    ancestral_sequence = phylo_df.loc[
+        phylo_df["is_leaf"]
+    ].sort_values(by="node_depth")["sequence"].iat[0]
+    assert len(ancestral_sequence) == phylo_df["sequence"].str.len().max()
+
+    phylo_df["ancestral_sequence"] = ancestral_sequence
+    assert phylo_df["sequence"].dropna().str.len().nunique() == 1
+
+    phylo_df["sequence_diff"] = ""
+    phylo_df.loc[phylo_df["is_leaf"], "sequence_diff"] = diff_sequences(
+        phylo_df.loc[phylo_df["is_leaf"], "sequence"],
         ancestral_sequence=ancestral_sequence,
         progress_wrap=tqdm,
     )
@@ -235,14 +243,17 @@ def main(cfg: dict) -> pd.DataFrame:
     glimpse_df(seq_df, logger=print)
 
     with hstrat_aux.log_context_duration("phylo_df.merge", logger=print):
-        phylo_df = phylo_df.reset_index(drop=True).merge(
+        phylo_df_ = phylo_df.reset_index(drop=True).merge(
             seq_df.reset_index(drop=True).drop(
                 [col for col in phylo_df.columns if col != "id"],
                 axis="columns",
                 errors="ignore",
             ),
             on="id",
+            how="outer",
         )
+        assert len(phylo_df) == len(phylo_df_)
+        phylo_df = phylo_df_
 
     with hstrat_aux.log_context_duration("_add_sequence_diffs", logger=print):
         phylo_df = _add_sequence_diffs(phylo_df=phylo_df)
