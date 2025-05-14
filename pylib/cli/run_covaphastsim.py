@@ -117,10 +117,37 @@ def _extract_phylo(
     with hstrat_aux.log_context_duration(
         "cv_infection_log_to_alstd_df", logger=print
     ):
-        phylo_df = cv_infection_log_to_alstd_df(infection_log)
+        phylo_df = cv_infection_log_to_alstd_df(
+            infection_log, join_roots=False
+        )
+
+    with hstrat_aux.log_context_duration("map variant_flavor", logger=print):
+        phylo_df["variant_flavor"] = phylo_df["variant"].map(
+            {
+                v.label: vf.label
+                for vf in variant_flavors
+                for v in (vf.variant_mut, vf.variant_wt)
+            },
+        )
 
     with hstrat_aux.log_context_duration("alifestd_join_roots", logger=print):
-        phylo_df = hstrat_aux.alifestd_join_roots(phylo_df, mutate=True)
+        phylo_df_ = hstrat_aux.alifestd_join_roots(
+            pd.concat(
+                [
+                    hstrat_aux.alifestd_join_roots(group_df, mutate=False)
+                    for __, group_df in phylo_df.groupby(
+                        "variant_flavor",
+                        as_index=False,
+                        observed=True,
+                    )
+                ],
+                ignore_index=True,
+            ),
+            mutate=True,
+        )
+        assert len(phylo_df) == len(phylo_df_)
+        phylo_df = phylo_df_
+        assert hstrat_aux.alifestd_validate(phylo_df)
 
     with hstrat_aux.log_context_duration("aliestd_add_inner_niblings_asexual"):
         phylo_df = hstrat_aux.alifestd_add_inner_niblings_asexual(
@@ -131,15 +158,6 @@ def _extract_phylo(
         "alifestd_to_working_format", logger=print
     ):
         phylo_df = hstrat_aux.alifestd_to_working_format(phylo_df, mutate=True)
-
-    with hstrat_aux.log_context_duration("map variant_flavor", logger=print):
-        phylo_df["variant_flavor"] = phylo_df["variant"].map(
-            {
-                v.label: vf.label
-                for vf in variant_flavors
-                for v in (vf.variant_mut, vf.variant_wt)
-            },
-        )
 
     return phylo_df
 
