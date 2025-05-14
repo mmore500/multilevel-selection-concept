@@ -45,6 +45,7 @@ def _get_reference_sequences(
             reference_sequences["Aligned Sequence"]
             .str.replace(r"\s+", "", regex=True)
             .str.slice(0, cfg.get("cfg_maxseqlen", None))
+            .str.slice(0, cfg.get("trt_maxseqlen", None))
             .values,
         ),
     )
