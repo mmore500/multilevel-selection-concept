@@ -53,6 +53,7 @@ def test_run_volzscreen_covaphastsim_smoke(hsurf_bits: int):
         check=True,
         env={"PYTHONPATH": f"{pwd}"},
         input=f"""
+cfg_maxseqlen: 300
 cfg_make_cv_sim_recipe: "make_cv_sim_uk"
 cfg_make_wt_specs_recipe: "make_wt_specs_uk"
 cfg_num_mut_sites: 1
