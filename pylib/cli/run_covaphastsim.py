@@ -130,6 +130,13 @@ def _extract_phylo(
             },
         )
 
+    phylo_df = hstrat_aux.alifestd_to_working_format(phylo_df, mutate=True)
+    phylo_df.reset_index(drop=True, inplace=True)
+    assert (
+        phylo_df.loc[phylo_df["ancestor_id"], "variant_flavor"].values
+        == phylo_df["variant_flavor"].values
+    ).all()
+
     with hstrat_aux.log_context_duration("alifestd_join_roots", logger=print):
         variant_dfs = [
             hstrat_aux.alifestd_join_roots(group_df, mutate=False)
@@ -139,14 +146,21 @@ def _extract_phylo(
                 observed=True,
             )
         ]
-        assert all(hstrat_aux.alifestd_validate(df) for df in variant_dfs)
+        assert all(
+            hstrat_aux.alifestd_validate(
+                hstrat_aux.alifestd_try_add_ancestor_list_col(df),
+            )
+            for df in variant_dfs
+        )
 
         phylo_df_ = hstrat_aux.alifestd_join_roots(
             pd.concat(variant_dfs, ignore_index=True), mutate=True
         )
         assert len(phylo_df) == len(phylo_df_)
         phylo_df = phylo_df_
-        assert hstrat_aux.alifestd_validate(phylo_df)
+        assert hstrat_aux.alifestd_validate(
+            hstrat_aux.alifestd_try_add_ancestor_list_col(phylo_df),
+        )
 
     with hstrat_aux.log_context_duration("aliestd_add_inner_niblings_asexual"):
         phylo_df = hstrat_aux.alifestd_add_inner_niblings_asexual(
