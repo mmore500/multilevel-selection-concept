@@ -131,19 +131,18 @@ def _extract_phylo(
         )
 
     with hstrat_aux.log_context_duration("alifestd_join_roots", logger=print):
+        variant_dfs = [
+            hstrat_aux.alifestd_join_roots(group_df, mutate=False)
+            for __, group_df in phylo_df.groupby(
+                "variant_flavor",
+                as_index=False,
+                observed=True,
+            )
+        ]
+        assert all(hstrat_aux.alifestd_validate(df) for df in variant_dfs)
+
         phylo_df_ = hstrat_aux.alifestd_join_roots(
-            pd.concat(
-                [
-                    hstrat_aux.alifestd_join_roots(group_df, mutate=False)
-                    for __, group_df in phylo_df.groupby(
-                        "variant_flavor",
-                        as_index=False,
-                        observed=True,
-                    )
-                ],
-                ignore_index=True,
-            ),
-            mutate=True,
+            pd.concat(variant_dfs, ignore_index=True), mutate=True
         )
         assert len(phylo_df) == len(phylo_df_)
         phylo_df = phylo_df_
