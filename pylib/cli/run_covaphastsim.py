@@ -251,7 +251,7 @@ def main(cfg: dict) -> pd.DataFrame:
     print(
         f"{phylo_df.loc[fil, 'sequence_diff'].str.slice(0, 10).value_counts()}"
     )
-    glimpse_df(seq_df, logger=print)
+    glimpse_df(phylo_df, logger=print)
 
     with hstrat_aux.log_context_duration("finalize phylo_df", logger=print):
         phylo_df["py_random_sample2"] = random.getrandbits(32)
