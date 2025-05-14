@@ -21,9 +21,12 @@ def _elapse_day(
 
     wt_growth_per_doubling = f.withinhost_r_wt ** (1 / num_doublings)
     mut_growth_per_doubling = f.withinhost_r_mut ** (1 / num_doublings)
-    assert abs(wt_growth_per_doubling**num_doublings - f.withinhost_r_wt) < 1e-6
     assert (
-        abs(mut_growth_per_doubling**num_doublings - f.withinhost_r_mut) < 1e-6
+        abs(wt_growth_per_doubling**num_doublings - f.withinhost_r_wt) < 1e-6
+    )
+    assert (
+        abs(mut_growth_per_doubling**num_doublings - f.withinhost_r_mut)
+        < 1e-6
     )
 
     offset = 0

@@ -195,9 +195,11 @@ def _add_sequence_diffs(phylo_df: pd.DataFrame) -> pd.DataFrame:
     )
     phylo_df = hstrat_aux.alifestd_mark_leaves(phylo_df, mutate=True)
 
-    ancestral_sequence = phylo_df.loc[
-        phylo_df["is_leaf"]
-    ].sort_values(by="node_depth")["sequence"].iat[0]
+    ancestral_sequence = (
+        phylo_df.loc[phylo_df["is_leaf"]]
+        .sort_values(by="node_depth")["sequence"]
+        .iat[0]
+    )
     assert len(ancestral_sequence) == phylo_df["sequence"].str.len().max()
 
     phylo_df["ancestral_sequence"] = ancestral_sequence
