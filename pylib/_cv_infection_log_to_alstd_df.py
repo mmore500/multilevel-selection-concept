@@ -16,7 +16,9 @@ def cv_infection_log_to_alstd_df(
     ancestor_ids = []
     for i, row in df.iterrows():
         source, target = row["source"], row["target"]
-        ancestor_ids.append(most_recent_event.get(source, i))
+        ancestor_ids.append(
+            i if source == target else most_recent_event.get(source, i),
+        )
         most_recent_event[target] = i
 
     df["id"] = range(len(df))
