@@ -182,7 +182,7 @@ def _generate_sequences(
             + seq_df["sequence"]
         )
 
-    assert len(seq_df) == len(phylo_df)
+    assert len(seq_df) == hstrat_aux.alifestd_count_leaf_nodes(phylo_df)
     return seq_df
 
 
