@@ -186,7 +186,7 @@ def _generate_sequences(
     return seq_df
 
 
-def _add_sequence_diffs(phylo_df: pd.DataFrame):
+def _add_sequence_diffs(phylo_df: pd.DataFrame) -> pd.DataFrame:
     assert hstrat_aux.alifestd_is_topologically_sorted(phylo_df)
     assert hstrat_aux.alifestd_count_root_nodes(phylo_df) == 1
 
