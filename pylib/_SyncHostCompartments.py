@@ -38,8 +38,6 @@ class SyncHostCompartments:
 
         ## sync covasim to host compartments
         #######################################################################
-        mask = ~(people["infectious"] | people["exposed"])
-        compartments[mask, :] = 0.0
         for entry in log[self._infection_log_pos :]:
             _source, target, variant = (
                 entry["source"],
