@@ -72,7 +72,6 @@ def _worker(
     group_df = hstrat_aux.alifestd_mark_origin_time_delta_asexual(
         group_df, mutate=True
     )
-    group_df = hstrat_aux.alifestd_mark_leaves(group_df, mutate=True)
 
     ancestral_arr = np.array(
         [
@@ -94,7 +93,7 @@ def _worker(
     with hstrat_aux.log_context_duration("extract", print):
         int_to_base = np.array(["A", "C", "G", "T"], dtype="<U1")
 
-        leaf_arrs = arrs[group_df["is_leaf"].values, :]
+        leaf_arrs = arrs[group_df["outer_is_leaf"].values, :]
 
         # map ints -> bases to get a 2D array of single-character strings
         # shape is (n_leaves, L), dtype='<U1'
@@ -107,7 +106,7 @@ def _worker(
     res = pl.DataFrame(
         {
             "id": group_df.loc[
-                group_df["is_leaf"].values, "taxon_label"
+                group_df["outer_is_leaf"].values, "taxon_label"
             ].values,
             "sequence": leaf_strs,
         },
@@ -141,7 +140,6 @@ def _worker(
         ancestral_sequence_,
     )
 
-    assert len(res) == hstrat_aux.alifestd_count_leaf_nodes(group_df)
     assert all(res["sequence"].first()[pos] == "-" for pos in dash_indices)
 
     return res.to_pandas()
@@ -211,8 +209,11 @@ def generate_dummy_sequences_simple(
         )
 
     phylogeny_df["variant_flavor_origin"] = origins
+    phylogeny_df = hstrat_aux.alifestd_mark_leaves(phylogeny_df, mutate=True)
+    phylogeny_df["outer_is_leaf"] = phylogeny_df["is_leaf"].values
 
     groups = list(phylogeny_df.groupby("variant_flavor_origin", sort=False))
+    assert sum(len(group_df) for __, group_df in groups) == len(phylogeny_df)
     args = [
         (
             flavor_origin,
@@ -225,4 +226,11 @@ def generate_dummy_sequences_simple(
 
     generated_sequences = progress_map(_worker, args)
 
-    return pd.concat(generated_sequences, ignore_index=True)
+    res = pd.concat(generated_sequences, ignore_index=True)
+    res.drop(
+        columns=["outer_is_leaf"],
+        errors="ignore",
+        inplace=True,
+    )
+    assert len(res) == hstrat_aux.alifestd_count_leaf_nodes(phylogeny_df)
+    return res
