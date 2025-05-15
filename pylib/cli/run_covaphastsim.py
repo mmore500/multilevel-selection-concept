@@ -182,15 +182,22 @@ def _generate_sequences(
     reference_sequences: typing.Dict[str, str],
 ) -> pd.DataFrame:
 
+    # workaround to generate sequences for all nodes, not just leaves
+    dummy_leaves = phylo_df.copy()
+    dummy_leaves["ancestor_id"] = dummy_leaves["id"]
+    id_delta = phylo_df["id"].max() + 1
+    dummy_leaves["id"] += id_delta
+
     # generate sequences just for leaves
     with hstrat_aux.log_context_duration(
         "generate_dummy_sequences_simple", logger=print
     ):
         seq_df = generate_dummy_sequences_simple(
-            phylo_df,
+            pd.concat([phylo_df, dummy_leaves], ignore_index=True),
             ancestral_sequences=reference_sequences,
             progress_map=tqdm_tmap,
         )
+        seq_df["id"] -= id_delta  # revert dummy leaves back to true nodes
 
     with hstrat_aux.log_context_duration("extract variant", logger=print):
         seq_df["variant"] = seq_df["id"].map(
@@ -213,7 +220,7 @@ def _generate_sequences(
             + seq_df["sequence"]
         )
 
-    assert len(seq_df) == hstrat_aux.alifestd_count_leaf_nodes(phylo_df)
+    assert len(seq_df) == len(phylo_df)
     return seq_df
 
 
@@ -236,9 +243,8 @@ def _add_sequence_diffs(phylo_df: pd.DataFrame) -> pd.DataFrame:
     phylo_df["ancestral_sequence"] = ancestral_sequence
     assert phylo_df["sequence"].dropna().str.len().nunique() == 1
 
-    phylo_df["sequence_diff"] = ""
-    phylo_df.loc[phylo_df["is_leaf"], "sequence_diff"] = diff_sequences(
-        phylo_df.loc[phylo_df["is_leaf"], "sequence"],
+    phylo_df["sequence_diff"] = diff_sequences(
+        phylo_df["sequence"],
         ancestral_sequence=ancestral_sequence,
         progress_wrap=tqdm,
     )
