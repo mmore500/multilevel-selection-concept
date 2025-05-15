@@ -16,6 +16,7 @@ def _do_sequences(
     ancestral_arr: np.ndarray,
     ancestor_ids: np.ndarray,
     origin_time_deltas: np.ndarray,
+    p_mut: float,
 ) -> np.ndarray:
     n = len(ancestral_arr)
     N = len(ancestor_ids)
@@ -32,7 +33,7 @@ def _do_sequences(
 
         rand1to3 = (np.random.rand(n) * 3.0).astype(np.uint8) + 1
         muts = rand1to3 * (
-            np.random.rand(n) < ot_delta * 2.74e-6  # this is approximation
+            np.random.rand(n) < 1.0 - np.power(1.0 - p_mut, ot_delta)
         )
         arrs[idx, :] = (arrs[ancestor_id, :] + muts) & 3
 
@@ -43,7 +44,7 @@ def _worker(
     args: typing.Tuple[int, pd.DataFrame, typing.Dict[str, str]],
 ) -> pd.DataFrame:
     """Worker for phastSim simulation."""
-    flavor_origin, group_df, ancestral_sequences, seed = args
+    flavor_origin, group_df, ancestral_sequences, seed, p_mut = args
     seed_global_rngs(seed)
     group_df = group_df.copy().reset_index(drop=True)
     group_df.loc[
@@ -88,6 +89,7 @@ def _worker(
             ancestral_arr,
             group_df["ancestor_id"].to_numpy(dtype=np.uint32),
             group_df["origin_time"].to_numpy(dtype=np.float64),
+            p_mut=p_mut,
         )
 
     with hstrat_aux.log_context_duration("extract", print):
@@ -148,6 +150,7 @@ def _worker(
 def generate_dummy_sequences_simple(
     phylogeny_df: pd.DataFrame,
     ancestral_sequences: typing.Dict[str, str],  # variant flavor -> sequence
+    p_mut: float,
     progress_map: typing.Callable = map,
 ) -> pd.DataFrame:
     """Generate dummy sequences based on a phylogeny DataFrame and an ancestral
@@ -162,6 +165,9 @@ def generate_dummy_sequences_simple(
 
     ancestral_sequence : str
         The ancestral sequence.
+
+    p_mut : float
+        Probability of mutation per base per day.
 
     progress_map : typing.Callable, default map
         Pass tqdm.contrib.concurrent.process_map or equivalent to display
@@ -220,6 +226,7 @@ def generate_dummy_sequences_simple(
             group_df,
             ancestral_sequences,
             random.getrandbits(32),
+            p_mut,
         )
         for flavor_origin, group_df in groups
     ]
