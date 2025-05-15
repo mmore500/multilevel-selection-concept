@@ -11,14 +11,12 @@ import numpy as np
 import pandas as pd
 from retry import retry
 from tqdm import tqdm
-from tqdm.contrib import tmap as tqdm_tmap
 
 from .._SyncHostCompartments import SyncHostCompartments
 from .._SyncHostCompartmentsBackground import SyncHostCompartmentsBackground
 from .._VariantFlavor import VariantFlavor
 from .._cv_infection_log_to_alstd_df import cv_infection_log_to_alstd_df
 from .._diff_sequences import diff_sequences
-from .._generate_dummy_sequences_simple import generate_dummy_sequences_simple
 from .._glimpse_df import glimpse_df
 from .._make_cv_sim_uk import make_cv_sim_uk
 from .._make_cv_sim_vanilla import make_cv_sim_vanilla
@@ -29,7 +27,6 @@ from .._make_wt_specs_uk import make_wt_specs_uk
 from .._read_config import read_config
 from .._seed_global_rngs import seed_global_rngs
 from .._shrink_df import shrink_df
-from .._shuffle_string import shuffle_string
 from .._strong_uuid4_str import strong_uuid4_str
 
 
