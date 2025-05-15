@@ -717,6 +717,9 @@ if __name__ == "__main__":
     glimpse_df(screen_df.head(), logger=print)
     glimpse_df(screen_df.tail(), logger=print)
 
+    if cfg["trt_hsurf_bits"] == 0:
+        assert "sequence_diff" in screen_df["screen_name"].unique()
+
     with hstrat_aux.log_context_duration("screen_df.to_parquet", logger=print):
         screen_df.to_parquet(
             f"a=run_volzscreen+screen_uuid={cfg['screen_uuid']}.pqt",
