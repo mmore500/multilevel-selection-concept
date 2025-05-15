@@ -92,8 +92,6 @@ class SyncHostCompartments:
                 < 1e-6
             )
             for __ in range(num_doublings):
-                compartments[:, offset] *= wt_growth_per_doubling
-                compartments[:, offset + 1] *= mut_growth_per_doubling
                 num_mutants = np.random.binomial(
                     compartments[:, offset].astype(int),
                     p_per_doubling,
@@ -102,19 +100,26 @@ class SyncHostCompartments:
                     compartments[:, offset + 1].astype(int),
                     p_per_doubling,
                 )
-                compartments[:, offset] -= num_mutants
-                compartments[:, offset + 1] += num_mutants
-                compartments[:, offset] += num_reversions
-                compartments[:, offset + 1] -= num_reversions
-
-        # apply within-host carrying capacity
-        compartments /= (
-            np.maximum(
-                compartments.sum(axis=1, keepdims=True),
-                self._host_capacity,
-            )
-            / self._host_capacity
-        )
+                loads = compartments.sum(axis=1)
+                past_carrycap = loads >= self._host_capacity
+                compartments[:, offset] *= np.where(
+                    past_carrycap, 1.0, wt_growth_per_doubling
+                )
+                compartments[:, offset + 1] *= np.where(
+                    past_carrycap, 1.0, mut_growth_per_doubling
+                )
+                compartments[:, offset] -= np.where(
+                    past_carrycap, 0.0, num_mutants
+                )
+                compartments[:, offset + 1] += np.where(
+                    past_carrycap, 0.0, num_mutants
+                )
+                compartments[:, offset] += np.where(
+                    past_carrycap, 0.0, num_reversions
+                )
+                compartments[:, offset + 1] -= np.where(
+                    past_carrycap, 0.0, num_reversions
+                )
 
         ## sync host compartments to covasim "infectious variant"
         #######################################################################
