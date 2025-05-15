@@ -14,6 +14,7 @@ from tqdm import tqdm
 from tqdm.contrib import tmap as tqdm_tmap
 
 from .._SyncHostCompartments import SyncHostCompartments
+from .._SyncHostCompartmentsBackground import SyncHostCompartmentsBackground
 from .._VariantFlavor import VariantFlavor
 from .._cv_infection_log_to_alstd_df import cv_infection_log_to_alstd_df
 from .._diff_sequences import diff_sequences
@@ -100,6 +101,11 @@ def _setup_sim(
                 SyncHostCompartments(
                     variant_flavors=variant_flavors,
                     pop_size=cfg["cfg_pop_size"],
+                ),
+                SyncHostCompartmentsBackground(
+                    variant_flavors=variant_flavors,
+                    pop_size=cfg["cfg_pop_size"],
+                    num_background_strains=100,
                 ),
             ],
             variants=flavored_variants,
