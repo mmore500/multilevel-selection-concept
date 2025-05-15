@@ -250,6 +250,8 @@ def _add_sequence_diffs(phylo_df: pd.DataFrame) -> pd.DataFrame:
     )
     del phylo_df["sequence"]
 
+    assert phylo_df["sequence_diff"].str.len().fillna(0).all()
+
     return phylo_df
 
 
@@ -328,6 +330,8 @@ if __name__ == "__main__":
 
     glimpse_df(phylo_df.head(), logger=print)
     glimpse_df(phylo_df.tail(), logger=print)
+
+    assert phylo_df["sequence_diff"].str.len().fillna(0).all()
 
     with hstrat_aux.log_context_duration("phylo_df.to_parquet", logger=print):
         phylo_df.to_parquet(
