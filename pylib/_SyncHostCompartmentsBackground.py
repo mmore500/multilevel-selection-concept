@@ -4,31 +4,34 @@ import numpy as np
 from ._VariantFlavor import VariantFlavor
 
 
-class SyncHostCompartments:
+class SyncHostCompartmentsBackground:
 
     _host_capacity: float
     _host_compartments: np.ndarray
     _variant_flavors: list[VariantFlavor]
     _infection_log_pos: int
+    _infectious_variants_log: list[np.ndarray]
 
     def __init__(
-        self: "SyncHostCompartments",
+        self: "SyncHostCompartmentsBackground",
         *,
         pop_size: int,
         variant_flavors: list[VariantFlavor],
+        num_background_strains: int,
         # see https://doi.org/10.1073/pnas.2024815118
         host_capacity: float = 1e10,
     ) -> None:
         # overall wildtype,
         # then mut/wildtype per flavor
         num_variants = len(variant_flavors) * 2 + 1
-        shape = (pop_size, num_variants)
+        shape = (pop_size, num_variants, num_background_strains)
         self._host_capacity = host_capacity
         self._host_compartments = np.zeros(shape, dtype=float)
         self._variant_flavors = variant_flavors
         self._infection_log_pos = 0
+        self._infectious_variants_log = []
 
-    def __call__(self: "SyncHostCompartments", sim: cv.Sim) -> None:
+    def __call__(self: "SyncHostCompartmentsBackground", sim: cv.Sim) -> None:
         compartments = self._host_compartments
         people = sim.people
         log = people.infection_log
@@ -38,21 +41,33 @@ class SyncHostCompartments:
 
         ## sync covasim to host compartments
         #######################################################################
+        # zero out non-infectious/exposed compartments
+        compartments[sim.people.recovered, :, :] = 0.0
+
         for entry in log[self._infection_log_pos :]:
-            _source, target, variant = (
+            source, target, variant, date = (
                 entry["source"],
                 entry["target"],
                 entry["variant"],
+                entry["date"],
             )
-            # zero out non-infectious/exposed compartments
-            compartments[target, :] = 0.0
+            if source is not None:
+                variant = self._infectious_variants_log[date][source].astype(
+                    int
+                )
+                assert len(variant) == compartments.shape[2]
+            else:
+                variant = [var_lookup[variant]] * compartments.shape[2]
 
-            variant = var_lookup[variant]
+            entry["sequence_background"] = "".join(
+                ["'", "+"][v % 2] for v in variant
+            )
+
+            # zero out non-infectious/exposed compartments
+            compartments[target, :, :] = 0.0
 
             # init w/ covasim infectious variant
-            compartments[target, variant] = 1.0
-
-            entry["sequence_focal"] = ["'", "+"][variant % 2]
+            compartments[target, variant, :] = 1.0
 
         self._infection_log_pos = len(log)
 
@@ -78,9 +93,6 @@ class SyncHostCompartments:
             wt_growth_per_doubling = variant_flavor.withinhost_r_wt ** (
                 1 / num_doublings
             )
-            mut_growth_per_doubling = variant_flavor.withinhost_r_mut ** (
-                1 / num_doublings
-            )
             assert (
                 abs(
                     wt_growth_per_doubling**num_doublings
@@ -88,28 +100,27 @@ class SyncHostCompartments:
                 )
                 < 1e-6
             )
-            assert (
-                abs(
-                    mut_growth_per_doubling**num_doublings
-                    - variant_flavor.withinhost_r_mut
-                )
-                < 1e-6
-            )
             for __ in range(num_doublings):
-                compartments[:, offset] *= wt_growth_per_doubling
-                compartments[:, offset + 1] *= mut_growth_per_doubling
-                num_mutants = np.random.binomial(
-                    compartments[:, offset].astype(int),
-                    p_per_doubling,
+                compartments[:, offset, :] *= wt_growth_per_doubling
+                compartments[:, offset + 1, :] *= wt_growth_per_doubling
+
+                pop_wt = compartments[:, offset, :].astype(int)
+                pop_mt = compartments[:, offset + 1, :].astype(int)
+                mask_wt = pop_wt > 0
+                mask_mt = pop_mt > 0
+                num_mutants = np.zeros_like(pop_wt)
+                num_reversions = np.zeros_like(pop_mt)
+                num_mutants[mask_wt] = np.random.binomial(
+                    pop_wt[mask_wt], p_per_doubling
                 )
-                num_reversions = np.random.binomial(
-                    compartments[:, offset + 1].astype(int),
-                    p_per_doubling,
+                num_reversions[mask_mt] = np.random.binomial(
+                    pop_mt[mask_mt], p_per_doubling
                 )
-                compartments[:, offset] -= num_mutants
-                compartments[:, offset + 1] += num_mutants
-                compartments[:, offset] += num_reversions
-                compartments[:, offset + 1] -= num_reversions
+
+                compartments[:, offset, :] -= num_mutants
+                compartments[:, offset + 1, :] += num_mutants
+                compartments[:, offset, :] += num_reversions
+                compartments[:, offset + 1, :] -= num_reversions
 
         # apply within-host carrying capacity
         compartments /= (
@@ -130,9 +141,11 @@ class SyncHostCompartments:
 
         for i, variant_flavor in enumerate(self._variant_flavors):
             offset = i * 2 + 1
-            compartments_[:, offset] *= variant_flavor.active_strain_factor_wt
             compartments_[
-                :, offset + 1
+                :, offset, :
+            ] *= variant_flavor.active_strain_factor_wt
+            compartments_[
+                :, offset + 1, :
             ] *= variant_flavor.active_strain_factor_mut
 
         sampled_strains = np.where(
@@ -140,10 +153,7 @@ class SyncHostCompartments:
             np.argmax(compartments_, axis=1),
             np.nan,
         )
+        assert len(sampled_strains) == compartments_.shape[0]
 
         # update current covasim infectious variant
-        people["infectious_variant"] = np.where(
-            ~np.isnan(people["infectious_variant"]),
-            sampled_strains,
-            people["infectious_variant"],
-        )
+        self._infectious_variants_log.append(sampled_strains)
