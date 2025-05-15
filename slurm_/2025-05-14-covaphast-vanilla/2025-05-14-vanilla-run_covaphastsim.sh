@@ -134,6 +134,7 @@ source "${BATCHDIR_ENV}/bin/activate"
 python3.10 -m uv pip freeze
 
 # prime singularity cache
+echo "CONTAINER_URI ${CONTAINER_URI}"
 singularity exec "${CONTAINER_URI}" echo "hello from singularity"
 
 echo "sbatch preamble ========================================================="
@@ -236,6 +237,7 @@ echo "cpuinfo ----------------------------------------------------- \${SECONDS}"
 cat /proc/cpuinfo || :
 
 echo "do work ----------------------------------------------------- \${SECONDS}"
+echo "CONTAINER_URI ${CONTAINER_URI}"
 python3 << EOF_ | singularity exec "${CONTAINER_URI}" python3 -m pylib.cli.run_covaphastsim
 
 import itertools as it
