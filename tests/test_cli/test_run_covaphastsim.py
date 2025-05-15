@@ -23,7 +23,6 @@ cfg_make_cv_sim_recipe: "make_cv_sim_vanilla"
 cfg_make_wt_specs_recipe: "make_wt_specs_single"
 cfg_num_mut_sites: 1
 cfg_p_wt_to_mut: 0.01
-cfg_p_seq_mut: 2.74e-6
 cfg_pop_size: 10000
 cfg_refseqs: "{assets}/alignedsequences.csv"
 cfg_suffix_mut: "'"

@@ -195,7 +195,7 @@ def _generate_sequences(
         seq_df = generate_dummy_sequences_simple(
             pd.concat([phylo_df, dummy_leaves], ignore_index=True),
             ancestral_sequences=reference_sequences,
-            p_mut=cfg["cfg_p_seq_mut"],
+            p_mut=cfg["cfg_p_wt_to_mut"],
             progress_map=tqdm_tmap,
         )
         seq_df["id"] -= id_delta  # revert dummy leaves back to true nodes
