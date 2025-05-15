@@ -47,8 +47,12 @@ class SyncHostCompartments:
             # zero out non-infectious/exposed compartments
             compartments[target, :] = 0.0
 
+            variant = var_lookup[variant]
+
             # init w/ covasim infectious variant
-            compartments[target, var_lookup[variant]] = 1.0
+            compartments[target, variant] = 1.0
+
+            entry["sequence_focal"] = ["'", "+"][variant % 2]
 
         self._infection_log_pos = len(log)
 
