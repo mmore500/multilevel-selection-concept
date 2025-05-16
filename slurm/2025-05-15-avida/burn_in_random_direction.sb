@@ -7,8 +7,8 @@
 #SBATCH --mail-user=dolsonem@msu.edu
 
 ## Job name settings
-#SBATCH --job-name=burn_in_mls
-#SBATCH -o burn_in_mls_%A_%a.out
+#SBATCH --job-name=burn_in_mls_rand_dir
+#SBATCH -o burn_in_mls_rand_dir_%A_%a.out
 
 ## Time requirement in hours and minutes. You might need to make this
 ## longer, but try to keep it under 4 hours if possible
@@ -28,8 +28,8 @@
 
 cd /mnt/home/dolsonem/multilevel-selection-concept/slurm/2025-05-15-avida
 
-mkdir burnin_mls
-cd burnin_mls
+mkdir burnin_mls_rand_dir
+cd burnin_mls_rand_dir
 
 ## Make a directory for this random seed
 mkdir ${SLURM_ARRAY_TASK_ID}
