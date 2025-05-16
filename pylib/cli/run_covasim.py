@@ -120,7 +120,9 @@ def _extract_phylo(
     with hstrat_aux.log_context_duration(
         "cv_infection_log_to_alstd_df", logger=print
     ):
-        phylo_df = cv_infection_log_to_alstd_df(infection_log, join_roots=False)
+        phylo_df = cv_infection_log_to_alstd_df(
+            infection_log, join_roots=False
+        )
 
     with hstrat_aux.log_context_duration("map variant_flavor", logger=print):
         phylo_df["variant_flavor"] = phylo_df["variant"].map(
