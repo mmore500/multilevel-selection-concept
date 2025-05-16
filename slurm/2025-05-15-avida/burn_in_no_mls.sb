@@ -7,8 +7,8 @@
 #SBATCH --mail-user=dolsonem@msu.edu
 
 ## Job name settings
-#SBATCH --job-name=burn_in_mls
-#SBATCH -o burn_in_mls_%A_%a.out
+#SBATCH --job-name=burn_in_no_mls
+#SBATCH -o burn_in_no_mls_%A_%a.out
 
 ## Time requirement in hours and minutes. You might need to make this
 ## longer, but try to keep it under 4 hours if possible
@@ -28,8 +28,8 @@
 
 cd /mnt/home/dolsonem/multilevel-selection-concept/slurm/2025-05-15-avida
 
-mkdir burnin_mls
-cd burnin_mls
+mkdir burnin_no_mls
+cd burnin_no_mls
 
 ## Make a directory for this random seed
 mkdir ${SLURM_ARRAY_TASK_ID}
@@ -38,4 +38,4 @@ cp ../../avida .
 cp ../../*.cfg .
 cp ../../*.org .
 
-./avida -set WORLD_X 7 -set WORLD_Y 700 -set NUM_DEMES 100 -set DIVIDE_INS_PROB 0 -set DIVIDE_DEL_PROB 0 -set BIRTH_METHOD 7 -set SLICING_METHOD 0 -set DEMES_ORGANISM_FACING 1 -set WORLD_GEOMETRY 1 -set MIN_GENOME_SIZE 100 -set MAX_GENOME_SIZE 100 -set OEE_RES 0 -set TRACK_INDIVIDUALS 1
+./avida -def INST_SET instset-heads-cotrol.cfg -set WORLD_X 7 -set WORLD_Y 700 -set NUM_DEMES 100 -set DIVIDE_INS_PROB 0 -set DIVIDE_DEL_PROB 0 -set BIRTH_METHOD 7 -set SLICING_METHOD 0 -set DEMES_ORGANISM_FACING 1 -set WORLD_GEOMETRY 1 -set MIN_GENOME_SIZE 100 -set MAX_GENOME_SIZE 100 -set OEE_RES 0 -set TRACK_INDIVIDUALS 1
