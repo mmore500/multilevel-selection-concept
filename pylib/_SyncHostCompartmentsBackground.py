@@ -11,6 +11,8 @@ class SyncHostCompartmentsBackground:
     _variant_flavors: list[VariantFlavor]
     _infection_log_pos: int
     _infectious_variants_log: list[np.ndarray]
+    _infection_log_entries: list[dict]
+    _infection_days_elapsed: np.ndarray
 
     def __init__(
         self: "SyncHostCompartmentsBackground",
@@ -30,6 +32,8 @@ class SyncHostCompartmentsBackground:
         self._variant_flavors = variant_flavors
         self._infection_log_pos = 0
         self._infectious_variants_log = []
+        self._infection_log_entries = [None] * pop_size
+        self._infection_days_elapsed = np.zeros(pop_size, dtype=int)
 
     def __call__(self: "SyncHostCompartmentsBackground", sim: cv.Sim) -> None:
         compartments = self._host_compartments
@@ -39,11 +43,10 @@ class SyncHostCompartmentsBackground:
         num_variants = self._host_compartments.shape[1]
         assert len(var_lookup) == num_variants
 
+        self._infection_days_elapsed += self._infection_days_elapsed > 0
+
         ## sync covasim to host compartments
         #######################################################################
-        # zero out non-infectious/exposed compartments
-        compartments[sim.people.recovered, :, :] = 0.0
-
         for entry in log[self._infection_log_pos :]:
             source, target, variant, date = (
                 entry["source"],
@@ -51,6 +54,9 @@ class SyncHostCompartmentsBackground:
                 entry["variant"],
                 entry["date"],
             )
+            self._infection_log_entries[target] = entry
+            self._infection_days_elapsed[target] = 1
+
             if source is not None:
                 variant = self._infectious_variants_log[date][source].astype(
                     int
@@ -157,3 +163,19 @@ class SyncHostCompartmentsBackground:
 
         # update current covasim infectious variant
         self._infectious_variants_log.append(sampled_strains)
+
+        ## sample variants of record
+        for who in np.flatnonzero(self._infection_days_elapsed >= 6):
+            entry = self._infection_log_entries[who]
+            assert entry is not None
+            assert not np.isnan(sampled_strains[who]).any()
+            variant = sampled_strains[who].astype(int)
+            entry["sequence_background"] = "".join(
+                ["'", "+"][v % 2] for v in variant
+            )
+            self._infection_log_entries[who] = None
+
+        self._infection_days_elapsed *= self._infection_days_elapsed < 6
+
+        # zero out non-infectious/exposed compartments
+        compartments[sim.people.recovered | sim.people.dead, :, :] = 0.0
