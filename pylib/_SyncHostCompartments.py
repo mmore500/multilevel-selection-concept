@@ -12,6 +12,7 @@ class SyncHostCompartments:
     _infection_log_pos: int
     _infection_log_entries: list[dict]
     _infection_days_elapsed: np.ndarray
+    _last_sampled_strains: np.ndarray
 
     def __init__(
         self: "SyncHostCompartments",
@@ -31,6 +32,7 @@ class SyncHostCompartments:
         self._infection_log_pos = 0
         self._infection_log_entries = [None] * pop_size
         self._infection_days_elapsed = np.zeros(pop_size, dtype=int)
+        self._last_sampled_strains = np.zeros(pop_size, dtype=int)
 
     def __call__(self: "SyncHostCompartments", sim: cv.Sim) -> None:
         compartments = self._host_compartments
@@ -153,13 +155,20 @@ class SyncHostCompartments:
             people["infectious_variant"],
         )
 
+        self._last_sampled_strains = np.where(
+            ~np.isnan(sampled_strains),
+            sampled_strains,
+            self._last_sampled_strains,
+        )
+
         ## sample variants of record
-        for who in np.flatnonzero(self._infection_days_elapsed >= 6):
+        for who in np.flatnonzero(self._infection_days_elapsed >= 8):
             entry = self._infection_log_entries[who]
             assert entry is not None
             variant = int(sampled_strains[who])
+            assert variant != 0
             entry["variant"] = sim["variant_map"][variant]
             entry["sequence_focal"] = ["'", "+"][variant % 2]
             self._infection_log_entries[who] = None
 
-        self._infection_days_elapsed *= self._infection_days_elapsed < 6
+        self._infection_days_elapsed *= self._infection_days_elapsed < 8
