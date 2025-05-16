@@ -19,7 +19,7 @@ echo "SOURCE_REVISION ${SOURCE_REVISION}"
 SOURCE_REMOTE_URL="$(git config --get remote.origin.url)"
 echo "SOURCE_REMOTE_URL ${SOURCE_REMOTE_URL}"
 
-SHA="afadeab60ca125f655a9689a28b166cb989067a6ce34b6581130d8315935bb22"
+SHA="9df4f43b9a00a602ccfb922f1539dcb8a6d8e8878146a533615b726a6533d6b9"
 echo "SHA ${SHA}"
 REPO="docker://ghcr.io/mmore500/multilevel-selection-concept"
 echo "REPO ${REPO}"
@@ -238,7 +238,7 @@ cat /proc/cpuinfo || :
 
 echo "do work ----------------------------------------------------- \${SECONDS}"
 echo "CONTAINER_URI ${CONTAINER_URI}"
-python3 << EOF_ | singularity exec "${CONTAINER_URI}" python3 -m pylib.cli.run_covaphastsim
+python3 << EOF_ | singularity exec "${CONTAINER_URI}" python3 -m pylib.cli.run_covasim
 
 import itertools as it
 import os
@@ -259,14 +259,13 @@ cfg = f"""
 cfg_make_cv_sim_recipe: "make_cv_sim_vanilla"
 cfg_make_wt_specs_recipe: "make_wt_specs_single"
 cfg_num_mut_sites: 1
-cfg_p_wt_to_mut: {2.74e-6 / 3}  # divide by 3 for possible alt ntides
-cfg_p_seq_mut: 2.74e-6
+cfg_p_wt_to_mut: 2.74e-6
 cfg_pop_size: {100_000}
 cfg_refseqs: "https://osf.io/s9xhr/download"  # homogenized seqs for testing
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
 replicate_num: {replicate}
-cfg_maxseqlen: 300
+cfg_maxseqlen: 100
 trt_mutmx_active_strain_factor: {trt_mutmx_active_strain_factor}
 trt_mutmx_rel_beta: {trt_mutmx_rel_beta}
 trt_mutmx_withinhost_r: {trt_mutmx_withinhost_r}
