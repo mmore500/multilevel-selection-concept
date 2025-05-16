@@ -1,0 +1,41 @@
+#!/bin/bash --login
+
+#SBATCH -A ecode
+
+## Email settings
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=dolsonem@msu.edu
+
+## Job name settings
+#SBATCH --job-name=burn_in_mls
+#SBATCH -o burn_in_mls_%A_%a.out
+
+## Time requirement in hours and minutes. You might need to make this
+## longer, but try to keep it under 4 hours if possible
+#SBATCH --time=0-3:50
+
+## Memory requirement in megabytes. You might need to make this bigger.
+#SBATCH --mem-per-cpu=4gb                                                   
+
+## Launch an array of jobs. This is convenient for running replicates
+## that differ only by their random seed. One easy option is to use the array
+## index (given by ${SLURM_ARRAY_TASK_ID}) as the random seed, but if you
+## do make sure to use different ranges of numbers for each condition.
+## This specific command will launch 10 jobs, with array indices
+## 990, 991, 992, 993, 994, 995, 996, 997, 998, and 999.
+#SBATCH --array=100-109
+
+
+cd /mnt/home/dolsonem/multilevel-selection-concept/slurm/2025-05-15-avida
+
+mkdir burnin_mls
+cd burnin_mls
+
+## Make a directory for this random seed
+mkdir ${SLURM_ARRAY_TASK_ID}
+cd ${SLURM_ARRAY_TASK_ID}
+cp ../../avida .
+cp ../../*.cfg .
+cp ../../*.org .
+
+./avida -set WORLD_X 7 -set WORLD_Y 700 -set NUM_DEMES 100 -set DIVIDE_INS_PROB 0 -set DIVIDE_DEL_PROB 0 -set BIRTH_METHOD 7 -set SLICING_METHOD 0 -set DEMES_ORGANISM_FACING 0 -set WORLD_GEOMETRY 1 -set MIN_GENOME_SIZE 100 -set MAX_GENOME_SIZE 100 -set OEE_RES 0 -set TRACK_INDIVIDUALS 1
