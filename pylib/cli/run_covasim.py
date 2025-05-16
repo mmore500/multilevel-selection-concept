@@ -165,8 +165,8 @@ def _extract_phylo(
             hstrat_aux.alifestd_try_add_ancestor_list_col(phylo_df),
         )
 
-    with hstrat_aux.log_context_duration("aliestd_add_inner_niblings_asexual"):
-        phylo_df = hstrat_aux.alifestd_add_inner_niblings_asexual(
+    with hstrat_aux.log_context_duration("alifestd_add_inner_leaves_asexual"):
+        phylo_df = hstrat_aux.alifestd_add_inner_leaves_asexual(
             phylo_df, mutate=True
         )
 
