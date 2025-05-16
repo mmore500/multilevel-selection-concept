@@ -10,6 +10,8 @@ class SyncHostCompartments:
     _host_compartments: np.ndarray
     _variant_flavors: list[VariantFlavor]
     _infection_log_pos: int
+    _infection_log_entries: list[dict]
+    _infection_days_elapsed: np.ndarray
 
     def __init__(
         self: "SyncHostCompartments",
@@ -27,6 +29,8 @@ class SyncHostCompartments:
         self._host_compartments = np.zeros(shape, dtype=float)
         self._variant_flavors = variant_flavors
         self._infection_log_pos = 0
+        self._infection_log_entries = [None] * pop_size
+        self._infection_days_elapsed = np.zeros(pop_size, dtype=int)
 
     def __call__(self: "SyncHostCompartments", sim: cv.Sim) -> None:
         compartments = self._host_compartments
@@ -36,10 +40,15 @@ class SyncHostCompartments:
         num_variants = self._host_compartments.shape[1]
         assert len(var_lookup) == num_variants
 
+        self._infection_days_elapsed += self._infection_days_elapsed > 0
+
         ## sync covasim to host compartments
         #######################################################################
         for entry in log[self._infection_log_pos :]:
             target, variant = (entry["target"], entry["variant"])
+            self._infection_log_entries[target] = entry
+            self._infection_days_elapsed[target] = 1
+
             # zero out non-infectious/exposed compartments
             compartments[target, :] = 0.0
 
@@ -143,3 +152,14 @@ class SyncHostCompartments:
             sampled_strains,
             people["infectious_variant"],
         )
+
+        ## sample variants of record
+        for who in np.flatnonzero(self._infection_days_elapsed >= 6):
+            entry = self._infection_log_entries[who]
+            assert entry is not None
+            variant = int(sampled_strains[who])
+            entry["variant"] = sim["variant_map"][variant]
+            entry["sequence_focal"] = ["'", "+"][variant % 2]
+            self._infection_log_entries[who] = None
+
+        self._infection_days_elapsed *= self._infection_days_elapsed < 6
