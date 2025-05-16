@@ -13,6 +13,7 @@ class SyncHostCompartmentsBackground:
     _infectious_variants_log: list[np.ndarray]
     _infection_log_entries: list[dict]
     _infection_days_elapsed: np.ndarray
+    _last_sampled_strains: np.ndarray
 
     def __init__(
         self: "SyncHostCompartmentsBackground",
@@ -34,6 +35,9 @@ class SyncHostCompartmentsBackground:
         self._infectious_variants_log = []
         self._infection_log_entries = [None] * pop_size
         self._infection_days_elapsed = np.zeros(pop_size, dtype=int)
+        self._last_sampled_strains = np.zeros(
+            (pop_size, num_background_strains), dtype=int
+        )
 
     def __call__(self: "SyncHostCompartmentsBackground", sim: cv.Sim) -> None:
         compartments = self._host_compartments
@@ -161,21 +165,27 @@ class SyncHostCompartmentsBackground:
         )
         assert len(sampled_strains) == compartments_.shape[0]
 
+        self._last_sampled_strains = np.where(
+            ~np.isnan(sampled_strains),
+            sampled_strains,
+            self._last_sampled_strains,
+        )
+
         # update current covasim infectious variant
         self._infectious_variants_log.append(sampled_strains)
 
         ## sample variants of record
-        for who in np.flatnonzero(self._infection_days_elapsed >= 6):
+        for who in np.flatnonzero(self._infection_days_elapsed >= 8):
             entry = self._infection_log_entries[who]
             assert entry is not None
-            assert not np.isnan(sampled_strains[who]).any()
-            variant = sampled_strains[who].astype(int)
+            assert not (self._last_sampled_strains[who] == 0).any()
+            variant = self._last_sampled_strains[who].astype(int)
             entry["sequence_background"] = "".join(
                 ["'", "+"][v % 2] for v in variant
             )
             self._infection_log_entries[who] = None
 
-        self._infection_days_elapsed *= self._infection_days_elapsed < 6
+        self._infection_days_elapsed *= self._infection_days_elapsed < 8
 
         # zero out non-infectious/exposed compartments
         compartments[sim.people.recovered | sim.people.dead, :, :] = 0.0
