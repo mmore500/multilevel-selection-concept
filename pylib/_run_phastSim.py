@@ -9,7 +9,6 @@ import tempfile
 
 from ete3 import Tree
 from hstrat import _auxiliary_lib as hstrat_aux
-import numpy as np
 import pandas as pd
 import phastSim.phastSim as phastSim
 import polars as pl
@@ -103,7 +102,7 @@ def _do_run_phastSim(
     # sim_run.const.alleles
     with hstrat_aux.log_context_duration("phastSimRun", print):
         sim_run = phastSim.phastSimRun(args=args)
-    np.random.seed(args.seed)
+    # np.random.seed(args.seed)
     hierarchy = not args.noHierarchy
 
     # initialise the root genome. Reads either from file or creates a genome in

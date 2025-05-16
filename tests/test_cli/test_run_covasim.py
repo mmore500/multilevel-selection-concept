@@ -9,16 +9,17 @@ pwd = os.getcwd()
 
 
 @cd_tempdir_context()
-def test_run_covaphastsim_smoke():
+def test_run_covasim_smoke():
     subprocess.run(
         [
             sys.executable,
             "-m",
-            "pylib.cli.run_covaphastsim",
+            "pylib.cli.run_covasim",
         ],
         check=True,
         env={"PYTHONPATH": f"{pwd}"},
         input=f"""
+cfg_maxseqlen: 10
 cfg_make_cv_sim_recipe: "make_cv_sim_vanilla"
 cfg_make_wt_specs_recipe: "make_wt_specs_single"
 cfg_num_mut_sites: 1

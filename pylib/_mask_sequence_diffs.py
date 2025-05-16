@@ -1,74 +1,81 @@
-import io
+import sys
 import typing
 
+from hstrat import _auxiliary_lib as hstrat_aux
 import numpy as np
-import polars as pl
+
+from ._summarize_sequence_diffs import summarize_sequence_diffs
 
 
 def mask_sequence_diffs(
     *,
     ancestral_sequence: str,
     sequence_diffs: typing.Sequence[str],
-    mut_count_thresh: int = 0,
-    mut_quart_thresh: float = 0.0,
+    mut_count_thresh: typing.Tuple[int, int] = (0, sys.maxsize),
+    mut_freq_thresh: typing.Tuple[float, float] = (0.0, 1.0),
+    mut_quant_thresh: typing.Tuple[float, float] = (0.0, 1.0),
     progress_wrap: typing.Callable = lambda x: x,
     sparsify_mask: bool = False,
 ) -> typing.Iterable[typing.Tuple[typing.Tuple[int, str, str], np.ndarray]]:
-    diffs = pl.DataFrame({"diffs": sequence_diffs}, schema={"diffs": pl.Utf8})
+    if not (
+        len(mut_freq_thresh) == 2
+        and len(mut_count_thresh) == 2
+        and len(mut_quant_thresh) == 2
+    ):
+        raise ValueError
 
-    mut_tokens = (
-        diffs.lazy()
-        .drop_nulls()
-        .filter(pl.col("diffs") != "{}")
-        .filter(pl.col("diffs") != "")
-        .select(
-            pl.col("diffs").str.head(-1).str.tail(-1).str.join(","),
-        )
-        .collect()
-        .item()
-        .replace(":", ",")
-        .replace('"', "")
-        .replace(",", " ")
-        .split()
+    (mut_unique, mut_counts, columns) = summarize_sequence_diffs(
+        sequence_diffs=sequence_diffs,
     )
 
-    if not mut_tokens:
+    if not len(mut_unique):
+        assert len(mut_counts) == 0
+        assert len(columns) == 0
         return
 
-    pos_vals = np.loadtxt(io.StringIO(" ".join(mut_tokens[::2])), dtype=int)
-    char_vals = np.array(mut_tokens[1::2], dtype="S1").view(np.uint8)
-    mut_uids = pos_vals.astype(np.uint64) << 8 | char_vals
-
-    (mut_unique, mut_counts) = np.unique(mut_uids, return_counts=True)
     print(
-        f"{ancestral_sequence[0]=} "
-        f"{int(mut_unique[0])=} "
-        f"{int(mut_unique[0] >> 8)=} "
-        f"{chr(mut_unique[0] & 0xFF)=} "
+        f"{ancestral_sequence[0]=} ",
+        f"{int(mut_unique[0])=}",
+        f"{int(mut_unique[0] >> 8)=}",
+        f"{chr(mut_unique[0] & 0xFF)=}",
         f"{int(mut_counts[0])=}",
+        f"{int(mut_counts[0]) / len(sequence_diffs)=}",
+        sep="\n",
     )
 
-    mut_count_thresh = max(
-        mut_count_thresh,
-        np.quantile(mut_counts, mut_quart_thresh),
-    )
-    is_frequent_mut = mut_counts >= mut_count_thresh
+    with hstrat_aux.log_context_duration("is_valid_mut", logger=print):
+        mut_freq = mut_counts / len(sequence_diffs)
+        is_valid_mut = (np.clip(mut_freq, *mut_freq_thresh) == mut_freq) & (
+            np.clip(mut_counts, *mut_count_thresh) == mut_counts
+        )
+        print(f"{is_valid_mut[0]=}")
+        print(f"{(mut_counts[is_valid_mut] < mut_counts[0]).mean()=}")
 
-    seq_diff_sizes = diffs["diffs"].str.count_matches(":").fill_null(0)
-    seq_diff_rows = np.repeat(np.arange(len(seq_diff_sizes)), seq_diff_sizes)
-    assert len(seq_diff_rows) == len(mut_uids)
+        mut_quant_thresh = tuple(
+            np.quantile(mut_counts[is_valid_mut], mut_quant_thresh),
+        )
+        assert len(mut_quant_thresh) == 2
+        is_valid_mut = is_valid_mut & (
+            np.clip(mut_counts, *mut_quant_thresh) == mut_counts
+        )
 
-    for mut_uid in progress_wrap(mut_unique[is_frequent_mut]):
+    print(f"{len(is_valid_mut)=} {is_valid_mut.sum()=} {is_valid_mut[0]=}")
+
+    with hstrat_aux.log_context_duration("indices", logger=print):
+        indices = np.flatnonzero(is_valid_mut)
+
+    for idx in progress_wrap(indices):
         if not sparsify_mask:
-            mask = np.zeros(len(sequence_diffs), dtype=bool)
-            mask[seq_diff_rows[mut_uid == mut_uids]] = True
+            mut_mask = np.zeros(len(sequence_diffs), dtype=bool)
+            mut_mask[columns[idx]] = True
         else:
-            mask = seq_diff_rows[mut_uid == mut_uids].copy()
+            mut_mask = columns[idx]
 
-        pos, mut_char_var = int(mut_uid >> 8), chr(mut_uid & 0xFF)
-        mut_char_ref = ancestral_sequence[pos]
+        mut_uid = mut_unique[idx]
+        mut_char_pos, mut_char_var = int(mut_uid >> 8), chr(mut_uid & 0xFF)
+        mut_char_ref = ancestral_sequence[mut_char_pos]
 
-        assert mut_char_var != ancestral_sequence[pos]
+        assert mut_char_var != ancestral_sequence[mut_char_pos]
         assert isinstance(mut_char_var, str) and len(mut_char_var) == 1
         assert isinstance(mut_char_ref, str) and len(mut_char_ref) == 1
-        yield (pos, mut_char_ref, mut_char_var), mask
+        yield (mut_char_pos, mut_char_ref, mut_char_var), mut_mask

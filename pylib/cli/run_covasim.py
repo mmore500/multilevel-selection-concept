@@ -11,14 +11,12 @@ import numpy as np
 import pandas as pd
 from retry import retry
 from tqdm import tqdm
-from tqdm.contrib import tmap as tqdm_tmap
 
 from .._SyncHostCompartments import SyncHostCompartments
 from .._SyncHostCompartmentsBackground import SyncHostCompartmentsBackground
 from .._VariantFlavor import VariantFlavor
 from .._cv_infection_log_to_alstd_df import cv_infection_log_to_alstd_df
 from .._diff_sequences import diff_sequences
-from .._generate_dummy_sequences_simple import generate_dummy_sequences_simple
 from .._glimpse_df import glimpse_df
 from .._make_cv_sim_uk import make_cv_sim_uk
 from .._make_cv_sim_vanilla import make_cv_sim_vanilla
@@ -29,7 +27,6 @@ from .._make_wt_specs_uk import make_wt_specs_uk
 from .._read_config import read_config
 from .._seed_global_rngs import seed_global_rngs
 from .._shrink_df import shrink_df
-from .._shuffle_string import shuffle_string
 from .._strong_uuid4_str import strong_uuid4_str
 
 
@@ -105,7 +102,7 @@ def _setup_sim(
                 SyncHostCompartmentsBackground(
                     variant_flavors=variant_flavors,
                     pop_size=cfg["cfg_pop_size"],
-                    num_background_strains=100,
+                    num_background_strains=cfg["cfg_maxseqlen"],
                 ),
             ],
             variants=flavored_variants,
@@ -168,10 +165,8 @@ def _extract_phylo(
             hstrat_aux.alifestd_try_add_ancestor_list_col(phylo_df),
         )
 
-    with hstrat_aux.log_context_duration("aliestd_add_inner_niblings_asexual"):
-        phylo_df = hstrat_aux.alifestd_add_inner_niblings_asexual(
-            phylo_df, mutate=True
-        )
+    with hstrat_aux.log_context_duration("alifestd_add_inner_leaves"):
+        phylo_df = hstrat_aux.alifestd_add_inner_leaves(phylo_df, mutate=True)
 
     with hstrat_aux.log_context_duration(
         "alifestd_to_working_format", logger=print
@@ -179,56 +174,6 @@ def _extract_phylo(
         phylo_df = hstrat_aux.alifestd_to_working_format(phylo_df, mutate=True)
 
     return phylo_df
-
-
-def _generate_sequences(
-    phylo_df: pd.DataFrame,
-    *,
-    cfg: typing.Dict,
-    reference_sequences: typing.Dict[str, str],
-) -> pd.DataFrame:
-
-    # workaround to generate sequences for all nodes, not just leaves
-    dummy_leaves = phylo_df.copy()
-    dummy_leaves["ancestor_id"] = dummy_leaves["id"]
-    id_delta = phylo_df["id"].max() + 1
-    dummy_leaves["id"] += id_delta
-
-    # generate sequences just for leaves
-    with hstrat_aux.log_context_duration(
-        "generate_dummy_sequences_simple", logger=print
-    ):
-        seq_df = generate_dummy_sequences_simple(
-            pd.concat([phylo_df, dummy_leaves], ignore_index=True),
-            ancestral_sequences=reference_sequences,
-            p_mut=cfg["cfg_p_seq_mut"],
-            progress_map=tqdm_tmap,
-        )
-        seq_df["id"] -= id_delta  # revert dummy leaves back to true nodes
-
-    with hstrat_aux.log_context_duration("extract variant", logger=print):
-        seq_df["variant"] = seq_df["id"].map(
-            phylo_df.set_index("id")["variant"].to_dict(),
-        )
-
-    with hstrat_aux.log_context_duration("prepend sequence", logger=print):
-        suffix = cfg["cfg_suffix_wt"] * (cfg["cfg_num_mut_sites"] - 1)
-
-        seq_df["sequence"] = (
-            seq_df["variant"]
-            .str.contains(cfg["cfg_suffix_mut"])
-            .map(
-                {
-                    True: cfg["cfg_suffix_mut"] + suffix,
-                    False: cfg["cfg_suffix_wt"] + suffix,
-                },
-            )
-            .apply(shuffle_string)
-            + seq_df["sequence"]
-        )
-
-    assert len(seq_df) == len(phylo_df)
-    return seq_df
 
 
 def _add_sequence_diffs(phylo_df: pd.DataFrame) -> pd.DataFrame:
@@ -279,29 +224,15 @@ def main(cfg: dict) -> pd.DataFrame:
         sim.run()
 
     phylo_df = _extract_phylo(sim.people.infection_log, variant_flavors)
-    print(f"{phylo_df['variant'].value_counts()=}")
-    glimpse_df(phylo_df, logger=print)
-
-    seq_df = _generate_sequences(
-        phylo_df,
-        cfg=cfg,
-        reference_sequences=reference_sequences,
+    phylo_df["ancestral_sequence"] = phylo_df["variant_flavor"].map(
+        reference_sequences.get,
+    )
+    phylo_df["sequence"] = (
+        phylo_df["sequence_focal"] + phylo_df["sequence_background"]
     )
 
-    glimpse_df(seq_df, logger=print)
-
-    with hstrat_aux.log_context_duration("phylo_df.merge", logger=print):
-        phylo_df_ = phylo_df.reset_index(drop=True).merge(
-            seq_df.reset_index(drop=True).drop(
-                [col for col in phylo_df.columns if col != "id"],
-                axis="columns",
-                errors="ignore",
-            ),
-            on="id",
-            how="outer",
-        )
-        assert len(phylo_df) == len(phylo_df_)
-        phylo_df = phylo_df_
+    print(f"{phylo_df['variant'].value_counts()=}")
+    glimpse_df(phylo_df, logger=print)
 
     with hstrat_aux.log_context_duration("_add_sequence_diffs", logger=print):
         phylo_df = _add_sequence_diffs(phylo_df=phylo_df)
@@ -317,7 +248,7 @@ def main(cfg: dict) -> pd.DataFrame:
         phylo_df["np_random_sample2"] = np.random.randint(2**32)
         phylo_df["mls0_group_id"] = phylo_df["id"]
         phylo_df["mls1_group_id"] = phylo_df["id"]
-        phylo_df["platform"] = "covaphast"
+        phylo_df["platform"] = "covasim"
         phylo_df["divergence_from_root"] = phylo_df["date"]
 
         for k, v in cfg.items():

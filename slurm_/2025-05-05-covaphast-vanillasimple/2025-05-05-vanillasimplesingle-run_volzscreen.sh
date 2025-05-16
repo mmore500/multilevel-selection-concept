@@ -19,6 +19,9 @@ echo "SOURCE_REVISION ${SOURCE_REVISION}"
 SOURCE_REMOTE_URL="$(git config --get remote.origin.url)"
 echo "SOURCE_REMOTE_URL ${SOURCE_REMOTE_URL}"
 
+CONTAINER_URI="docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:d726644579a99645a9be9b8dbdb6c465b59e3e2378d2ffc738154e2bd9e6be92"
+echo "CONTAINER_URI ${CONTAINER_URI}"
+
 echo "initialization telemetry ==============================================="
 echo "date $(date)"
 echo "hostname $(hostname)"
@@ -29,6 +32,8 @@ module purge || :
 module load Python/3.10.8 || :
 echo "python3.10 $(which python3.10)"
 echo "python3.10 --version $(python3.10 --version)"
+echo "singularity $(which singularity)"
+echo "singularity --version $(singularity --version)"
 
 echo "setup HOME dirs ========================================================"
 mkdir -p "${HOME}/joblatest"
@@ -102,10 +107,12 @@ for attempt in {1..5}; do
         'numpy==2.*' \
         'joinem==0.9.3' \
         'pandas==2.*' \
-        'polars==1.28.*' \
+        'polars==1.29.*' \
+        'polars-u64-idx==1.29.*' \
         'pyarrow==16.*' \
         'scipy==1.*' \
         'tqdm==4.*' \
+        "${BATCHDIR_JOBSOURCE}" \
     && break || echo "pip install attempt ${attempt} failed"
     if [ ${attempt} -eq 3 ]; then
         echo "pip install failed"
@@ -116,6 +123,9 @@ done
 echo "setup dependencies ========================================== \${SECONDS}"
 source "${BATCHDIR_ENV}/bin/activate"
 python3.10 -m uv pip freeze
+
+# prime singularity cache
+singularity exec "${CONTAINER_URI}" echo "hello from singularity"
 
 echo "sbatch preamble ========================================================="
 JOB_PREAMBLE=$(cat << EOF
@@ -174,6 +184,8 @@ module purge || :
 module load Python/3.10.8 || :
 echo "python3.10 \$(which python3.10)"
 echo "python3.10 --version \$(python3.10 --version)"
+echo "singularity \$(which singularity)"
+echo "singularity --version \$(singularity --version)"
 
 echo "setup dependencies- ----------------------------------------- \${SECONDS}"
 source "${BATCHDIR_ENV}/bin/activate"
@@ -193,15 +205,15 @@ echo "SBATCH_FILE ${SBATCH_FILE}"
 cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=100G
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=50G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
 #SBATCH --mail-type=FAIL,TIME_LIMIT
 #SBATCH --account=beacon
 #SBATCH --requeue
-#SBATCH --array=0-9
+#SBATCH --array=0-29
 
 ${JOB_PREAMBLE}
 
@@ -215,35 +227,52 @@ echo "cpuinfo ----------------------------------------------------- \${SECONDS}"
 cat /proc/cpuinfo || :
 
 echo "do work ----------------------------------------------------- \${SECONDS}"
-python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:b30ff0ecc1a7c52b884753c3532bcebb055d3546fac91076a16ced30195a3ce6 python3 -m pylib.cli.run_covaphastsim
+python3 << EOF_ | singularity exec "${CONTAINER_URI}" python3 -m pylib.cli.run_volzscreen
 
 import itertools as it
+import logging
 import os
+import sys
+
+import pandas as pd
+from retry import retry
+
+
+refphylos = "https://osf.io/5zv3d/download"
+
+read_parquet = retry(tries=5, logger=logging.getLogger(__name__))(pd.read_parquet)
+uuids = sorted(
+    read_parquet(refphylos)["replicate_uuid"].unique().astype(str),
+)
 
 replicates = it.product(
-    [("Sben", "Gdel"), ("Sneu", "Gneu")],
-    range(1_000_000),
+    uuids,
+    [0, 16],
+    [1_000_000],
 )
-(S, G), replicate = next(
+assigned_uuid, hsurf_bits, ndownsamp = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
 )
-
-trt_mutmx_active_strain_factor = {"Gdel": 0.5, "Gneu": 1.0, "Gben": None}[G]
-trt_mutmx_rel_beta = {"Gdel": 0.5, "Gneu": 1.0, "Gben": None}[G]
-trt_mutmx_withinhost_r = {"Sdel": None, "Sneu": 1.0, "Sben": 2.0}[S]
-
 cfg = f"""
-cfg_p_wt_to_mut: 2.74e-6
-cfg_pop_size: {67_000_000 // 50}
-cfg_refseqs: "https://osf.io/hp25c/download"
-cfg_suffix_mut: "'"
-cfg_suffix_wt: "+"
-replicate_num: {replicate}
-trt_mutmx_active_strain_factor: {trt_mutmx_active_strain_factor}
-trt_mutmx_rel_beta: {trt_mutmx_rel_beta}
-trt_mutmx_withinhost_r: {trt_mutmx_withinhost_r}
-trt_name: "{S}/{G}"
+cfg_assigned_replicate_uuid: "{assigned_uuid}"
+cfg_clade_size_thresh: "[0, 3]"
+cfg_mut_count_thresh_lb: 0
+cfg_mut_count_thresh_ub: {sys.maxsize}
+cfg_mut_freq_thresh_lb: 0.0
+cfg_mut_freq_thresh_ub: 1.0
+cfg_mut_quant_thresh_lb: 0.0
+cfg_mut_quant_thresh_ub: 1.0
+cfg_refphylos: "{refphylos}"
+screen_num: \${SLURM_ARRAY_TASK_ID:-0}
+trt_hsurf_bits: {hsurf_bits}
+trt_n_downsample: {ndownsamp}
 trt_seed: \${SLURM_ARRAY_TASK_ID:-0}
+SLURM_JOB_ID: \${SLURM_JOB_ID:-null}
+SLURM_ARRAY_JOB_ID: \${SLURM_ARRAY_JOB_ID:-null}
+SLURM_ARRAY_TASK_ID: \${SLURM_ARRAY_TASK_ID:-null}
+SLURM_ARRAY_TASK_COUNT: \${SLURM_ARRAY_TASK_COUNT:-null}
+SLURM_ARRAY_TASK_MAX: \${SLURM_ARRAY_TASK_MAX:-null}
+SLURM_ARRAY_TASK_MIN: \${SLURM_ARRAY_TASK_MIN:-null}
 """
 
 print(cfg)
@@ -301,10 +330,11 @@ pushd "${BATCHDIR}/.."
 popd
 
 echo "   - join result"
-ls -1 "${BATCHDIR}"/__*/**/a=run_covaphastsim+* \
+ls -1 "${BATCHDIR}"/__*/**/a=run_volzscreen+* \
     | tee /dev/stderr \
     | python3.10 -m joinem --progress \
-        --how "vertical_relaxed" \
+        --eager-write --eager-read \
+        --how "diagonal_relaxed" \
         "${BATCHDIR_JOBRESULT}/a=result+date=${JOBDATE}+job=${JOBNAME}+ext=.pqt"
 ls -l "${BATCHDIR_JOBRESULT}"
 du -h "${BATCHDIR_JOBRESULT}"

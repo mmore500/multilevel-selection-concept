@@ -216,17 +216,22 @@ echo "cpuinfo ----------------------------------------------------- \${SECONDS}"
 cat /proc/cpuinfo || :
 
 echo "do work ----------------------------------------------------- \${SECONDS}"
-python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:9f127141271ae4e1abce2daec571a25052062e182ca04bf9bdd0d01154f19060 python3 -m pylib.cli.run_volzscreen
+python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:b30ff0ecc1a7c52b884753c3532bcebb055d3546fac91076a16ced30195a3ce6 python3 -m pylib.cli.run_volzscreen
 
 import itertools as it
+import logging
 import os
+import sys
 
 import pandas as pd
+from retry import retry
+
 
 refphylos = "https://osf.io/8yn6h/download"
 
+read_parquet = retry(tries=5, logger=logging.getLogger(__name__))(pd.read_parquet)
 uuids = sorted(
-    pd.read_parquet(refphylos)["replicate_uuid"].unique().astype(str),
+    read_parquet(refphylos)["replicate_uuid"].unique().astype(str),
 )
 
 replicates = it.product(
@@ -239,9 +244,13 @@ assigned_uuid, hsurf_bits, ndownsamp = next(
 )
 cfg = f"""
 cfg_assigned_replicate_uuid: "{assigned_uuid}"
-cfg_clade_size_thresh: 4
-cfg_mut_count_thresh: 5
-cfg_mut_quart_thresh: 0.95
+cfg_clade_size_thresh: 0
+cfg_mut_count_thresh_lb: 5
+cfg_mut_count_thresh_ub: {sys.maxsize}
+cfg_mut_freq_thresh_lb: 0.0
+cfg_mut_freq_thresh_ub: 0.05
+cfg_mut_quant_thresh_lb: 0.8
+cfg_mut_quant_thresh_ub: 1.0
 cfg_refphylos: "{refphylos}"
 screen_num: \${SLURM_ARRAY_TASK_ID:-0}
 trt_hsurf_bits: {hsurf_bits}

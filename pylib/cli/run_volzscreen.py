@@ -1,30 +1,34 @@
 import functools
 import itertools as it
-from multiprocessing import Pool
+import logging
 import pprint
 import sys
 import typing
-import uuid
 import warnings
 
 from hstrat import _auxiliary_lib as hstrat_aux
 from hstrat import dataframe as hstrat_df
 from hstrat import hstrat
+import joblib
 import numpy as np
 import pandas as pd
 import polars as pl
+from retry import retry
 from scipy import stats as scipy_stats
 from sklearn.exceptions import ConvergenceWarning as SklearnConvergenceWarning
 from tqdm import tqdm
 
-from .. import _nansilent as ns
 from .._LokyBackendWithInitializer import LokyBackendWithInitializer
+from .._bootstrap_extrema_quantile import bootstrap_extrema_quantile
+from .._filter_warnings import filter_warnings
 from .._glimpse_df import glimpse_df
 from .._mask_sequence_diffs import mask_sequence_diffs
 from .._read_config import read_config
 from .._screen_mutation_defined_nodes import screen_mutation_defined_nodes
 from .._seed_global_rngs import seed_global_rngs
 from .._shrink_df import shrink_df
+from .._strong_uuid4_str import strong_uuid4_str
+from .._trinomtest import trinomtest_fast
 
 
 # have to redefine for joblib compat
@@ -101,6 +105,12 @@ def _hsurf_fudge_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 @_log_context_duration("_prep_phylo", logger=print)
 def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
+    phylo_df.drop(
+        columns=["is_leaf", "is_root", "node_depth", "num_children"],
+        errors="ignore",
+        inplace=True,
+    )
+
     phylo_df["origin_time"] = phylo_df["divergence_from_root"]
 
     phylo_df = hstrat_aux.alifestd_to_working_format(phylo_df, mutate=False)
@@ -109,8 +119,6 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     del phylo_df["ancestor_list"]
 
     # clean tree topology
-    phylo_df = alifestd_add_inner_leaves_wf(phylo_df, mutate=True)
-
     phylo_df = alifestd_downsample_tips_asexual_wf(
         phylo_df, n_downsample=cfg["trt_n_downsample"]
     )
@@ -121,12 +129,12 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     if cfg["trt_hsurf_bits"]:
         phylo_df = _hsurf_fudge_phylo(phylo_df, cfg)
 
-    phylo_df = alifestd_splay_polytomies_wf(phylo_df, mutate=True)
-    phylo_df.drop(columns=["is_leaf"], inplace=True, errors="ignore")
-
     phylo_df = alifestd_collapse_unifurcations_wf(phylo_df, mutate=True)
-
     phylo_df = alifestd_delete_unifurcating_roots_asexual_wf(
+        phylo_df, mutate=True
+    )
+    phylo_df = alifestd_splay_polytomies_wf(phylo_df, mutate=True)
+    assert hstrat_aux.alifestd_is_strictly_bifurcating_asexual(
         phylo_df, mutate=True
     )
 
@@ -140,15 +148,61 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     )
     phylo_df = hstrat_aux.alifestd_mark_roots(phylo_df, mutate=True)
 
+    phylo_df.drop(
+        columns=["is_leaf", "is_root", "node_depth", "num_children"],
+        errors="ignore",
+        inplace=True,
+    )
+
     return phylo_df
 
 
 @_log_context_duration("_calc_tb_stats", logger=print)
 def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
-    min_leaves = cfg["cfg_clade_size_thresh"]
-    work_mask = (phylo_df["num_leaves"] > min_leaves) & (
-        phylo_df["num_leaves_sibling"] > min_leaves
+
+    phylo_df.drop(
+        columns=["is_leaf", "is_root", "node_depth", "num_children"],
+        errors="ignore",
+        inplace=True,
     )
+
+    phylo_df = hstrat_aux.alifestd_mark_leaves(phylo_df, mutate=True)
+
+    with hstrat_aux.log_context_duration(
+        "alifestd_mask_monomorphic_clades_asexual", logger=print
+    ):
+        phylo_df = hstrat_aux.alifestd_mask_monomorphic_clades_asexual(
+            phylo_df,
+            mutate=True,
+            trait_mask=phylo_df["is_leaf"].copy(),
+            trait_values=phylo_df["sequence_diff"],
+        )
+
+    assert hstrat_aux.alifestd_is_working_format_asexual(phylo_df, mutate=True)
+    assert hstrat_aux.alifestd_is_strictly_bifurcating_asexual(
+        phylo_df, mutate=True
+    )
+    phylo_df.reset_index(drop=True, inplace=True)
+
+    phylo_df = hstrat_aux.alifestd_mark_sister_asexual(phylo_df, mutate=True)
+
+    min_leaves = min(eval(cfg["cfg_clade_size_thresh"]))
+    phylo_df["work_mask"] = (
+        (phylo_df["num_leaves"] >= min_leaves)
+        & (phylo_df["num_leaves_sibling"] >= min_leaves)
+        & (
+            ~phylo_df.loc[
+                phylo_df["ancestor_id"].values,
+                "alifestd_mask_monomorphic_clades_asexual",
+            ].values
+        )
+    )
+    # ensure sisters of all included nodes are included
+    assert np.all(
+        phylo_df["work_mask"].values
+        == phylo_df.loc[phylo_df["sister_id"].values, "work_mask"].values
+    )
+
     # sister statistics
     calc_dr = (
         hstrat_aux.alifestd_mark_clade_subtended_duration_ratio_sister_asexual
@@ -162,6 +216,19 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
         phylo_df["clade duration ratio"] = np.log(
             phylo_df["clade_subtended_duration_ratio_sister"],
         )
+
+    with hstrat_aux.log_context_duration(
+        "alifestd_mark_clade_fblr_growth_sister_asexual",
+        logger=print,
+    ):
+        phylo_df = hstrat_aux.alifestd_mark_clade_fblr_growth_sister_asexual(
+            phylo_df,
+            mutate=True,
+            parallel_backend="loky",
+            progress_wrap=tqdm,
+            work_mask=phylo_df["work_mask"].values.copy(),
+        )
+        phylo_df["clade fblr ratio"] = phylo_df["clade_fblr_growth_sister"]
 
     with hstrat_aux.log_context_duration(
         "alifestd_mark_clade_logistic_growth_sister_asexual",
@@ -179,7 +246,8 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
                         SklearnConvergenceWarning,  # category
                     ),
                 ),
-                work_mask=work_mask,
+                progress_wrap=tqdm,
+                work_mask=phylo_df["work_mask"].values.copy(),
             )
         )
         phylo_df["clade growth ratio"] = phylo_df[
@@ -202,32 +270,43 @@ def _calc_tb_stats(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     return phylo_df
 
 
+@filter_warnings(
+    "ignore", category=scipy_stats._axis_nan_policy.SmallSampleWarning
+)
+@filter_warnings("ignore", category=RuntimeWarning)
 def _calc_screen_result(
     *,
+    dist_df: pd.DataFrame,
     mut_char_pos: int,
     mut_char_ref: str,
     mut_char_var: str,
+    mut_freq: float,
+    mut_nobs: int,
     mut_uuid: str,
     phylo_df: pd.DataFrame,
     phylo_df_background: pd.DataFrame,
     phylo_df_screened: pd.DataFrame,
+    screen_min_leaves: int,
     screen_name: str,
     stat: str,
 ) -> typing.Dict[str, typing.Any]:
 
     background, screened = phylo_df_background, phylo_df_screened
 
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore", category=scipy_stats._axis_nan_policy.SmallSampleWarning
-        )
-        mw_U, mw_p = scipy_stats.mannwhitneyu(
-            screened[stat], background[stat], alternative="two-sided"
-        )
+    mw_U, mw_p = scipy_stats.mannwhitneyu(
+        screened[stat], background[stat], alternative="two-sided"
+    )
+    mw_U_dropna, mw_p_dropna = scipy_stats.mannwhitneyu(
+        screened[stat],
+        background[stat],
+        nan_policy="omit",
+        alternative="two-sided",
+    )
     n0, n1 = len(screened), len(background)
     cliffs_delta = 1 - 2 * (mw_U / (n0 * n1))
-    binom_n = (screened[stat] != 0).sum()
-    binom_k = (screened[stat] > 0).sum()
+    cliffs_delta_dropna = 1 - 2 * (mw_U_dropna / (n0 * n1))
+    binom_n = (screened[stat].dropna() != 0).sum()
+    binom_k = (screened[stat].dropna() > 0).sum()
     if binom_n != 0:
         binom_result = scipy_stats.binomtest(binom_k, n=binom_n, p=0.5)
         binom_p = binom_result.pvalue
@@ -236,86 +315,244 @@ def _calc_screen_result(
         binom_p = np.nan
         binom_stat = np.nan
 
-    with np.errstate(invalid="ignore"):
-        return {
-            "mut": repr((mut_char_pos, mut_char_ref, mut_char_var)),
-            "mut_char_pos": mut_char_pos,
-            "mut_char_ref": mut_char_ref,
-            "mut_char_var": mut_char_var,
-            "mut_uuid": mut_uuid,
-            "screen_name": screen_name,
-            "phylo_df_background_len": len(phylo_df_background),
-            "phyo_df_screened_len": len(phylo_df_screened),
-            "tb_stat": stat,
-            "screened_nanmin": ns.nanmin(screened[stat].values),
-            "screened_nanmax": ns.nanmax(screened[stat].values),
-            "screened_min": np.min(screened[stat].values),
-            "screened_max": np.max(screened[stat].values),
-            "screened_nanmean": ns.nanmean(screened[stat].values),
-            "screened_nanvar": ns.nanvar(screened[stat].values),
-            "screened_nanstd": ns.nanstd(screened[stat].values),
-            "screened_nanmedian": ns.nanmedian(screened[stat].values),
-            "screened_mean": np.mean(screened[stat].values),
-            "screened_var": np.var(screened[stat].values),
-            "screened_std": np.std(screened[stat].values),
-            "screened_median": np.median(screened[stat].values),
-            "screened_skew": screened[stat].skew(),
-            "screened_kurt": screened[stat].kurt(),
-            "screened_N": len(screened),
-            "background_nanmin": ns.nanmin(background[stat].values),
-            "background_nanmax": ns.nanmax(background[stat].values),
-            "background_min": np.min(background[stat].values),
-            "background_max": np.max(background[stat].values),
-            "background_nanmean": ns.nanmean(background[stat].values),
-            "background_nanvar": ns.nanvar(background[stat].values),
-            "background_nanstd": ns.nanstd(background[stat].values),
-            "background_nanmedian": ns.nanmedian(background[stat].values),
-            "background_mean": np.mean(background[stat].values),
-            "background_var": np.var(background[stat].values),
-            "background_std": np.std(background[stat].values),
-            "background_median": np.median(background[stat].values),
-            "background_skew": background[stat].skew(),
-            "background_kurt": background[stat].kurt(),
-            "background_N": len(background),
-            "mw_U": mw_U,
-            "mw_p": mw_p,
-            "cliffs_delta": cliffs_delta,
-            "binom_n": binom_n,
-            "binom_k": binom_k,
-            "binom_p": binom_p,
-            "binom_stat": binom_stat,
-            **{
-                c: phylo_df[c].dropna().unique().astype(str).item()
-                for c in phylo_df.columns
-                if (
-                    c.startswith("cfg_")
-                    or c.startswith("trt_")
-                    or c.startswith("replicate_")
-                )
-            },
-        }
+    trinom_n = len(screened[stat].dropna())
+    trinom_kpos = (screened[stat] > 0).sum()
+    trinom_kneg = (screened[stat] < 0).sum()
+    trinom_ktie = (screened[stat] == 0).sum()
+    trinom_p = trinomtest_fast(screened[stat], mu=0.0, nan_policy="omit")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        trinom_stat = np.nanmean(np.sign(screened[stat]))
+
+    screened_fill0 = screened[stat].fillna(0)
+    trinom_n_fill0 = len(screened_fill0)
+    trinom_kpos_fill0 = (screened_fill0 > 0).sum()
+    trinom_kneg_fill0 = (screened_fill0 < 0).sum()
+    trinom_ktie_fill0 = (screened_fill0 == 0).sum()
+    trinom_p_fill0 = trinomtest_fast(
+        screened_fill0, mu=0.0, nan_policy="raise"
+    )
+    trinom_stat_fill0 = np.sign(screened_fill0).mean()
+
+    beq_nanmax = (
+        bootstrap_extrema_quantile(
+            data=dist_df[stat].values,
+            sample_value=np.nanmax(screened[stat].values),
+            sample_size=len(screened[stat]),
+            n_bootstrap=500,
+            extrema=np.nanmax,
+        )
+        if len(screened[stat]) > 0
+        else np.nan
+    )
+    beq_nanmean = (
+        bootstrap_extrema_quantile(
+            data=dist_df[stat].values,
+            sample_value=np.nanmax(screened[stat].values),
+            sample_size=len(screened[stat]),
+            n_bootstrap=500,
+            extrema=np.nanmean,
+        )
+        if len(screened[stat]) > 0
+        else np.nan
+    )
+
+    return {
+        "mut": repr((mut_char_pos, mut_char_ref, mut_char_var)),
+        "mut_char_pos": mut_char_pos,
+        "mut_char_ref": mut_char_ref,
+        "mut_char_var": mut_char_var,
+        "mut_freq": mut_freq,
+        "mut_nobs": mut_nobs,
+        "mut_uuid": mut_uuid,
+        "screen_name": screen_name,
+        "screen_min_leaves": screen_min_leaves,
+        "phylo_df_background_len": len(phylo_df_background),
+        "phyo_df_screened_len": len(phylo_df_screened),
+        "tb_stat": stat,
+        "screened_frac0": (screened[stat].values == 0).mean(),
+        "screened_frac1": (screened[stat].values == 1).mean(),
+        "screened_frac2": (screened[stat].values == 2).mean(),
+        "screened_frac3": (screened[stat].values == 3).mean(),
+        "screened_nanmin": np.nanmin(
+            screened[stat].values.astype(float), initial=np.inf
+        ),
+        "screened_nanmax": np.nanmax(
+            screened[stat].values.astype(float), initial=-np.inf
+        ),
+        "screened_min": np.min(
+            screened[stat].values.astype(float), initial=np.inf
+        ),
+        "screened_max": np.max(
+            screened[stat].values.astype(float), initial=-np.inf
+        ),
+        "screened_nanmean": np.nanmean(screened[stat].values),
+        "screened_nanvar": np.nanvar(screened[stat].values),
+        "screened_nanstd": np.nanstd(screened[stat].values),
+        "screened_nanmedian": np.nanmedian(screened[stat].values),
+        "screened_mean": np.mean(screened[stat].values),
+        "screened_var": np.var(screened[stat].values),
+        "screened_std": np.std(screened[stat].values),
+        "screened_median": np.median(screened[stat].values),
+        "screened_skew": screened[stat].skew(),
+        "screened_kurt": screened[stat].kurt(),
+        "screened_N": len(screened),
+        "screened_num_isna": screened[stat].isna().sum(),
+        "screened_num_isfinite": np.isfinite(screened[stat]).sum(),
+        "screened_num_notfinite": (~np.isfinite(screened[stat])).sum(),
+        "screened_num_notna": screened[stat].notna().sum(),
+        "screened_num_nonzero": (screened[stat] != 0).sum(),
+        "screened_num_pos": (screened[stat] > 0).sum(),
+        "screened_num_neg": (screened[stat] < 0).sum(),
+        "screened_num_notnan": screened[stat].notna().sum(),
+        "screened_num_posinf": (screened[stat] == np.inf).sum(),
+        "screened_num_neginf": (screened[stat] == -np.inf).sum(),
+        "screened_numnan": screened[stat].isna().sum(),
+        "background_nanmin": np.nanmin(
+            background[stat].values.astype(float), initial=np.inf
+        ),
+        "background_nanmax": np.nanmax(
+            background[stat].values.astype(float), initial=-np.inf
+        ),
+        "background_min": np.min(
+            background[stat].values.astype(float), initial=np.inf
+        ),
+        "background_max": np.max(
+            background[stat].values.astype(float), initial=-np.inf
+        ),
+        "background_nanmean": np.nanmean(background[stat].values),
+        "background_nanvar": np.nanvar(background[stat].values),
+        "background_nanstd": np.nanstd(background[stat].values),
+        "background_nanmedian": np.nanmedian(background[stat].values),
+        "background_mean": np.mean(background[stat].values),
+        "background_var": np.var(background[stat].values),
+        "background_std": np.std(background[stat].values),
+        "background_median": np.median(background[stat].values),
+        "background_skew": background[stat].skew(),
+        "background_kurt": background[stat].kurt(),
+        "background_N": len(background),
+        "background_num_isna": background[stat].isna().sum(),
+        "background_num_isfinite": np.isfinite(background[stat]).sum(),
+        "background_num_notfinite": (~np.isfinite(background[stat])).sum(),
+        "background_num_notna": background[stat].notna().sum(),
+        "background_num_nonzero": (background[stat] != 0).sum(),
+        "background_num_pos": (background[stat] > 0).sum(),
+        "background_num_neg": (background[stat] < 0).sum(),
+        "background_num_notnan": background[stat].notna().sum(),
+        "background_num_posinf": (background[stat] == np.inf).sum(),
+        "background_num_neginf": (background[stat] == -np.inf).sum(),
+        "background_numnan": background[stat].isna().sum(),
+        "mw_U": mw_U,
+        "mw_p": mw_p,
+        "cliffs_delta": cliffs_delta,
+        "mw_U_dropna": mw_U_dropna,
+        "mw_p_dropna": mw_p_dropna,
+        "cliffs_delta_dropna": cliffs_delta_dropna,
+        "binom_n": binom_n,
+        "binom_k": binom_k,
+        "binom_p": binom_p,
+        "binom_stat": binom_stat,
+        "trinom_n": trinom_n,
+        "trinom_kpos": trinom_kpos,
+        "trinom_kneg": trinom_kneg,
+        "trinom_ktie": trinom_ktie,
+        "trinom_p": trinom_p,
+        "trinom_stat": trinom_stat,
+        "trinom_n_fill0": trinom_n_fill0,
+        "trinom_kpos_fill0": trinom_kpos_fill0,
+        "trinom_kneg_fill0": trinom_kneg_fill0,
+        "trinom_ktie_fill0": trinom_ktie_fill0,
+        "trinom_p_fill0": trinom_p_fill0,
+        "trinom_stat_fill0": trinom_stat_fill0,
+        "beq_nanmax": beq_nanmax,
+        "beq_nanmean": beq_nanmean,
+        **{
+            c: phylo_df[c].dropna().unique().astype(str).item()
+            for c in phylo_df.columns
+            if (
+                c.startswith("cfg_")
+                or c.startswith("trt_")
+                or c.startswith("replicate_")
+                or c.startswith("SLURM_")
+            )
+        },
+    }
 
 
-def _process_diff(
+def _process_mut(
     phylo_df: pd.DataFrame,
-    mask: np.ndarray,
-    site: int,
-    from_: str,
-    to: str,
+    dist_df: np.ndarray,
+    cfg: dict,
+    mut_mask_sparse: np.ndarray,
+    mut_char_pos: int,
+    mut_char_ref: str,
+    mut_char_var: str,
 ) -> typing.List[dict]:
-    mut_uuid = str(uuid.uuid4())
+    mut_uuid = strong_uuid4_str()
     # unsparsify mask
-    mask_ = np.zeros(len(phylo_df), dtype=bool)
-    mask_[mask] = True
-    mask = mask_
+    mut_mask_dense = np.zeros(len(phylo_df), dtype=bool)
+    mut_mask_dense[mut_mask_sparse] = True
+    mut_nobs = mut_mask_dense.sum()
+    assert mut_nobs == len(mut_mask_sparse)
+    mut_freq = mut_nobs / hstrat_aux.alifestd_count_leaf_nodes(phylo_df)
+    assert 0 <= mut_freq <= 1
 
     screen_masks = screen_mutation_defined_nodes(
         phylo_df,
-        has_mutation=mask,
+        has_mutation=mut_mask_dense,
+        screens=(
+            "combined_f20n50",
+            "combined_f20n75",
+            "naive50",
+            "naive75",
+            "fisher20",
+            "ctrl_fisher20",
+            "ctrl_naive75",
+        ),
     )
+
+    if (
+        mut_char_ref == "+"
+        and mut_char_var == "'"
+        and "variant" in phylo_df.columns
+        and phylo_df["variant"].str.len().all()
+        and (
+            phylo_df["variant"].str.endswith("'").values.astype(bool)
+            | phylo_df["variant"].str.endswith("+").values.astype(bool)
+        ).all()
+    ):
+        screen_masks["covaphast_variant"] = phylo_df["variant"].str.endswith(
+            "'"
+        ).values.astype(bool) & phylo_df.loc[
+            phylo_df["ancestor_id"].values, "variant"
+        ].str.endswith(
+            "+"
+        ).values.astype(
+            bool
+        )
+
+    if (
+        "sequence_diff" in phylo_df.columns
+        and phylo_df["sequence_diff"].str.len().fillna(0).all()
+    ):
+        sdpl = pl.from_pandas(phylo_df["sequence_diff"])
+        anc_sdpl = pl.from_pandas(
+            phylo_df.loc[phylo_df["ancestor_id"].values, "sequence_diff"],
+        )
+
+        screen_masks["sequence_diff"] = (
+            (sdpl.str.json_path_match(f"$.{mut_char_pos}") == mut_char_var)
+            .fill_null(False)
+            .to_numpy()
+        ) & (
+            anc_sdpl.str.json_path_match(f"$.{mut_char_pos}") != mut_char_var
+        ).fill_null(
+            True
+        ).to_numpy()
 
     stats = (
         "clade duration ratio",
+        "clade fblr ratio",
         "clade growth ratio",
         "clade size ratio",
         "num_leaves",
@@ -326,38 +563,39 @@ def _process_diff(
     for stat, (screen_name, screen_mask) in it.product(
         stats, screen_masks.items()
     ):
-        records.append(
-            _calc_screen_result(
-                mut_char_ref=from_,
-                mut_char_pos=site,
-                mut_char_var=to,
-                mut_uuid=mut_uuid,
-                phylo_df=phylo_df,
-                phylo_df_background=phylo_df[
-                    phylo_df["clade_size_thresh_mask"] & ~screen_mask
-                ],
-                phylo_df_screened=phylo_df[
-                    phylo_df["clade_size_thresh_mask"] & screen_mask
-                ],
-                screen_name=screen_name,
-                stat=stat,
-            ),
-        )
+        for screen_min_leaves in eval(cfg["cfg_clade_size_thresh"]):
+            work_mask = (
+                phylo_df["work_mask"].values
+                & (phylo_df["num_leaves"].values >= screen_min_leaves)
+                & (phylo_df["num_leaves_sibling"].values >= screen_min_leaves)
+            )
+            phylo_df_background = (
+                phylo_df[work_mask & ~screen_mask]
+                .copy()
+                .reset_index(drop=True)
+            )
+            phylo_df_screened = (
+                phylo_df[work_mask & screen_mask].copy().reset_index(drop=True)
+            )
+            records.append(
+                _calc_screen_result(
+                    dist_df=dist_df,
+                    mut_char_ref=mut_char_ref,
+                    mut_char_pos=mut_char_pos,
+                    mut_char_var=mut_char_var,
+                    mut_freq=mut_freq,
+                    mut_nobs=mut_nobs,
+                    mut_uuid=mut_uuid,
+                    phylo_df=phylo_df,
+                    phylo_df_background=phylo_df_background,
+                    phylo_df_screened=phylo_df_screened,
+                    screen_min_leaves=screen_min_leaves,
+                    screen_name=screen_name,
+                    stat=stat,
+                ),
+            )
 
     return records
-
-
-# one-time phylo_df holder for worker initializer
-_phylo_df = None
-
-
-def _init_worker(df: pd.DataFrame) -> None:
-    global _phylo_df
-    _phylo_df = df
-
-
-def _process_diff_worker(args: tuple) -> typing.List[dict]:
-    return _process_diff(_phylo_df, *args)
 
 
 def _process_replicate(
@@ -365,7 +603,6 @@ def _process_replicate(
     cfg: dict,
 ) -> pd.DataFrame:
 
-    records = []
     phylo_df = phylo_df.copy().reset_index(drop=True)
     fil = phylo_df["sequence_diff"].str.startswith('{"0": ')
     print(
@@ -376,11 +613,6 @@ def _process_replicate(
     phylo_df = _prep_phylo(phylo_df, cfg)
     phylo_df = _calc_tb_stats(phylo_df, cfg)
 
-    min_leaves = cfg["cfg_clade_size_thresh"]
-    phylo_df["clade_size_thresh_mask"] = (
-        phylo_df["num_leaves"] > min_leaves
-    ) & (phylo_df["num_leaves_sibling"] > min_leaves)
-
     diffs_iter = mask_sequence_diffs(
         ancestral_sequence=phylo_df["ancestral_sequence"]
         .dropna()
@@ -389,28 +621,60 @@ def _process_replicate(
         .item(),
         sequence_diffs=phylo_df["sequence_diff"],
         sparsify_mask=True,
-        mut_count_thresh=cfg["cfg_mut_count_thresh"],
-        mut_quart_thresh=cfg["cfg_mut_quart_thresh"],
+        mut_count_thresh=(
+            cfg["cfg_mut_count_thresh_lb"],
+            cfg["cfg_mut_count_thresh_ub"],
+        ),
+        mut_freq_thresh=(
+            cfg["cfg_mut_freq_thresh_lb"],
+            cfg["cfg_mut_freq_thresh_ub"],
+        ),
+        mut_quant_thresh=(
+            cfg["cfg_mut_quant_thresh_lb"],
+            cfg["cfg_mut_quant_thresh_ub"],
+        ),
         progress_wrap=tqdm,
     )
-    task_iter = ((mask, site, frm, to) for (site, frm, to), mask in diffs_iter)
 
-    with Pool(initializer=_init_worker, initargs=(phylo_df,)) as pool:
-        for result in pool.imap_unordered(_process_diff_worker, task_iter):
-            records.extend(result)
+    phylo_df = hstrat_aux.alifestd_mark_origin_time_delta_asexual(
+        phylo_df, mutate=True
+    )
+    dist_ids = np.repeat(
+        phylo_df["id"].values,
+        phylo_df["origin_time_delta"].values.astype(int),
+    )
+    dist_df = phylo_df.loc[dist_ids].copy()
 
-    return pd.DataFrame(records)
+    def _process_mut_worker(*args: tuple) -> typing.List[dict]:
+        return _process_mut(
+            phylo_df,
+            dist_df,
+            cfg,
+            *args,
+        )
+
+    tasks = [
+        joblib.delayed(_process_mut_worker)(
+            mut_mask, mut_char_pos, mut_char_ref, mut_char_var
+        )
+        for (mut_char_pos, mut_char_ref, mut_char_var), mut_mask in diffs_iter
+    ]
+
+    results = joblib.Parallel(
+        n_jobs=-1,
+        batch_size=10,
+        backend="loky",
+        verbose=50,
+    )(tqdm(tasks, desc="process mutations"))
+
+    return pd.DataFrame([*it.chain(*results)])
 
 
-if __name__ == "__main__":
-    cfg = read_config(sys.stdin)
-    cfg["screen_uuid"] = str(uuid.uuid4())
+def main(refphylos_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
+    cfg = cfg.copy()
+
     pprint.PrettyPrinter(depth=4).pprint(cfg)
     seed_global_rngs(cfg["screen_num"])
-
-    with hstrat_aux.log_context_duration("pd.read_parquet", logger=print):
-        refphylos_df = pd.read_parquet(cfg["cfg_refphylos"])
-        glimpse_df(refphylos_df, logger=print)
 
     work = [
         phylo_df
@@ -420,7 +684,10 @@ if __name__ == "__main__":
         if "cfg_assigned_replicate_uuid" not in cfg
         or str(uid) == cfg["cfg_assigned_replicate_uuid"]
     ]
-    res = [_process_replicate(phylo_df, cfg) for phylo_df in tqdm(work)]
+    res = [
+        _process_replicate(phylo_df, cfg)
+        for phylo_df in tqdm(work, desc="process replicate")
+    ]
 
     with hstrat_aux.log_context_duration("finalize phylo_df", logger=print):
         screen_df = pd.concat(res)
@@ -430,8 +697,28 @@ if __name__ == "__main__":
 
         screen_df = shrink_df(screen_df, inplace=True)
 
+    return screen_df
+
+
+if __name__ == "__main__":
+    hstrat_aux.configure_prod_logging()
+    cfg = read_config(sys.stdin)
+    cfg["screen_uuid"] = strong_uuid4_str()
+
+    with hstrat_aux.log_context_duration("pd.read_parquet", logger=print):
+        read_parquet = retry(tries=5, logger=logging.getLogger(__name__))(
+            pd.read_parquet
+        )
+        refphylos_df = read_parquet(cfg["cfg_refphylos"])
+        glimpse_df(refphylos_df, logger=print)
+
+    screen_df = main(refphylos_df, cfg)
+
     glimpse_df(screen_df.head(), logger=print)
     glimpse_df(screen_df.tail(), logger=print)
+
+    if cfg["trt_hsurf_bits"] == 0:
+        assert "sequence_diff" in screen_df["screen_name"].unique()
 
     with hstrat_aux.log_context_duration("screen_df.to_parquet", logger=print):
         screen_df.to_parquet(

@@ -19,6 +19,9 @@ echo "SOURCE_REVISION ${SOURCE_REVISION}"
 SOURCE_REMOTE_URL="$(git config --get remote.origin.url)"
 echo "SOURCE_REMOTE_URL ${SOURCE_REMOTE_URL}"
 
+CONTAINER_URI="docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:423cd888e037c8df47439bed57fca13ef691cd9332ff645f0a1839ed976a26a8"
+echo "CONTAINER_URI ${CONTAINER_URI}"
+
 echo "initialization telemetry ==============================================="
 echo "date $(date)"
 echo "hostname $(hostname)"
@@ -29,6 +32,8 @@ module purge || :
 module load Python/3.10.8 || :
 echo "python3.10 $(which python3.10)"
 echo "python3.10 --version $(python3.10 --version)"
+echo "singularity $(which singularity)"
+echo "singularity --version $(singularity --version)"
 
 echo "setup HOME dirs ========================================================"
 mkdir -p "${HOME}/joblatest"
@@ -102,7 +107,7 @@ for attempt in {1..5}; do
         'numpy==2.*' \
         'joinem==0.9.3' \
         'pandas==2.*' \
-        'polars==1.28.*' \
+        'polars==1.29.*' \
         'pyarrow==16.*' \
         'scipy==1.*' \
         'tqdm==4.*' \
@@ -116,6 +121,9 @@ done
 echo "setup dependencies ========================================== \${SECONDS}"
 source "${BATCHDIR_ENV}/bin/activate"
 python3.10 -m uv pip freeze
+
+# prime singularity cache
+singularity exec "${CONTAINER_URI}" echo "hello from singularity"
 
 echo "sbatch preamble ========================================================="
 JOB_PREAMBLE=$(cat << EOF
@@ -174,6 +182,8 @@ module purge || :
 module load Python/3.10.8 || :
 echo "python3.10 \$(which python3.10)"
 echo "python3.10 --version \$(python3.10 --version)"
+echo "singularity \$(which singularity)"
+echo "singularity --version \$(singularity --version)"
 
 echo "setup dependencies- ----------------------------------------- \${SECONDS}"
 source "${BATCHDIR_ENV}/bin/activate"
@@ -193,15 +203,15 @@ echo "SBATCH_FILE ${SBATCH_FILE}"
 cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=100G
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=50G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
 #SBATCH --mail-type=FAIL,TIME_LIMIT
 #SBATCH --account=beacon
 #SBATCH --requeue
-#SBATCH --array=0-9
+#SBATCH --array=0-29
 
 ${JOB_PREAMBLE}
 
@@ -215,27 +225,29 @@ echo "cpuinfo ----------------------------------------------------- \${SECONDS}"
 cat /proc/cpuinfo || :
 
 echo "do work ----------------------------------------------------- \${SECONDS}"
-python3 << EOF_ | singularity exec docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:b30ff0ecc1a7c52b884753c3532bcebb055d3546fac91076a16ced30195a3ce6 python3 -m pylib.cli.run_covaphastsim
+python3 << EOF_ | singularity exec "${CONTAINER_URI}" python3 -m pylib.cli.run_covaphastsim
 
 import itertools as it
 import os
 
 replicates = it.product(
-    [("Sben", "Gdel"), ("Sneu", "Gneu")],
     range(1_000_000),
+    [("Sben", "Gneu"), ("Sben", "Gdel"), ("Sneu", "Gneu")],
 )
-(S, G), replicate = next(
+replicate, (S, G) = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
 )
 
-trt_mutmx_active_strain_factor = {"Gdel": 0.5, "Gneu": 1.0, "Gben": None}[G]
+trt_mutmx_active_strain_factor = {"Gdel": 1.0, "Gneu": 1.0, "Gben": None}[G]
 trt_mutmx_rel_beta = {"Gdel": 0.5, "Gneu": 1.0, "Gben": None}[G]
 trt_mutmx_withinhost_r = {"Sdel": None, "Sneu": 1.0, "Sben": 2.0}[S]
 
 cfg = f"""
-cfg_p_wt_to_mut: 2.74e-6
-cfg_pop_size: {67_000_000 // 50}
-cfg_refseqs: "https://osf.io/hp25c/download"
+cfg_num_mut_sites: 1
+cfg_p_wt_to_mut: {2.74e-6 / 3}  # divide by 3 for possible alt nucleotides
+cfg_pop_size: {67_000_000 // 100}
+cfg_maxseqlen: 390
+cfg_refseqs: "https://osf.io/s9xhr/download"  # homogenized seqs for testing
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
 replicate_num: {replicate}
@@ -244,6 +256,12 @@ trt_mutmx_rel_beta: {trt_mutmx_rel_beta}
 trt_mutmx_withinhost_r: {trt_mutmx_withinhost_r}
 trt_name: "{S}/{G}"
 trt_seed: \${SLURM_ARRAY_TASK_ID:-0}
+SLURM_JOB_ID: \${SLURM_JOB_ID:-null}
+SLURM_ARRAY_JOB_ID: \${SLURM_ARRAY_JOB_ID:-null}
+SLURM_ARRAY_TASK_ID: \${SLURM_ARRAY_TASK_ID:-null}
+SLURM_ARRAY_TASK_COUNT: \${SLURM_ARRAY_TASK_COUNT:-null}
+SLURM_ARRAY_TASK_MAX: \${SLURM_ARRAY_TASK_MAX:-null}
+SLURM_ARRAY_TASK_MIN: \${SLURM_ARRAY_TASK_MIN:-null}
 """
 
 print(cfg)
