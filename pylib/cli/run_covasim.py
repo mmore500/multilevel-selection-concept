@@ -177,7 +177,10 @@ def _extract_phylo(
     return phylo_df
 
 
-def _add_sequence_diffs(phylo_df: pd.DataFrame) -> pd.DataFrame:
+def _add_sequence_diffs(
+    phylo_df: pd.DataFrame,
+    ancestral_sequence: str,
+) -> pd.DataFrame:
     assert hstrat_aux.alifestd_is_topologically_sorted(phylo_df)
     assert hstrat_aux.alifestd_count_root_nodes(phylo_df) == 1
 
@@ -186,14 +189,6 @@ def _add_sequence_diffs(phylo_df: pd.DataFrame) -> pd.DataFrame:
     )
     phylo_df = hstrat_aux.alifestd_mark_leaves(phylo_df, mutate=True)
 
-    ancestral_sequence = (
-        phylo_df.loc[phylo_df["is_leaf"]]
-        .sort_values(by="node_depth")["sequence"]
-        .iat[0]
-    )
-    assert len(ancestral_sequence) == phylo_df["sequence"].str.len().max()
-
-    phylo_df["ancestral_sequence"] = ancestral_sequence
     assert phylo_df["sequence"].dropna().str.len().nunique() == 1
 
     phylo_df["sequence_diff"] = diff_sequences(
@@ -225,18 +220,25 @@ def main(cfg: dict) -> pd.DataFrame:
         sim.run()
 
     phylo_df = _extract_phylo(sim.people.infection_log, variant_flavors)
-    phylo_df["ancestral_sequence"] = phylo_df["variant_flavor"].map(
+    # drop last row date due to cleanup issues
+    phylo_df = phylo_df[phylo_df["date"] != phylo_df["date"].max()].copy()
+
+    phylo_df["ancestral_nucsequence"] = phylo_df["variant_flavor"].map(
         reference_sequences.get,
     )
     phylo_df["sequence"] = (
         phylo_df["sequence_focal"] + phylo_df["sequence_background"]
     )
+    ancestral_sequence = "+" * phylo_df["sequence"].str.len().unique().item()
+    phylo_df["ancestral_sequence"] = ancestral_sequence
 
     print(f"{phylo_df['variant'].value_counts()=}")
     glimpse_df(phylo_df, logger=print)
 
     with hstrat_aux.log_context_duration("_add_sequence_diffs", logger=print):
-        phylo_df = _add_sequence_diffs(phylo_df=phylo_df)
+        phylo_df = _add_sequence_diffs(
+            phylo_df=phylo_df, ancestral_sequence=ancestral_sequence
+        )
 
     fil = phylo_df["sequence_diff"].str.startswith('{"0": ')
     print(
