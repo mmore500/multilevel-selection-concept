@@ -12,6 +12,9 @@ def screen_mutation_defined_nodes(
 ) -> dict:
     phylo_df.reset_index(drop=True, inplace=True)
 
+    if "is_leaf" not in phylo_df.columns:
+        phylo_df = hstrat_aux.alifestd_mark_leaves(phylo_df, mutate=True)
+
     trait_absent = (~has_mutation) & phylo_df["is_leaf"].values
     trait_present = has_mutation & phylo_df["is_leaf"].values
 
