@@ -223,7 +223,7 @@ cat > "${SBATCH_FILE}" << EOF
 #SBATCH --mail-type=FAIL,TIME_LIMIT
 #SBATCH --account=beacon
 #SBATCH --requeue
-#SBATCH --array=0-44
+#SBATCH --array=0-34
 
 ${JOB_PREAMBLE}
 
@@ -245,23 +245,48 @@ import os
 
 replicates = it.product(
     range(1_000_000),
-    [("Sben", "Gneu"), ("Sben", "Gdel"), ("Sneu", "Gneu")],
-    [0, 1, 2],
+    [
+        ("Sben1.1x", "Gneu", 1.1),
+        ("Sben1.3x", "Gneu", 1.3),
+        ("Sben2x", "Gneu", 2.0),
+        ("Sben1.1x", "Gdel1.1x", 1.1),
+        ("Sben1.3x", "Gdel1.3x", 1.3),
+        ("Sben2x", "Gdel2x", 2.0),
+        ("Sneu", "Gneu"),
+    ],
 )
-replicate, (S, G), eff_size = next(
+replicate, (S, G, eff_size) = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
 )
 
-trt_mutmx_active_strain_factor = {"Gdel": 1.0, "Gneu": 1.0, "Gben": None}[G]
-trt_mutmx_rel_beta = {"Gdel": [0.95, 0.85, 0.5], "Gneu": [1.0] * 3, "Gben": None}[G][eff_size]
-trt_mutmx_withinhost_r = {"Sdel": None, "Sneu": [1.0] * 3, "Sben": [1.1, 1.3, 2.0]}[S][eff_size]
+trt_mutmx_active_strain_factor = {
+    "Gdel1.1x": 1.0,
+    "Gdel1.3x": 1.0,
+    "Gdel2x": 1.0,
+    "Gneu": 1.0,
+    "Gben": None,
+}[G]
+trt_mutmx_rel_beta = {
+    "Gneu": 1.0,
+    "Gdel1.1x": 0.90,
+    "Gdel1.3x": 0.75,
+    "Gdel2x": 0.50,
+    "Gben": None,
+}[G]
+trt_mutmx_withinhost_r = {
+    "Sdel": None,
+    "Sneu": 1.0,
+    "Sben1.1x": 1.1,
+    "Sben1.3x": 1.3,
+    "Sben2x": 2.0,
+}[S]
 
 cfg = f"""
 cfg_make_cv_sim_recipe: "make_cv_sim_vanilla"
 cfg_make_wt_specs_recipe: "make_wt_specs_single"
 cfg_num_mut_sites: 1
 cfg_p_wt_to_mut: {2.74e-6 * 4}
-cfg_pop_size: {100_000}
+cfg_pop_size: {200_000}
 cfg_refseqs: "https://osf.io/s9xhr/download"  # homogenized seqs for testing
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
@@ -271,6 +296,7 @@ trt_mutmx_active_strain_factor: {trt_mutmx_active_strain_factor}
 trt_mutmx_rel_beta: {trt_mutmx_rel_beta}
 trt_mutmx_withinhost_r: {trt_mutmx_withinhost_r}
 trt_name: "{S}/{G}"
+trt_type: "{S[:4]}/{G[:4]}"
 trt_eff_size: {eff_size}
 trt_seed: \${SLURM_ARRAY_TASK_ID:-0}
 SLURM_JOB_ID: \${SLURM_JOB_ID:-null}
