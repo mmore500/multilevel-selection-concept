@@ -258,7 +258,7 @@ trt_mutmx_withinhost_r = {"Sdel": None, "Sneu": [1.0] * 3, "Sben": [1.1, 1.3, 2.
 
 cfg = f"""
 cfg_make_cv_sim_recipe: "make_cv_sim_vanilla"
-cfg_make_wt_specs_recipe: "make_wt_specs_single"
+cfg_make_wt_specs_recipe: "make_wt_specs_uk"
 cfg_num_mut_sites: 1
 cfg_p_wt_to_mut: {2.74e-6}
 cfg_pop_size: {500_000}
