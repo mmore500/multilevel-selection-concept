@@ -20,7 +20,7 @@ def make_wt_specs_single(
         variant=baseline_variant_params,
         label="Wildtype",
         days=[0],
-        n_imports=1000,
+        n_imports=100,
     )
 
     return [wildtype]

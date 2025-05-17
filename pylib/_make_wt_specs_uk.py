@@ -27,7 +27,7 @@ def make_wt_specs_uk(
         variant=baseline_variant_params,
         label="Wildtype",
         days=[0],
-        n_imports=1000,
+        n_imports=50,
     )
 
     # adding different variants: B.1.177 in September 2020, Alpha slightly
@@ -56,7 +56,7 @@ def make_wt_specs_uk(
         },
         label="Beta",
         days=np.arange(first_day, last_day),
-        n_imports=3000,
+        n_imports=60,
     )
 
     # # Add Alpha strain from October 2020
@@ -79,7 +79,7 @@ def make_wt_specs_uk(
         },
         label="Alpha",
         days=np.arange(first_day, last_day),
-        n_imports=3000,
+        n_imports=60,
     )
 
     # # Add Delta strain starting middle of April
@@ -102,7 +102,7 @@ def make_wt_specs_uk(
         },
         label="Delta",
         days=np.arange(first_day, last_day),
-        n_imports=4000,
+        n_imports=80,
     )
 
     return [wildtype, b1351, b117, b16172]
