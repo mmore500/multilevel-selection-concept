@@ -12,6 +12,7 @@ from ._VariantSpec import VariantSpec
 def make_wt_specs_uk(
     reference_sequences: dict,
     start_day: str = "2020-01-20",
+    n_imports_mx: int = 10,
 ) -> typing.List[VariantSpec]:
 
     baseline_variant_params = {
@@ -27,7 +28,7 @@ def make_wt_specs_uk(
         variant=baseline_variant_params,
         label="Wildtype",
         days=[0],
-        n_imports=50,
+        n_imports=5 * n_imports_mx,
     )
 
     # adding different variants: B.1.177 in September 2020, Alpha slightly
@@ -56,7 +57,7 @@ def make_wt_specs_uk(
         },
         label="Beta",
         days=np.arange(first_day, last_day),
-        n_imports=60,
+        n_imports=6 * n_imports_mx,
     )
 
     # # Add Alpha strain from October 2020
@@ -79,7 +80,7 @@ def make_wt_specs_uk(
         },
         label="Alpha",
         days=np.arange(first_day, last_day),
-        n_imports=60,
+        n_imports=6 * n_imports_mx,
     )
 
     # # Add Delta strain starting middle of April
@@ -102,7 +103,7 @@ def make_wt_specs_uk(
         },
         label="Delta",
         days=np.arange(first_day, last_day),
-        n_imports=80,
+        n_imports=8 * n_imports_mx,
     )
 
     return [wildtype, b1351, b117, b16172]
