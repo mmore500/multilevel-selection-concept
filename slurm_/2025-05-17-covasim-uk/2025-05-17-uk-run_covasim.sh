@@ -257,7 +257,7 @@ trt_mutmx_rel_beta = {"Gdel": [0.95, 0.85, 0.5], "Gneu": [1.0] * 3, "Gben": None
 trt_mutmx_withinhost_r = {"Sdel": None, "Sneu": [1.0] * 3, "Sben": [1.1, 1.3, 2.0]}[S][eff_size]
 
 cfg = f"""
-cfg_make_cv_sim_recipe: "make_cv_sim_vanilla"
+cfg_make_cv_sim_recipe: "make_cv_sim_uk"
 cfg_make_wt_specs_recipe: "make_wt_specs_single"
 cfg_num_mut_sites: 1
 cfg_p_wt_to_mut: {2.74e-6}
