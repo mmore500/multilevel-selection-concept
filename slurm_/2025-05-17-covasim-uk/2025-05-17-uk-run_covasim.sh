@@ -261,12 +261,12 @@ cfg_make_cv_sim_recipe: "make_cv_sim_uk"
 cfg_make_wt_specs_recipe: "make_wt_specs_single"
 cfg_num_mut_sites: 1
 cfg_p_wt_to_mut: {2.74e-6 * 4}
-cfg_pop_size: {200_000}
+cfg_pop_size: {100_000}
 cfg_refseqs: "https://osf.io/hp25c/download"
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
 replicate_num: {replicate}
-cfg_maxseqlen: 99
+cfg_maxseqlen: 49
 trt_mutmx_active_strain_factor: {trt_mutmx_active_strain_factor}
 trt_mutmx_rel_beta: {trt_mutmx_rel_beta}
 trt_mutmx_withinhost_r: {trt_mutmx_withinhost_r}
