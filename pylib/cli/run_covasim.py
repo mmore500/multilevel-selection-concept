@@ -68,6 +68,7 @@ def _setup_sim(
 
     wt_specs = make_wt_specs(
         reference_sequences=reference_sequences,
+        n_imports_mx=cfg.get("cfg_n_imports_mx", 100),
     )
     variant_flavors = make_variant_flavors(
         wt_specs,
