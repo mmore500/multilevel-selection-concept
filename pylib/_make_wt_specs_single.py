@@ -5,6 +5,7 @@ from ._VariantSpec import VariantSpec
 
 def make_wt_specs_single(
     reference_sequences: dict,
+    n_imports_mx: int = 100,
 ) -> typing.List[VariantSpec]:
 
     baseline_variant_params = {
@@ -20,7 +21,7 @@ def make_wt_specs_single(
         variant=baseline_variant_params,
         label="Wildtype",
         days=[0],
-        n_imports=100,
+        n_imports=n_imports_mx,
     )
 
     return [wildtype]
