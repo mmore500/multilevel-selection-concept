@@ -220,7 +220,7 @@ cat > "${SBATCH_FILE}" << EOF
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
-#SBATCH --mail-type=FAIL,TIME_LIMIT
+#SBATCH --mail-type=FAIL,TIME_LIMIT,ARRAY_TASKS
 #SBATCH --account=beacon
 #SBATCH --requeue
 #SBATCH --array=0-34
@@ -252,7 +252,7 @@ replicates = it.product(
         ("Sben1.1x", "Gdel1.1x", 1.1),
         ("Sben1.3x", "Gdel1.3x", 1.3),
         ("Sben2x", "Gdel2x", 2.0),
-        ("Sneu", "Gneu"),
+        ("Sneu", "Gneu", 1.0),
     ],
 )
 replicate, (S, G, eff_size) = next(
