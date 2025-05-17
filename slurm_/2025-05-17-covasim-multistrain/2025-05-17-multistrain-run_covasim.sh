@@ -216,7 +216,7 @@ cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=30G
+#SBATCH --mem=64G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
@@ -260,8 +260,8 @@ cfg = f"""
 cfg_make_cv_sim_recipe: "make_cv_sim_vanilla"
 cfg_make_wt_specs_recipe: "make_wt_specs_uk"
 cfg_num_mut_sites: 1
-cfg_p_wt_to_mut: {2.74e-6}
-cfg_pop_size: {500_000}
+cfg_p_wt_to_mut: {2.74e-6 * 4}
+cfg_pop_size: {200_000}
 cfg_refseqs: "https://osf.io/hp25c/download"
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
