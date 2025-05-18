@@ -282,6 +282,7 @@ trt_mutmx_withinhost_r = {
 }[S]
 
 cfg = f"""
+cfg_n_imports_mx: 100
 cfg_make_cv_sim_recipe: "make_cv_sim_vanilla"
 cfg_make_wt_specs_recipe: "make_wt_specs_uk"
 cfg_num_mut_sites: 1
