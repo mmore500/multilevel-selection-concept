@@ -5,6 +5,7 @@ black==22.10.0
 Deprecated==1.2.13
 hstrat==1.20.11
 downstream==1.14.3
+frozendict==2.4.6
 interval_search==0.5.2
 IPython==7.31.1
 isort==5.12.0
