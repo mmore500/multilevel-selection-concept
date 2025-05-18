@@ -229,6 +229,8 @@ def main(cfg: dict) -> pd.DataFrame:
     phylo_df["sequence"] = (
         phylo_df["sequence_focal"] + phylo_df["sequence_background"]
     )
+    del phylo_df["sequence_focal"]
+    del phylo_df["sequence_background"]
     ancestral_sequence = "+" * phylo_df["sequence"].str.len().unique().item()
     phylo_df["ancestral_sequence"] = ancestral_sequence
 
