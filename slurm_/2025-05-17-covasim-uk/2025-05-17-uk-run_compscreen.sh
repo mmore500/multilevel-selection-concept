@@ -221,7 +221,7 @@ cat > "${SBATCH_FILE}" << EOF
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
-#SBATCH --mail-type=FAIL,TIME_LIMIT
+#SBATCH --mail-type=FAIL,TIME_LIMIT,ARRAY_TASKS
 #SBATCH --account=beacon
 #SBATCH --requeue
 #SBATCH --array=0-69
@@ -259,9 +259,12 @@ uuids = sorted(
 
 replicates = it.product(
     uuids,
-    [0],
+    [0, 64],
     [1_000_000],
 )
+replicates = [*replicates]
+assert len(replicates) == 70, f"expected 70 replicates, got {len(replicates)}"
+
 assigned_uuid, hsurf_bits, ndownsamp = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
 )
