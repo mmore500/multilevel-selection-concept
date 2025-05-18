@@ -276,5 +276,5 @@ if __name__ == "__main__":
 
     with hstrat_aux.log_context_duration("screen_df.to_parquet", logger=print):
         screen_df.to_parquet(
-            f"a=run_volzscreen+screen_uuid={cfg['screen_uuid']}.pqt",
+            f"a=run_compscreen+screen_uuid={cfg['screen_uuid']}.pqt",
         )
