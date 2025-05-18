@@ -19,7 +19,7 @@ echo "SOURCE_REVISION ${SOURCE_REVISION}"
 SOURCE_REMOTE_URL="$(git config --get remote.origin.url)"
 echo "SOURCE_REMOTE_URL ${SOURCE_REMOTE_URL}"
 
-SHA="231e35160b0edc9996cf578eda4e024e6b0b96024fb3aa66943dc2aabf182f66"
+SHA="aa5e2221b36c1daa626fd11be7cbe8127c35d457dd94631f2594300a8bcd1e2d"
 echo "SHA ${SHA}"
 REPO="docker://ghcr.io/mmore500/multilevel-selection-concept"
 echo "REPO ${REPO}"
@@ -282,6 +282,7 @@ trt_mutmx_withinhost_r = {
 }[S]
 
 cfg = f"""
+cfg_n_imports_mx: 1000
 cfg_make_cv_sim_recipe: "make_cv_sim_uk"
 cfg_make_wt_specs_recipe: "make_wt_specs_single"
 cfg_num_mut_sites: 1
