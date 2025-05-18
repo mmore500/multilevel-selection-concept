@@ -19,6 +19,7 @@ def test_run_covasim_smoke():
         check=True,
         env={"PYTHONPATH": f"{pwd}"},
         input=f"""
+cfg_n_imports_mx: 500
 cfg_maxseqlen: 10
 cfg_make_cv_sim_recipe: "make_cv_sim_vanilla"
 cfg_make_wt_specs_recipe: "make_wt_specs_single"
