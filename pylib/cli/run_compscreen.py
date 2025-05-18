@@ -87,13 +87,19 @@ def _hsurf_fudge_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     with hstrat_aux.log_context_duration(
         "hstrat_df.surface_build_tree", logger=print
     ):
-        phylo_df = hstrat_df.surface_build_tree(
-            pop_df,
-            delete_trunk=True,
-            trie_postprocessor=hstrat.AssignOriginTimeNodeRankTriePostprocessor(
-                t0="dstream_S",
-            ),
-        ).to_pandas()
+        phylo_df = (
+            hstrat_df.surface_build_tree(
+                pop_df,
+                delete_trunk=True,
+                trie_postprocessor=hstrat.AssignOriginTimeNodeRankTriePostprocessor(
+                    t0="dstream_S",
+                ),
+            )
+            .select(
+                pl.exclude("data_hex"),
+            )
+            .to_pandas()
+        )
 
     return alifestd_join_roots_wf(phylo_df, mutate=True)
 
@@ -259,6 +265,9 @@ if __name__ == "__main__":
         )
         refphylos_df = read_parquet(cfg["cfg_refphylos"]).astype(
             {"origin_time": float},
+        )
+        refphylos_df.drop(
+            columns=["sequence_background"], errors="ignore", inplace=True
         )
         glimpse_df(refphylos_df, logger=print)
 
