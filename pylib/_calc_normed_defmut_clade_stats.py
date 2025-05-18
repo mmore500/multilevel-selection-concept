@@ -71,11 +71,12 @@ def calc_normed_defmut_clade_stats(
         }
         for row in progress_wrap(np.flatnonzero(mask_sum)):
             assert mask_sum[row]
+            # fmt: off
             comparator_mask = (
                 mask_sum.astype(bool)
                 & subnorm_mask(row).astype(bool)
-                & (phylo_df["id"].values != row)
             )
+            # fmt: on
             num_comparators[row] = comparator_mask.sum()
 
             for stat_col in stat_cols:
