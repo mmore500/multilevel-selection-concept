@@ -65,7 +65,6 @@ alifestd_downsample_tips_asexual_wf = _wtwf(
     hstrat_aux.alifestd_downsample_tips_asexual,
 )
 alifestd_join_roots_wf = _wtwf(hstrat_aux.alifestd_join_roots)
-alifestd_splay_polytomies_wf = _wtwf(hstrat_aux.alifestd_splay_polytomies)
 
 
 @_log_context_duration("_hsurf_fudge_phylo", logger=print)
@@ -126,26 +125,6 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     phylo_df = alifestd_collapse_unifurcations_wf(phylo_df, mutate=True)
     phylo_df = alifestd_delete_unifurcating_roots_asexual_wf(
         phylo_df, mutate=True
-    )
-    phylo_df = alifestd_splay_polytomies_wf(phylo_df, mutate=True)
-    assert hstrat_aux.alifestd_is_strictly_bifurcating_asexual(
-        phylo_df, mutate=True
-    )
-
-    # more statistics
-    phylo_df = hstrat_aux.alifestd_mark_leaves(phylo_df, mutate=True)
-    phylo_df = hstrat_aux.alifestd_mark_num_leaves_asexual(
-        phylo_df, mutate=True
-    )
-    phylo_df = hstrat_aux.alifestd_mark_num_leaves_sibling_asexual(
-        phylo_df, mutate=True
-    )
-    phylo_df = hstrat_aux.alifestd_mark_roots(phylo_df, mutate=True)
-
-    phylo_df.drop(
-        columns=["is_leaf", "is_root", "node_depth", "num_children"],
-        errors="ignore",
-        inplace=True,
     )
 
     return phylo_df
