@@ -1,5 +1,6 @@
 import typing
 
+from frozendict import frozendict
 from hstrat import _auxiliary_lib as hstrat_aux
 import numpy as np
 import pandas as pd
@@ -12,7 +13,7 @@ def calc_normed_defmut_clade_stats(
     stat_cols: tuple[str] = ("num_leaves", "clade_duration"),
     match_cols: tuple[str] = tuple(),
     ot_deltas: tuple[float] = tuple(),
-    ot_bins: tuple[dict[str, np.ndarray[float]]] = tuple(),
+    ot_bins: dict[str, np.ndarray[float]] = frozendict(),
     progress_wrap: typing.Callable = lambda x: x,
 ) -> pd.DataFrame:
 
