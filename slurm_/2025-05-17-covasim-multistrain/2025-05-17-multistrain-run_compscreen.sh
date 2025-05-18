@@ -259,7 +259,7 @@ uuids = sorted(
 
 replicates = it.product(
     uuids,
-    [0],
+    [0, 64],
     [1_000_000],
 )
 assigned_uuid, hsurf_bits, ndownsamp = next(
