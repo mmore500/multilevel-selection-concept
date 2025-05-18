@@ -55,7 +55,7 @@ def mask_sequence_diffs(
             mut_quant_thresh = tuple(
                 np.quantile(mut_counts[is_valid_mut], mut_quant_thresh),
             )
-        except ValueError:  # if mut_counts[is_valid_mut] is empty
+        except IndexError:  # if mut_counts[is_valid_mut] is empty
             # no valid mutations
             mut_quant_thresh = (-1, -1)
         assert len(mut_quant_thresh) == 2
