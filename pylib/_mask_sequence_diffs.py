@@ -51,9 +51,13 @@ def mask_sequence_diffs(
         print(f"{is_valid_mut[0]=}")
         print(f"{(mut_counts[is_valid_mut] < mut_counts[0]).mean()=}")
 
-        mut_quant_thresh = tuple(
-            np.quantile(mut_counts[is_valid_mut], mut_quant_thresh),
-        )
+        try:
+            mut_quant_thresh = tuple(
+                np.quantile(mut_counts[is_valid_mut], mut_quant_thresh),
+            )
+        except ValueError:  # if mut_counts[is_valid_mut] is empty
+            # no valid mutations
+            mut_quant_thresh = (-1, -1)
         assert len(mut_quant_thresh) == 2
         is_valid_mut = is_valid_mut & (
             np.clip(mut_counts, *mut_quant_thresh) == mut_counts
