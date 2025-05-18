@@ -265,6 +265,8 @@ if __name__ == "__main__":
     with hstrat_aux.log_context_duration("pd.read_parquet", logger=print):
         read_parquet = retry(tries=5, logger=logging.getLogger(__name__))(
             pd.read_parquet
+        ).astype(
+            {"origin_time": float},
         )
         refphylos_df = read_parquet(cfg["cfg_refphylos"])
         glimpse_df(refphylos_df, logger=print)
