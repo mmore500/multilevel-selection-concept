@@ -11,7 +11,7 @@ def _bootstrap_p_value(
     grp: pd.Series,
     threshold: float,
     n_boot: int = 100_000,
-    max_mem_bytes: int = 4 * 1024**3,
+    max_mem_bytes: int = 1024**3,
 ) -> float:
     n = len(grp)
 
