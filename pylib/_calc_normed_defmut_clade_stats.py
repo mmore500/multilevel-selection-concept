@@ -12,6 +12,7 @@ def calc_normed_defmut_clade_stats(
     stat_cols: tuple[str] = ("num_leaves", "clade_duration"),
     match_cols: tuple[str] = tuple(),
     ot_deltas: tuple[float] = tuple(),
+    ot_bins: tuple[dict[str, np.ndarray[float]]] = tuple(),
     progress_wrap: typing.Callable = lambda x: x,
 ) -> pd.DataFrame:
 
@@ -42,6 +43,21 @@ def calc_normed_defmut_clade_stats(
                 < ot_delta
             )
             for ot_delta in ot_deltas
+        },
+        **{  # force early binding of bin_values
+            f"ot_bin:{bin_name}": (
+                lambda row, bin_values=bin_values: (
+                    np.digitize(
+                        phylo_df["origin_time"].values,
+                        bin_values,
+                    )
+                    == np.digitize(
+                        phylo_df["origin_time"].values[row],
+                        bin_values,
+                    )
+                )
+            )
+            for (bin_name, bin_values) in ot_bins.items()
         },
         **{  # force early binding of match_col
             f"match:{match_col}": lambda row, match_col=match_col: (
