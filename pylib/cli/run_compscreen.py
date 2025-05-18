@@ -7,6 +7,7 @@ import typing
 from hstrat import _auxiliary_lib as hstrat_aux
 from hstrat import dataframe as hstrat_df
 from hstrat import hstrat
+import numpy as np
 import pandas as pd
 import polars as pl
 from retry import retry
@@ -219,7 +220,13 @@ def _process_replicate(
         phylo_df=phylo_df,
         defmut_clade_masks=defining_masks,
         match_cols=["variant_flavor"],
-        ot_deltas=(4, 7, 14, 28, 44),
+        ot_bins={
+            "week": np.arange(0, phylo_df["origin_time"].max() + 1, 7),
+            "fortnight": np.arange(0, phylo_df["origin_time"].max() + 1, 14),
+            "month": np.arange(0, phylo_df["origin_time"].max() + 1, 31),
+            "quarter": np.arange(0, phylo_df["origin_time"].max() + 1, 91),
+            "year": np.arange(0, phylo_df["origin_time"].max() + 1, 365),
+        },
         progress_wrap=tqdm,
     )
 
