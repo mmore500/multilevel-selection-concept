@@ -26,9 +26,14 @@ def percentilestatcat_plot(
         ax=ax,
         legend=False,
     )
+
+    max_pts = 2_000
+    sampled = data.groupby(x, group_keys=False).apply(
+        lambda grp: grp.sample(n=min(len(grp), max_pts), random_state=1)
+    )
     sns.stripplot(
-        y=data[y] + np.random.uniform(-1, 1, len(data)),
-        x=data[x],
+        y=sampled[y] + np.random.uniform(-1, 1, len(sampled)),
+        x=sampled[x],
         alpha=0.2,
         ax=ax,
         color="k",
