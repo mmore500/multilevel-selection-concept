@@ -1,7 +1,7 @@
 # Copyright (C) 2009 by Eric Talevich (eric.talevich@gmail.com)
 #
-# This file is governed by your choice of the "Biopython License Agreement" or the "BSD 3-Clause License".
-# Please see the LICENSE file at
+# This file is governed by your choice of the "Biopython License Agreement"
+# or the "BSD 3-Clause License". Please see the LICENSE file at
 # https://github.com/biopython/biopython/blob/137dca3eb9023fbc44ca376ae1d843038d6487af/LICENSE.rst
 
 """Utilities for handling, displaying and exporting Phylo trees.
