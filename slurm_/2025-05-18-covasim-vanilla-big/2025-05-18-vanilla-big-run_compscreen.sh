@@ -224,7 +224,7 @@ cat > "${SBATCH_FILE}" << EOF
 #SBATCH --mail-type=FAIL,TIME_LIMIT,ARRAY_TASKS
 #SBATCH --account=beacon
 #SBATCH --requeue
-#SBATCH --array=0-69
+#SBATCH --array=0-11
 
 ${JOB_PREAMBLE}
 
