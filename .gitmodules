@@ -108,3 +108,8 @@
 	url = https://github.com/mmore500/multilevel-selection-concept.git
 	branch = binder-2025-05-17-vanilla-compscreen.ipynb
 	shallow = true
+[submodule "binder/binder-2025-05-17-vanilla-treeviz.ipynb"]
+	path = binder/binder-2025-05-17-vanilla-treeviz.ipynb
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-05-17-vanilla-treeviz.ipynb
+	shallow = true
