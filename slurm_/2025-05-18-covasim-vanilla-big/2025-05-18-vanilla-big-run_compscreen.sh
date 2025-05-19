@@ -263,7 +263,7 @@ replicates = it.product(
     [1_000_000],
 )
 replicates = [*replicates]
-assert len(replicates) == 70, f"expected 70 replicates, got {len(replicates)}"
+assert len(replicates) == 12, f"expected 12 replicates, got {len(replicates)}"
 
 assigned_uuid, hsurf_bits, ndownsamp = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
