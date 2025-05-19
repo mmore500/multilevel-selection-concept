@@ -224,7 +224,7 @@ cat > "${SBATCH_FILE}" << EOF
 #SBATCH --mail-type=FAIL,TIME_LIMIT,ARRAY_TASKS
 #SBATCH --account=beacon
 #SBATCH --requeue
-#SBATCH --array=0-11
+#SBATCH --array=0-23
 
 ${JOB_PREAMBLE}
 
@@ -260,7 +260,7 @@ uuids = sorted(
 replicates = it.product(
     uuids,
     [0, 64],
-    [1_000_000],
+    [200_000, 2_000_000],
 )
 replicates = [*replicates]
 assert len(replicates) == 12, f"expected 12 replicates, got {len(replicates)}"
