@@ -19,7 +19,7 @@ echo "SOURCE_REVISION ${SOURCE_REVISION}"
 SOURCE_REMOTE_URL="$(git config --get remote.origin.url)"
 echo "SOURCE_REMOTE_URL ${SOURCE_REMOTE_URL}"
 
-SHA="aa8cedbeaa38f83a57239bb7d0cf0275b98bca5a31f93096ef25ddbda2dbc52e"
+SHA="12d0ddc37ba360df419f81dc94b49b6e27fca2798371cd038fe87f85eba1ff11"
 echo "SHA ${SHA}"
 REPO="docker://ghcr.io/mmore500/multilevel-selection-concept"
 echo "REPO ${REPO}"
@@ -283,7 +283,7 @@ cfg_make_wt_specs_recipe: "make_wt_specs_single"
 cfg_num_mut_sites: 1
 cfg_p_wt_to_mut: {2e-6:.60f}  # https://doi.org/10.1038/s41579-023-00878-2
 cfg_pop_size: {1_200_000}
-cfg_refseqs: "https://osf.io/yspd5/download"  # homogenized seqs for testing
+cfg_refseqs: "https://osf.io/s9xhr/download"  # homogenized seqs for testing
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
 replicate_num: {replicate}

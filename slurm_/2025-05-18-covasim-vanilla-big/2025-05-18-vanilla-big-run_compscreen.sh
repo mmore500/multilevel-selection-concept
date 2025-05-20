@@ -19,7 +19,7 @@ echo "SOURCE_REVISION ${SOURCE_REVISION}"
 SOURCE_REMOTE_URL="$(git config --get remote.origin.url)"
 echo "SOURCE_REMOTE_URL ${SOURCE_REMOTE_URL}"
 
-SHA="aa8cedbeaa38f83a57239bb7d0cf0275b98bca5a31f93096ef25ddbda2dbc52e"
+SHA="12d0ddc37ba360df419f81dc94b49b6e27fca2798371cd038fe87f85eba1ff11"
 echo "SHA ${SHA}"
 REPO="docker://ghcr.io/mmore500/multilevel-selection-concept"
 echo "REPO ${REPO}"
@@ -250,7 +250,7 @@ import pandas as pd
 from retry import retry
 
 
-refphylos = "https://osf.io/mr7kv/download"
+refphylos = "https://osf.io/yspd5/download"
 
 read_parquet = retry(tries=5, logger=logging.getLogger(__name__))(pd.read_parquet)
 uuids = sorted(
