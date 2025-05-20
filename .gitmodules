@@ -113,3 +113,42 @@
 	url = https://github.com/mmore500/multilevel-selection-concept.git
 	branch = binder-2025-05-17-vanilla-treeviz.ipynb
 	shallow = true
+[submodule "binder/binder-2025-05-18-vanilla-big-compscreen.ipynb"]
+	path = binder/binder-2025-05-18-vanilla-big-compscreen.ipynb
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-05-18-vanilla-big-compscreen.ipynb
+	shallow = true
+[submodule "binder/binder-2025-05-19-compscreen-multistrain-summary.ipynb"]
+	path = binder/binder-2025-05-19-compscreen-multistrain-summary.ipynb
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-05-19-compscreen-multistrain-summary.ipynb
+	shallow = true
+[submodule "binder/binder-2025-05-19-compscreen-summary.ipynb"]
+	path = binder/binder-2025-05-19-compscreen-summary.ipynb
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-05-19-compscreen-summary.ipynb
+	shallow = true
+[submodule "binder/binder-2025-05-19-compscreen-uk-summary.ipynb"]
+	path = binder/binder-2025-05-19-compscreen-uk-summary.ipynb
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-05-19-compscreen-uk-summary.ipynb
+	shallow = true
+[submodule "binder/binder-2025-05-19-compscreen-vanilla-big-1.3x-summary.ipynb"]
+	path = binder/binder-2025-05-19-compscreen-vanilla-big-1.3x-summary.ipynb
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-05-19-compscreen-vanilla-big-1.3x-summary.ipynb
+	shallow = true
+[submodule "binder/binder-2025-05-19-compscreen-vanilla-big-summary.ipynb"]
+	path = binder/binder-2025-05-19-compscreen-vanilla-big-summary.ipynb
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-05-19-compscreen-vanilla-big-summary.ipynb
+	shallow = true
+[submodule "binder/binder-2025-05-19-compscreen-vanilla-summary.ipynb"]
+	path = binder/binder-2025-05-19-compscreen-vanilla-summary.ipynb
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-05-19-compscreen-vanilla-summary.ipynb
+	shallow = true
+[submodule "binder/binder-2025-05-19-freqscreen-summary.ipynb"]
+	path = binder/binder-2025-05-19-freqscreen-summary.ipynb
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-05-19-freqscreen-summary.ipynb
