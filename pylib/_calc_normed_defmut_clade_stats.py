@@ -14,6 +14,7 @@ def calc_normed_defmut_clade_stats(
     match_cols: tuple[str] = tuple(),
     ot_deltas: tuple[float] = tuple(),
     ot_bins: dict[str, np.ndarray[float]] = frozendict(),
+    compound_comparators: tuple[tuple[str]] = tuple(),
     progress_wrap: typing.Callable = lambda x: x,
 ) -> pd.DataFrame:
 
@@ -65,6 +66,17 @@ def calc_normed_defmut_clade_stats(
                 phylo_df[match_col].values[row] == phylo_df[match_col].values
             )
             for match_col in match_cols
+        },
+        **{  # force early binding of compound
+            "&".join(compound): lambda row, compound=compound: (
+                np.logical_and.reduce(
+                    tuple(
+                        subnorm_masks[subnorm_name](row)
+                        for subnorm_name in compound
+                    )
+                )
+            )
+            for compound in compound_comparators
         },
     }
 
