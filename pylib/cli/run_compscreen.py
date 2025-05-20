@@ -231,8 +231,8 @@ def _process_replicate(
         },
         compound_comparators=[
             (
-                "defmut_norm_ot_bin:month",
-                "defmut_norm_match:variant_flavor",
+                "ot_bin:month",
+                "match:variant_flavor",
             ),
         ],
         progress_wrap=tqdm,
