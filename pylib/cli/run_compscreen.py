@@ -216,7 +216,7 @@ def _process_replicate(
             ), mut_mask in mutations
         }
 
-    phylo_df["is_focal_defmut"] = next(iter(defining_masks.values()))
+    phylo_df["is_focal_defmut"] = defining_masks.get((0, "+", "'"), False)
 
     return calc_normed_defmut_clade_stats(
         phylo_df=phylo_df,
