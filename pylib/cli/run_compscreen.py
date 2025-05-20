@@ -226,9 +226,15 @@ def _process_replicate(
             "week": np.arange(0, phylo_df["origin_time"].max() + 1, 7),
             "fortnight": np.arange(0, phylo_df["origin_time"].max() + 1, 14),
             "month": np.arange(0, phylo_df["origin_time"].max() + 1, 31),
-            "quarter": np.arange(0, phylo_df["origin_time"].max() + 1, 91),
-            "year": np.arange(0, phylo_df["origin_time"].max() + 1, 365),
+            # "quarter": np.arange(0, phylo_df["origin_time"].max() + 1, 91),
+            # "year": np.arange(0, phylo_df["origin_time"].max() + 1, 365),
         },
+        compound_comparators=[
+            (
+                "defmut_norm_ot_bin:month",
+                "defmut_norm_match:variant_flavor",
+            ),
+        ],
         progress_wrap=tqdm,
     )
 
