@@ -15,9 +15,11 @@ def screen_mutation_defined_nodes_sequence_diff(
     ):
         raise ValueError
 
-    sdpl = pl.from_pandas(phylo_df["sequence_diff"])
+    sdpl = pl.from_pandas(phylo_df["sequence_diff"].astype(str))
     anc_sdpl = pl.from_pandas(
-        phylo_df.loc[phylo_df["ancestor_id"].values, "sequence_diff"],
+        phylo_df.loc[phylo_df["ancestor_id"].values, "sequence_diff"].astype(
+            str
+        ),
     )
 
     return (
