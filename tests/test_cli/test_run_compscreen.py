@@ -31,7 +31,7 @@ cfg_make_wt_specs_recipe: "make_wt_specs_uk"
 cfg_num_mut_sites: 1
 cfg_p_wt_to_mut: 2.74e-6
 cfg_p_seq_mut: 2.74e-6
-cfg_pop_size: 4000
+cfg_pop_size: 1000
 cfg_refseqs: "{assets}/alignedsequences.csv"
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
@@ -63,6 +63,6 @@ cfg_mut_quant_thresh_ub: 1.0
 cfg_refphylos: "{mit.one(glob.glob('*.pqt'))}"
 screen_num: 0
 trt_hsurf_bits: {hsurf_bits}
-trt_n_downsample: 1000
+trt_n_downsample: 100
 """.encode(),
     )
