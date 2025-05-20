@@ -138,13 +138,16 @@ class SyncHostCompartmentsBackground:
                 compartments[:, offset + 1, :] -= num_reversions
 
         # apply within-host carrying capacity
-        compartments /= (
+        divisor = (
             np.maximum(
                 compartments.sum(axis=1, keepdims=True),
                 self._host_capacity,
             )
             / self._host_capacity
         )
+        assert np.all(divisor >= 1.0)
+        assert np.isfinite(divisor).all()
+        compartments /= divisor
 
         ## sync host compartments to covasim "infectious variant"
         #######################################################################
@@ -185,9 +188,23 @@ class SyncHostCompartmentsBackground:
             assert entry is not None
             assert not (self._last_sampled_strains[who] == 0).any()
             variant = self._last_sampled_strains[who].astype(int)
-            entry["sequence_background"] = "".join(
-                ["'", "+"][v % 2] for v in variant
-            )
+            assert (np.clip(variant, 1, num_variants - 1) == variant).all()
+            sampled_strain = "".join(["'", "+"][v % 2] for v in variant)
+            assert (
+                sum(
+                    x != y
+                    for x, y in zip(
+                        entry["sequence_background"], sampled_strain
+                    )
+                )
+                < 10
+            ), f"""
+{variant=}
+{who=}
+{entry=}
+{sampled_strain=}"
+"""
+            entry["sequence_background"] = sampled_strain
             self._infection_log_entries[who] = None
 
         self._infection_days_elapsed *= self._infection_days_elapsed < 8
