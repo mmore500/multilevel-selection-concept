@@ -82,8 +82,8 @@ class SyncHostCompartmentsBackground:
             # zero out non-infectious/exposed compartments
             compartments[target, :, :] = 0.0
 
-            # init w/ covasim infectious variant
-            compartments[target, variant, :] = 1.0
+            for bg_site, variant in enumerate(variant):
+                compartments[target, variant, bg_site] = 1.0
 
         self._infection_log_pos = len(log)
 
