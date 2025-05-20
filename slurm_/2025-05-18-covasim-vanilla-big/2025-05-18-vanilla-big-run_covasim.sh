@@ -283,7 +283,7 @@ cfg_make_wt_specs_recipe: "make_wt_specs_single"
 cfg_num_mut_sites: 1
 cfg_p_wt_to_mut: {2e-6:.60f}  # https://doi.org/10.1038/s41579-023-00878-2
 cfg_pop_size: {1_200_000}
-cfg_refseqs: "https://osf.io/s9xhr/download"  # homogenized seqs for testing
+cfg_refseqs: "https://osf.io/yspd5/download"  # homogenized seqs for testing
 cfg_suffix_mut: "'"
 cfg_suffix_wt: "+"
 replicate_num: {replicate}
