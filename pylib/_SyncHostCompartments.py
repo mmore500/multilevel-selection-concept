@@ -49,7 +49,7 @@ class SyncHostCompartments:
         ## sync covasim to host compartments
         #######################################################################
         logging.info(
-            f"num_infections focal = {len(log[self._infection_log_pos :])=}",
+            f"num_infections focal = {len(log[self._infection_log_pos :])}",
         )
         for entry in log[self._infection_log_pos :]:
             target, variant = (entry["target"], entry["variant"])
