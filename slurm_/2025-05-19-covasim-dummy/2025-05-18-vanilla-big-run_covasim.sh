@@ -30,6 +30,7 @@ if [[ -f "$CACHE_SIF" ]]; then
 else
   CONTAINER_URI="${REPO}@sha256:${SHA}"
 fi
+
 echo "CONTAINER_URI ${CONTAINER_URI}"
 
 echo "initialization telemetry ==============================================="
@@ -118,11 +119,9 @@ for attempt in {1..5}; do
         'joinem==0.9.3' \
         'pandas==2.*' \
         'polars==1.29.*' \
-        'polars-u64-idx==1.29.*' \
         'pyarrow==16.*' \
         'scipy==1.*' \
         'tqdm==4.*' \
-        "${BATCHDIR_JOBSOURCE}" \
     && break || echo "pip install attempt ${attempt} failed"
     if [ ${attempt} -eq 3 ]; then
         echo "pip install failed"
@@ -217,14 +216,14 @@ cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=256G
+#SBATCH --mem=32G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
 #SBATCH --mail-type=FAIL,TIME_LIMIT,ARRAY_TASKS
 #SBATCH --account=beacon
 #SBATCH --requeue
-#SBATCH --array=0-69
+#SBATCH --array=0-5
 
 ${JOB_PREAMBLE}
 
@@ -239,41 +238,62 @@ cat /proc/cpuinfo || :
 
 echo "do work ----------------------------------------------------- \${SECONDS}"
 echo "CONTAINER_URI ${CONTAINER_URI}"
-python3 << EOF_ | singularity exec "${CONTAINER_URI}" python3 -m pylib.cli.run_compscreen
+python3 << EOF_ | singularity exec "${CONTAINER_URI}" python3 -m pylib.cli.run_covasim
 
 import itertools as it
-import logging
 import os
-import sys
-
-import pandas as pd
-from retry import retry
-
-
-refphylos = "https://osf.io/q2hxw/download"
-
-read_parquet = retry(tries=5, logger=logging.getLogger(__name__))(pd.read_parquet)
-uuids = sorted(
-    read_parquet(refphylos)["replicate_uuid"].unique().astype(str),
-)
 
 replicates = it.product(
-    uuids,
-    [0, 64],
-    [1_000_000],
+    range(1_000_000),
+    [
+        ("Sben1.1x", "Gneu", 1.1),
+        ("Sben1.1x", "Gdel1.1x", 1.1),
+    ],
 )
-replicates = [*replicates]
-assert len(replicates) == 70, f"expected 70 replicates, got {len(replicates)}"
-
-assigned_uuid, hsurf_bits, ndownsamp = next(
+replicate, (S, G, eff_size) = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
 )
+
+trt_mutmx_active_strain_factor = {
+    "Gdel1.1x": 1.0,
+    "Gdel1.3x": 1.0,
+    "Gdel2x": 1.0,
+    "Gneu": 1.0,
+    "Gben": None,
+}[G]
+trt_mutmx_rel_beta = {
+    "Gneu": 1.0,
+    "Gdel1.1x": 0.90,
+    "Gdel1.3x": 0.75,
+    "Gdel2x": 0.50,
+    "Gben": None,
+}[G]
+trt_mutmx_withinhost_r = {
+    "Sdel": None,
+    "Sneu": 1.0,
+    "Sben1.1x": 1.1,
+    "Sben1.3x": 1.3,
+    "Sben2x": 2.0,
+}[S]
+
 cfg = f"""
-cfg_assigned_replicate_uuid: "{assigned_uuid}"
-cfg_refphylos: "{refphylos}"
-screen_num: \${SLURM_ARRAY_TASK_ID:-0}
-trt_hsurf_bits: {hsurf_bits}
-trt_n_downsample: {ndownsamp}
+cfg_n_imports_mx: 1000
+cfg_make_cv_sim_recipe: "make_cv_sim_vanilla"
+cfg_make_wt_specs_recipe: "make_wt_specs_single"
+cfg_num_mut_sites: 1
+cfg_p_wt_to_mut: {2e-6:.60f}  # https://doi.org/10.1038/s41579-023-00878-2
+cfg_pop_size: {20_000}
+cfg_refseqs: "https://osf.io/s9xhr/download"  # homogenized seqs for testing
+cfg_suffix_mut: "'"
+cfg_suffix_wt: "+"
+replicate_num: {replicate}
+cfg_maxseqlen: 19
+trt_mutmx_active_strain_factor: {trt_mutmx_active_strain_factor}
+trt_mutmx_rel_beta: {trt_mutmx_rel_beta}
+trt_mutmx_withinhost_r: {trt_mutmx_withinhost_r}
+trt_name: "{S}/{G}"
+trt_type: "{S[:4]}/{G[:4]}"
+trt_eff_size: {eff_size}
 trt_seed: \${SLURM_ARRAY_TASK_ID:-0}
 SLURM_JOB_ID: \${SLURM_JOB_ID:-null}
 SLURM_ARRAY_JOB_ID: \${SLURM_ARRAY_JOB_ID:-null}
@@ -316,7 +336,7 @@ cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=64G
+#SBATCH --mem=16G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
@@ -338,11 +358,10 @@ pushd "${BATCHDIR}/.."
 popd
 
 echo "   - join result"
-ls -1 "${BATCHDIR}"/__*/**/a=run_compscreen+* \
+ls -1 "${BATCHDIR}"/__*/**/a=run_covaphastsim+* \
     | tee /dev/stderr \
     | python3.10 -m joinem --progress \
-        --eager-write --eager-read \
-        --how "diagonal_relaxed" \
+        --how "vertical_relaxed" \
         "${BATCHDIR_JOBRESULT}/a=result+date=${JOBDATE}+job=${JOBNAME}+ext=.pqt"
 ls -l "${BATCHDIR_JOBRESULT}"
 du -h "${BATCHDIR_JOBRESULT}"
