@@ -217,14 +217,14 @@ cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=64G
+#SBATCH --mem=256G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
 #SBATCH --mail-type=FAIL,TIME_LIMIT,ARRAY_TASKS
 #SBATCH --account=beacon
 #SBATCH --requeue
-#SBATCH --array=0-34
+#SBATCH --array=0-19
 
 ${JOB_PREAMBLE}
 
@@ -250,7 +250,7 @@ import pandas as pd
 from retry import retry
 
 
-refphylos = "https://osf.io/sp2d3/download"
+refphylos = "https://osf.io/h3mds/download"
 
 read_parquet = retry(tries=5, logger=logging.getLogger(__name__))(pd.read_parquet)
 uuids = sorted(
@@ -260,10 +260,10 @@ uuids = sorted(
 replicates = it.product(
     uuids,
     [0],
-    [1_000_000],
+    [200_000, 2_000_000],
 )
 replicates = [*replicates]
-assert len(replicates) == 35, f"expected 35 replicates, got {len(replicates)}"
+assert len(replicates) == 20, f"expected 20 replicates, got {len(replicates)}"
 
 assigned_uuid, hsurf_bits, ndownsamp = next(
     it.islice(replicates, \${SLURM_ARRAY_TASK_ID:-0}, None),
@@ -316,7 +316,7 @@ cat > "${SBATCH_FILE}" << EOF
 #!/bin/bash
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=256G
+#SBATCH --mem=64G
 #SBATCH --time=4:00:00
 #SBATCH --output="/mnt/home/%u/joblog/%j"
 #SBATCH --mail-user=mawni4ah2o@pomail.net
