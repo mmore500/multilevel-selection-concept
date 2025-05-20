@@ -54,7 +54,7 @@ class SyncHostCompartmentsBackground:
         ## sync covasim to host compartments
         #######################################################################
         logging.info(
-            f"num_infections bkgrnd = {len(log[self._infection_log_pos :])=}",
+            f"num_infections bkgrnd = {len(log[self._infection_log_pos :])}",
         )
         for entry in log[self._infection_log_pos :]:
             source, target, variant, date = (
