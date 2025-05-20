@@ -18,7 +18,7 @@ def make_cv_sim_vanilla(
             *postinterventions,
         ],
         n_days=650,
-        use_waning=False,
+        use_waning=True,
         pop_infected=0,  # disable wild-type strain
         pop_size=pop_size,
         variants=variants,
