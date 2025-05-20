@@ -250,7 +250,7 @@ import pandas as pd
 from retry import retry
 
 
-refphylos = "https://osf.io/q2hxw/download"
+refphylos = "https://osf.io/2z9kh/download"
 
 read_parquet = retry(tries=5, logger=logging.getLogger(__name__))(pd.read_parquet)
 uuids = sorted(
