@@ -2,6 +2,7 @@ import logging
 
 import covasim as cv
 import numpy as np
+from scipy import stats as scipy_stats
 
 from ._VariantFlavor import VariantFlavor
 
@@ -115,6 +116,7 @@ class SyncHostCompartmentsBackground:
                 )
                 < 1e-6
             )
+            assert wt_growth_per_doubling >= 1
             for __ in range(num_doublings):
                 compartments[:, offset, :] *= wt_growth_per_doubling
                 compartments[:, offset + 1, :] *= wt_growth_per_doubling
@@ -148,6 +150,7 @@ class SyncHostCompartmentsBackground:
         assert np.all(divisor >= 1.0)
         assert np.isfinite(divisor).all()
         compartments /= divisor
+        assert np.isfinite(compartments).all()
 
         ## sync host compartments to covasim "infectious variant"
         #######################################################################
@@ -172,6 +175,10 @@ class SyncHostCompartmentsBackground:
             np.nan,
         )
         assert len(sampled_strains) == compartments_.shape[0]
+        assert sampled_strains.shape == (
+            compartments_.shape[0],
+            compartments_.shape[2],
+        )
 
         self._last_sampled_strains = np.where(
             ~np.isnan(sampled_strains),
@@ -183,6 +190,11 @@ class SyncHostCompartmentsBackground:
         self._infectious_variants_log.append(sampled_strains)
 
         ## sample variants of record
+        upper_bound = scipy_stats.binom.isf(
+            1e-9,
+            compartments_.shape[2],
+            p_per_doubling * num_doublings * 8,
+        )
         for who in np.flatnonzero(self._infection_days_elapsed >= 8):
             entry = self._infection_log_entries[who]
             assert entry is not None
@@ -190,19 +202,22 @@ class SyncHostCompartmentsBackground:
             variant = self._last_sampled_strains[who].astype(int)
             assert (np.clip(variant, 1, num_variants - 1) == variant).all()
             sampled_strain = "".join(["'", "+"][v % 2] for v in variant)
+
+            num_changes = sum(
+                x != y
+                for x, y in zip(entry["sequence_background"], sampled_strain)
+            )
             assert (
-                sum(
-                    x != y
-                    for x, y in zip(
-                        entry["sequence_background"], sampled_strain
-                    )
-                )
-                < 10
+                num_changes <= upper_bound
             ), f"""
+{num_changes=}
 {variant=}
 {who=}
 {entry=}
-{sampled_strain=}"
+{sampled_strain=}
+{upper_bound=}
+{p_per_doubling=}
+{compartments_.shape[2]=}
 """
             entry["sequence_background"] = sampled_strain
             self._infection_log_entries[who] = None
