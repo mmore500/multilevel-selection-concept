@@ -19,7 +19,7 @@ echo "SOURCE_REVISION ${SOURCE_REVISION}"
 SOURCE_REMOTE_URL="$(git config --get remote.origin.url)"
 echo "SOURCE_REMOTE_URL ${SOURCE_REMOTE_URL}"
 
-SHA="a349cff20c73f14995d846fc626a4184f2ea2cc4bc745fe832648ae77b5f3562"
+SHA="5260b84e33e7c62fb422eb388196700e1c0c0380ec9dee0da61e7419fda20f4d"
 echo "SHA ${SHA}"
 REPO="docker://ghcr.io/mmore500/multilevel-selection-concept"
 echo "REPO ${REPO}"
