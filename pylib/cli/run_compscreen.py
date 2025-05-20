@@ -172,7 +172,10 @@ def _process_replicate(
         sparsify_mask=False,
     )
     mutations = [*mutations]
-    phylo_df["has_focal_mutation"] = mutations[0][1]
+    if len(mutations) and mutations[0][0] == 0:
+        phylo_df["has_focal_mutation"] = mutations[0][1]
+    else:
+        phylo_df["has_focal_mutation"] = False
 
     if cfg["trt_hsurf_bits"] == 0:
         phylo_df["screen_name"] = "sequence_diff"
