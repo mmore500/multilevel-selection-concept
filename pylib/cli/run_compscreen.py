@@ -127,8 +127,6 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     )
 
     phylo_df = alifestd_collapse_unifurcations_wf(phylo_df, mutate=True)
-
-    phylo_df = alifestd_collapse_unifurcations_wf(phylo_df, mutate=True)
     phylo_df = alifestd_delete_unifurcating_roots_asexual_wf(
         phylo_df, mutate=True
     )
@@ -137,14 +135,15 @@ def _prep_phylo(phylo_df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     if cfg["trt_hsurf_bits"]:
         phylo_df = _hsurf_fudge_phylo(phylo_df, cfg)
         phylo_df = alifestd_splay_polytomies_wf(phylo_df, mutate=True)
-        assert hstrat_aux.alifestd_is_strictly_bifurcating_asexual(
+        phylo_df = alifestd_collapse_unifurcations_wf(phylo_df, mutate=True)
+        phylo_df = alifestd_delete_unifurcating_roots_asexual_wf(
             phylo_df, mutate=True
         )
 
-    phylo_df = alifestd_collapse_unifurcations_wf(phylo_df, mutate=True)
-    phylo_df = alifestd_delete_unifurcating_roots_asexual_wf(
-        phylo_df, mutate=True
-    )
+        # for defining mutation finders
+        assert hstrat_aux.alifestd_is_strictly_bifurcating_asexual(
+            phylo_df, mutate=True
+        )
 
     return phylo_df
 
