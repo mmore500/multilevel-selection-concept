@@ -23,6 +23,14 @@ def make_cv_sim_vanilla(
         pop_size=pop_size,
         variants=variants,
         rand_seed=seed,
+        nab_decay=dict(
+            form="nab_growth_decay",
+            growth_time=21,
+            decay_rate1=0.07,
+            decay_time1=47,
+            decay_rate2=0.02,
+            decay_time2=106,
+        ),
     )
 
     sim.initialize()
