@@ -102,9 +102,7 @@ class SyncHostCompartmentsBackground:
             )
             if not num_doublings > 0:
                 raise ValueError
-            p_per_doubling = 1.0 - np.power(
-                1.0 - variant_flavor.p_wt_to_mut, 1 / num_doublings
-            )
+            p_per_doubling = variant_flavor.p_wt_to_mut
 
             wt_growth_per_doubling = variant_flavor.withinhost_r_wt ** (
                 1 / num_doublings
