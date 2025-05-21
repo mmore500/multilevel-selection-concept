@@ -124,6 +124,15 @@ Although the covasim framework included capability for representing a fixed numb
 
 \subsubsection{Phylogeny Tracking}
 
+We used Covasim's infection log feature as the basis for collecting phylogenetic data from our experiments.
+Thus, our resolution in tracking pathogen ancestry was limited to the resolution of events where the pathogen transmitted between hosts.
+We did not conduct supplemental within-host phylogeny tracking, as viroid level ancestry would be poorly defined in our aggregate-based within-host model.
+However, we did record strain/genotype on the basis of a sampled strain/genotype from the within-host population at day 8 of infection, rather than the founding strain, to better reflect the character of data generated in real-world sampling.
+
+To adjust the topology of our synthetic dataset to more closely match the characteristics of biological data, we interpreted all sampled genomes as tip nodes, even if they were an inner node in the transmission tree.
+We accomplished this by applying a transform where all inner nodes were copied into their own child list as an additional single-taxon tip branch.
+In future work, it will be important to explore the impact of limitations in phylogeny resolution and reliability on the performance of MLS-detection methods.
+
 \subsection{Treatment Conditions}
 
 Terminology --- S: self (L0) a.k.a. within-host, G: group (L1) a.k.a transmission --- neu: neutral, ben: beneficial, del: deleterious
