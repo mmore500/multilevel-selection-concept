@@ -33,7 +33,7 @@ In sum, therefore, our goal is to identify particular genome sites for which (1)
 
 In the next section, we will describe the original statistical algorithm proposed by \citet{BonettiFranceschi2024phylogenetic} for this purpose, and our proposed modifications.
 
-\subsection{Site Screen Methodology}
+\subsection{Fitness Effect Screen Methodology}
 
 One of the challenges of characterizing fitness outcomes from a phylogeny is in accounting for a myriad of possible confounding factors.
 Several possible examples include: further clade history after the point at which a clade is sampled (e.g., recency bias), differences in genetic background having effects on selection (e.g., emergence of high-transmission strains that like alpha, beta, omicron etc.), time-varying environmental effects (e.g., habitat/resource availability, predation).
@@ -101,6 +101,14 @@ This procedure ensures that comparing againt the 50th percentile is appropriate 
 To account for intrinsic uncertainty in real-world biological data,
 \citet{BonettiFranceschi2024phylogenetic} take several further quality-control steps in excluding data beyond a fixed minimum clade size threshold and excluding genome regions known to be associated with sequencing anomolies from consideration.
 However --- given that we are using perfect-fidelity data from a digital model --- for the sake of simplicity and to maximize statustucak power of our datasets, we omit these adjustments.
+
+\subsection{Mutation Frequency Screen Methodology}
+
+A variety of methods exist for statistical tests of elevated mutation frequency \citep{TODO}.
+As we found that the primary challenge in accomplishing effective detection of multilevel selection effects is in testing for group-level fitness effects (e.g., transmission efficacy) is the fitness effect component of the screen, we adopted a simple approach to screening mutation frequency for the purposes of present work.
+
+To begin, we generated a simple calculation of baseline mutation frequency $\lambda$ as the mean number of net observed non-focal MDCs per instantiatwd non-focal background site.
+To assess the significance of the observed mutation count in deviating from this expectation, we applied the Poisson survival function to calculate the probability of observing an equivalent or more extreme mutation count under the assumption of mutations being distributed $\sim \mathsf{Pois}(\lambda)$.
 
 \subsection{Covasim Agent-based Epidemiology Simulation Platform}
 
