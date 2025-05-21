@@ -35,9 +35,71 @@ In the next section, we will describe the original statistical algorithm propose
 
 \subsection{Site Screen Methodology}
 
+One of the challenges of characterizing fitness outcomes from a phylogeny is in accounting for a myriad of possible confounding factors.
+Several possible examples include: further clade history after the point at which a clade is sampled (e.g., recency bias), differences in genetic background having effects on selection (e.g., emergence of high-transmission strains that like alpha, beta, omicron etc.), time-varying environmental effects (e.g., habitat/resource availability, predation).
+
+\citet{BonettiFranceschi2024phylogenetic} propose an elegant approach to account for these issues: compare between each MDC and its sister clade.
+These clades and,
+Essentially, the difference between these clades can be interpreted as differing solely in terms of the putatively-causal influence of the mutation of interest.
+
 \input{fig/screen-strategy}
 
+However, in adapting this approach to our \textit{in silico} study system we ended up developing an alternate approach wherein we normalize clade statistics to a broader set of selected comparators, rather than just the sister clade.
+Specifically, we normalize against the pooled set of MDCs for \textit{other} mutations.
+Figure \ref{fig:screen-strategy} provides a schematic comparison between the sister-clade and MDC comparator approaches.
+
+Our motivation in diverging to develop the proposed comparator-based approach is twofold, driven by the unique characteristics of phylogenetic data from digital study systems.
+First, we sought to enhance statistical power of the assay.
+%TODO could show results with very small comparator groups to back up this point
+This is a particular concern for \textit{in silico} agent-based model systems, due to the typically smaller populations that are feasible to instantiate compared to the vast population sizes typically exhibited by microbial and viral populations.
+In particular, under the sister clade comparator approach, the statistics measured for each individual MDC are strongly influenced by the status of the comparator clade.
+
+Another challenge associated with densely-sampled, exactly-tracked phylogenies is complicating artifacts in tree topology.
+For instance, high density of short tips descended from internal nodes can introduce a bias towards comparison against these internal tips as sister clades.
+Likewise, the existence of true multifurcations, which must be arbitrarily resolved in order to perfkrm binary comparisons, also further compliicates matters \citep{TODOphylotrackpy}.
+Relatedly, another related useful factor of the comparator-based approach is in normalizing exclusively against other phylogeny nodes where mutations arose (e.g., incubation time, infection order, etc.).
+This also accounts for possible biasing heterogeneity in the composition of internal nodes where mutations arise, whereas the sister comparator approach largely compares against non-MDC nodes.
+
+\citet{BonettiFranceschi2024phylogenetic} apply a combination of three clade statistics to quantify empirical fitness characteristics of clades.
+\begin{enumerate}
+\item clade size,
+\item clade duration,
+\item clade growth rate.
+\end{enumerate}
+
+The first two metrics are taken as the ratio between the number of leaves contained within a clade versus its sister and the ratio of the elapsed chronological time between the estimated MDC-originating event and the extinction of its last leaf versus that for its sister, respetively.
+
+The third metric is has a more subtle calculation and interpretation.
+\citet{TODOOTHERVOLZ} suggests that the relative growth rate between two clades can be estimated by performing binary logistic regression.
+In this approach, membership in clade A versus clade B is considered as a binary response variable and the predictor variable is taken as chronological time.%
+\footnote{%
+Logistic regressions are moderately computationally expensive to perform,
+In exploratory work, we anecdotally found directionally-consistent results with orders-of-magnitude faster runtime could be achieved by applying recently-proposed fast approximations for binary logistic regression applied in \citep{TODO}.
+Further investigation is warranted in this regard.
+}
+
+Due to the multiple-comparator approach pursued in this work, we adopt generalizations of clade fitness measures generalized beyond the binary measures used by \citet{BonettiFranceschi2024phylogenetic}.
+For the clade size and clade duration measures, we normalize against the comparator group through a simple percentile ranking.
+(Because of strong discretization effects, we take mean rank measure for tie-breaking.)
+For the sake of simplicity, we omit the logistic clade growth measure from current work given that devising a generalization beyond simple binary comparison would be more involved.
+
 \input{fig/comparator-selection}
+
+To account for confounding and biasing factors mentioned above, it is possible to fine-tune the set of comparator MDCs sampled to provide a more apples-to-apples comparison.
+Figure \ref{fig:comparator-selection} summarizes the two comparator selection explored in this work.
+To account for variation on account of recency-bias and on account of time-varying environmental factors, the tree may be partioned into discrete temporal ``epochs,'' and comparison limited to other MDCs occuring within the same epoch.
+To account for variation on account of extrinsic genetic factors, the tree may be partitioned into a set of comparator clades.
+These may be selected using domain knowledge (in this work, phylogenetic partitions are performed on the basis of WHO strain variant).
+In future work, it would also be promising to explore conducting these comparisons on the basis of inferred partitions from aspects of tree topology --- for which there is exciting emerging methodologies being developed.
+
+To perform our statistical test for deviation from expected, we perform a bootstrap test of the mean percentile ranking against the 50th approach
+One notable subtlety of this approach is that comparator groups should decompose the set of available MDCs into discrete, consistent partitions.
+Crucially, under this condition, sampling is guaranteed to be evenly-distributed across the percentile scale (because the percentile scale is consistently defined in terms of sampled values).
+This ensures that comparing againt the 50th percentile is appropriate because that is the true group mean.
+
+To account for intrinsic uncertainty in real-world biological data,
+\citet{BonettiFranceschi2024phylogenetic} take several further quality-control steps in excluding data beyond a fixed minimum clade size threshold and excluding genome regions known to be associated with sequencing anomolies from consideration.
+However --- given that we are using perfect-fidelity data from a digital model --- for the sake of simplicity and to maximize statustucak power of our datasets, we omit these adjustments.
 
 \subsection{Test Platform: Covid-19 ABM}
 
