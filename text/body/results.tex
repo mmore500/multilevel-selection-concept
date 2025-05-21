@@ -29,7 +29,10 @@ Given the promising results from example screens shown in Figure \ref{fig:result
 Figure \ref{fig:vanilla-summary-results} summarizes bootstrap tests for depression of mean normalized clade size and duration associated with focal MDCs.
 Experiments were conducted under baseline ``vanilla'' configuration.
 
-TODO MENTION BINNING BY MONTH
+In a first set of assays, we tested a naive approach without comparator MDC partitioning.
+That is, every MDC was included in the comparator set for all MDCs.
+However, we found this approach to produce a high false-positive rate under Gneu/Sneu and Gneu/Sben conditions (TODO/TODO trials at $\alpha=0.05$).
+We found that binning comparator sets by simulation months was effective in ameliorating this defect in test specificity, and so adopted the approach of partitioning comparator sets by month for all subsequently-discussed results.
 
 Excluding replicates with fewer than 20 observed MDCs (due to booststrap unreliability for small sample sizes), TODO/5 replicates with true neutral focal sites positive at $\alpha=0.05$.
 Likewise, across the tested Sben/Gneu effect sizes, TODO/15 focal sites screened positive.
