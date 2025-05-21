@@ -21,21 +21,48 @@ TODO is this with within-month normalization?
 Promisingly, significant evidence of MDC fitness effects were not detected under either the Gneu/Sneu or Gneu/Sben control conditions.
 For Gneu/Sneu conditions, note that too few mutations are observed for the bootstrap test to be considered reliable.
 
-\subsection{Fitness Effect Screen Sensitivity and Specificity}
+\subsection{Fitness Effect Screen}
 
-Given the promising results from example screens shown in Figure \ref{fig:results-vanilla-example}, we next sought to assess detection outcomes across replicate experiments and a broader survey of sample sizes.
+\input{fig/vanilla-summary-results}
+
+Given the promising results from example screens shown in Figure \ref{fig:results-vanilla-example}, we next sought to assess detection outcomes across replicate experiments and smaller effect $1.1\times$ and $1.3\times$ effect sizes.
+Figure \ref{fig:vanilla-summary-results} summarizes bootstrap tests for depression of mean normalized clade size and duration associated with focal MDCs.
+Experiments were conducted under baseline ``vanilla'' configuration.
+
+TODO MENTION BINNING BY MONTH
+
+Excluding replicates with fewer than 20 observed MDCs (due to booststrap unreliability for small sample sizes), TODO/5 replicates with true neutral focal sites positive at $\alpha=0.05$.
+Likewise, across the tested Sben/Gneu effect sizes, TODO/15 focal sites screened positive.
+For true Sben/Gdel multilevel-selection effect conditions, we detected clade fitness statistics below the 50th percentile for all 5 $2\times$ effect size replicates.
+However, sensitivity was insufficient to reliably detect smaller $1.1\times$ and $1.3\times$ effect sizes, with only TODO/10 replicates screened positive.
+
+\subsection{Fitness Effect Screen: Dataset Size}
+
+To assess the extent to which assay sensitivity could be improved by increases in dataset size, we performed additional replicates with a larger simulated population of 1.2 million agents.
+Under these conditions, we were able to reliably detect true multilevel selection dynamics in TODO/TODO trials at the $1.3\times$ effect size treatment.
+However, no multilevel selection effect was detected at the $1.1\times$ effect size with this larger population size.
+Specificity remained fair for these larger population size trials, with false positive detections under Sben/Gneu conditions for only TODO/TODO trials.
+Figure \ref{fig:samplesize:TODO} shows these results.
+
+\subsection{Fitness Effect Screen: Environmental Fluctuations}
+
+We next assessed robustness of comparator-based screens for negative MDC-associated fitness effects over populations under the influence of extrinsic, time-varying environmental factors.
+For these experiments, we utilized Covasim configurations modeling vaccine rollout and public health policies over the course of the pre-omicron Covid-19 pandemic.
+Due to significantly lower case counts within under this configuration, we conducted all trials at the larger 1.2 million host population size in order to achieve pathogen phylogeny dataset size comparable to baseline conditions.
+Under these conditions, we found comparable sensitivity, with true positive detections in TODO/5 trials under $2\times$ effect size.
+However, for smaller, $1.1\times$ and $1.3\times$ effect sizes, true Sben/Gdel dynamics were detected in only TODO/10 trials.
+We also found specificity to be comparable to baseline conditions, with false positive detections in TODO/TODO trials.
+Figure \ref{fig:robustness:TODO} summarizes these results.
 
 \subsection{Fitness Effect Screen: Specificity}
 
-\subsection{Mutation Frequency Screen: Sensitivity}
+Finally, we assessed robustness of comparator-based screens for negative fitness effects to the presence of strong background inter-clade fitness differentials.
+For these experiments, we extended our baseline Covasim configuration to incorporate introduction of alpha, beta, and gamma strains over the course of the pandemic.
+In addition to partitioning MDC comparator sets by month, as was performed for other assays, for these trials we additionally assessed further partitioning by strain ID (e.g., wildtype, alpha, beta, etc.).
+We include these strain-partitioned results in Figure \ref{fig:robustness:TODO}, although did not find appreciable effects of this further clade-based partitioning.
 
-\subsection{Mutation Frequency Screen: Specificity}
+As before, under month-by-month partitioning of comparator sets, we found reliable sensitivity under strong $2\times$ effect size.
+Again, though, at smaller, $1.1\times$ and $1.3\times$ effect sizes, true Sben/Gdel dynamics were detected in only TODO/10 trials.
+False positive detections occured in TODO/TODO trials.
 
-\subsection{Robustness to Environmental Fluctuation}
-
-
-\subsection{Robustness to Background Adaptation}
-% TODO there must be a better name for this
-
-
-\input{fig/vanilla-summary-results}
+\subsection{Mutation Frequency Screen}
