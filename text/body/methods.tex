@@ -114,9 +114,12 @@ This software includes features to capture a variety of aspects of relevant real
 
 For our experiments, we used population sizes of either 200,000 or 1.2 million agents.
 We simulated a 650 day window between TODO and TODO.
+
 For the most part, we used default covasim parameter settings, although we chose a faster decay rate for host immunity to prevent extinctions of viral populations.
 For simulations configured to test robustness to environmental variability, we used an existing suite of configurations emulating the timeline of vaccination rollouts and public health policies within the United Kingdom.
 Experiments assumed the wildtype 2020 strain, except for multi-strain experiments which additionally incorporate extrinsic imports of alpha, beta, and gamma strains at the approximate dates where they were first observed in the course of the Covid-19 pandemic.
+Due to practical limitations, a baseline population size of 200,000 agents was used in most cases.
+However, to assess the effect of dataset size on detection sensitivity, some experiments were replicated with a larger population size of 1.2 million agents.
 
 Although the covasim framework included capability for representing a fixed number of predefined strains arising at predetermined timepoints, in order to model the \textit{in situ} evolution of genetic traits we had to extend the existing code with a within-host evolution model, which we describe next.
 
@@ -171,16 +174,23 @@ For our non-neutral treatments, considered a spread of three effect sizes: 1.1x,
 Given our objective assess capability of proposed methods to detect multilevel selection tradeoffs, we did not include ``Gben'' (group beneficial) focal site properties within our survey, as these are easier to differentiate compared to Gneu conditions and typically leave well-understood signatures of adaptive sweeps within phylogenetic history.
 We did, however, assess the efficacy of multilevel selection detection within a broader context of adaptive evolution, via a multi-strain Covasim configuration (discussed next).
 
-\subsubsection{Confounding Factors}
-\noindent Complicating factors not considered:
-\begin{itemize}
-  \item sampling bias
-  \item pleiotropy/epistasis
-  \item virulence (not considered/modeled directly)
-\end{itemize}
+% \subsubsection{Robustness Assessment}
+
+%In our experiments, we additionally sought to assess the robustness of multilevel selection detection across a set of possible complicating factors.
+%Under the ``vanilla'' baseline configuration of Covasim used for our primary set of experiments, social network structure and agent behavior remained consistent across simulated time (although population-level immunity levels did fluctuate as population members encountered infections), and adaptive evolution of transmission cbaracteristics did not occur.
+
+% To assess the effect of dataset size on detection sensitivity, we also replicated some experiments with larger population sizes of 1.2 million agents (versus the baseline population size of 200,000 agents).
+
+% In further work to assess the efficacy, of
+% \noindent Complicating factors not considered:
+% \begin{itemize}
+%  \item sampling bias
+%  \item pleiotropy/epistasis
+%  \item virulence (not considered/modeled directly)
+% \end{itemize}
 
 
-\subsubsection{Simulation Outcomes}
+\subsubsection{Simulation Dynamics}
 
 \input{fig/phylos-vanilla-example}
 
