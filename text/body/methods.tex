@@ -157,32 +157,19 @@ In future work, it will be important to explore the impact of limitations in phy
 
 \subsection{Treatment Conditions}
 
-Terminology --- S: self (L0) a.k.a. within-host, G: group (L1) a.k.a transmission --- neu: neutral, ben: beneficial, del: deleterious
-
+To assess the capability of evaluated methodology in descriminating the signature of multilevel selection effects from other scenarios, we compared screening outcomes across a set of three ground-truth configurations for the fitness effect of our focal genome site:
 \begin{enumerate}
-  \item Neutral Site (Sneu/Gneu) [control treatment]
-  \item L0/L1-tradeoff Site (Sben/Gdel) [i.e., True TFP]
-    \begin{itemize}
-      \item Weak (Sben/Gdel:1\%)
-      \item Moderate (Sben/Gdel:5\%)
-      \item Strong (Sben/Gdel:25\%)
-    \end{itemize}
-  \item L0-adaptive Site (Sben/Gneu) [control treatment]
-    \begin{itemize}
-      \item Weak (Sben/Gneu:1\%)
-      \item Moderate (Sben/Gneu:5\%)
-      \item Strong (Sben/Gneu:25\%)
-    \end{itemize}
+\item Sben/Gdel: true multilevel selection dynamics,
+\item Sben/Gneu: within-host growth rate advantage,
+\item Sneu/Gneu: neutral dynamics,
 \end{enumerate}
 
+Under ``Sben'' (``self beneficial'') conditions, mutations to the focal site confer an advantage to within-host growth rate.
+Under ``Gdel'' conditions (``group deleterious''), mutations to the focal site confer a penalty to the between-host transmission rate in the Covasim simulation layer.
+For our non-neutral treatments, considered a spread of three effect sizes: 1.1x, 1.3x, and 2x.
 
-\noindent scenarios NOT consided:
-\begin{itemize}
-  \item pure L1-adaptive or L0/L1 adaptive sites: these will tend to sweep to fixation and are easily detected/recognized using existing methods
-  \item L0-maladaptive sites: these will remain very rare, and if we can distinguish neutral sites we can distinguish these
-\end{itemize}
-
-\subsubsection{Effect Sizes}
+Given our objective assess capability of proposed methods to detect multilevel selection tradeoffs, we did not include ``Gben'' (group beneficial) focal site properties within our survey, as these are easier to differentiate compared to Gneu conditions and typically leave well-understood signatures of adaptive sweeps within phylogenetic history.
+We did, however, assess the efficacy of multilevel selection detection within a broader context of adaptive evolution, via a multi-strain Covasim configuration (discussed next).
 
 \subsubsection{Confounding Factors}
 \noindent Complicating factors not considered:
