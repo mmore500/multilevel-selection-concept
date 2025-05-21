@@ -1,11 +1,36 @@
 \section{Introduction} \label{sec:introduction}
 
-key literature
-\begin{itemize}
-\item major transitions and OEE/digital evolution \citep{vostinar2021symbulation,dolson2019modes,dolson2024what,moreno2019toward}
-\item tree-balance statistics/defining mutation screen \citep{BonettiFranceschi2024phylogenetic}
-\item price equation \citep{price1972fishers}
-\item inferring fitness from individual-level phylogenies \citep{nozoe2017inferring,kuo2025bayesian}
-\item sources from \citep{moreno2024ecology}
-\item covid evolution \citep{markov2023evolution}
-\end{itemize}
+A major unsolved problem in open-ended evolution research is the development of general-purpose methods for identifying major evolutionary transitions in individuality \citep{dolson2019modes}. Major evolutionary transitions, where the unit that can most accurately be described as an ``individual'' shifts (e.g. from a single-celled organism to a multi-celled organism or from a prokaryotic cell to a eukaryotic cell), are thought to be a hallmark of open-ended evolution \citep{taylor2016open}. They are also a topic of great interest in evolutionary biology [cite]. Recognizing major transitions is challenging, however, because most approaches require pre-determining what constitutes an individual pre- and post- transition, meaning they cannot recognize truely organic and unexpected transitions.
+
+A major force in bringing about major evolutionary transitions is multi-level selection, i.e. selection occurring at different levels of organization simultaneously. Major transitions are generally thought to occur when selection on a collection of units in concert becomes stronger than selection on the individual units [cite Will Ratcliff]. Measuring multi-level selection, then, is a promising proxy for mesauring major transitions. Multi-level selection is also valuable in its own right, as it can shape evolutionary dynamics even when it doesn't lead to a major evolutionary transition. For example, the virulence vs. transmission tradeoff is an instance of multi-level selection that plays a key role in determining the course of viral evolution [cite]; individual viral particles may extract a selfish benefit from harming the host more, but at the cost of making the infected person feel sicker, which reduces the chance that any of the viral particles in their body are able to transmit to a a new host.
+
+Here, we set out to develop a general purpose technique for measuring multi-level selection in artificial life systems. Such a technique must make as few assumptions as possible about the system. One assumption that should be fairly safe to make is that any evolving system is going to have some form of reproduction, where units give rise to new units. Thus, it should almost always be possible to build phylogenies (i.e. ancestry trees)\footnote{One possible exception is systems with sexual reproduction (crossover). However, in most cases it is still possible to build asexual phylogenies for each gene in these systems.}. Indeed, other techniques for quantifying open-ended evolution have successfully used phylogenies as input data \citep{dolson2019modes}. Similarly, it is relatively safe to assume that most evolving artificial life systems have heritable genetic information that could, if necessary, be represented as a sequence. Thus, we propose to base our multi-level selection metric on the following two input data types: phylogenies and genetic sequences.
+
+% Double check that this is the right Volz citation
+Encouragingly, there an approach to detecting multi-level selection based on this data has already been proposed and used to screen for multi-level selection in a real-world sars-cov-2 phylogeny \citep{BonettiFranceschi2024phylogenetic}. However, it is has yet to be tested on data with a known ground-truth amount of multi-level selection or data from a computational system. Thus, our primary goal in this work is to make the necessary adjustments to ensure that this metric correctly detects multi-level selection in Artificial Life systems.
+
+% Doing so will facilitate research on
+
+% key literature
+% \begin{itemize}
+% \item major transitions and OEE/digital evolution \citep{vostinar2021symbulation,dolson2019modes,dolson2024what,moreno2019toward}
+% \item tree-balance statistics/defining mutation screen \citep{BonettiFranceschi2024phylogenetic}
+% \item price equation \citep{price1972fishers}
+% \item inferring fitness from individual-level phylogenies \citep{nozoe2017inferring,kuo2025bayesian}
+% \item sources from \citep{moreno2024ecology}
+% \item covid evolution \citep{markov2023evolution}
+% \end{itemize}
+
+% \section{What is Multilevel Selection?}
+% Multilevel selection plays an important role in biology/evolution, and detecting it is important for forecasting evolution of virulence.
+
+% Multilevel selection plays an important role in major transitions in evolution, and detecting emergent multilevel selection is also of key interest in open-ended evolution.
+
+% \section{Recap of Methods for Identifying Multilevel Selection}
+% One particularly promising method is (Francesci and Volz).
+
+% Generic methods are preferable. In order to apply to large-scale simulations and to real-world scenarios, methods must be robust to sampling and error. Phylogeny-based methods are good for this.
+
+% Original work was demonstrated on a COVID dataset. This identified several candidate sites in the COVID genome that may be under multilevel selection. But without ground truth data, it is challenging to assess the sensitivity and accuracy of these methods.
+
+% In this paper, we take advantage of alife methods for agent-based evolution simulation in order to assess this methodology for characterizing multilevel selection under controlled conditions with known ground truth.
