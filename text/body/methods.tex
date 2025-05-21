@@ -114,10 +114,11 @@ This software includes features to capture a variety of aspects of relevant real
 
 For our experiments, we used population sizes of either 200,000 or 1.2 million agents.
 We simulated a 650 day window between TODO and TODO.
+Five replicate simulation trials were conducted per observation, except for some large-scale simulation trials which observations were downsized to comprise three replicates.
 
 For the most part, we used default covasim parameter settings, although we chose a faster decay rate for host immunity to prevent extinctions of viral populations.
 For simulations configured to test robustness to environmental variability, we used an existing suite of configurations emulating the timeline of vaccination rollouts and public health policies within the United Kingdom.
-Experiments assumed the wildtype 2020 strain, except for multi-strain experiments which additionally incorporate extrinsic imports of alpha, beta, and gamma strains at the approximate dates where they were first observed in the course of the Covid-19 pandemic.
+Experiments assumed the wildtype TODO strain, except for multi-strain experiments which additionally incorporate extrinsic imports of alpha, beta, and gamma strains at the approximate dates where they were first observed in the course of the Covid-19 pandemic.
 Due to practical limitations, a baseline population size of 200,000 agents was used in most cases.
 However, to assess the effect of dataset size on detection sensitivity, some experiments were replicated with a larger population size of 1.2 million agents.
 
@@ -131,7 +132,7 @@ For each new infection, we seeded an aggregate count corresponding to the infect
 Then, as day cycles elapsed in the primary state, aggregate genotype counts were grown through a doubling process up to a fixed within-host carrying capacity.
 With each doubling, counts of mutants to other possible genotypes were drawn from a binomial distribution.
 These mutant counts were subtracted from their source genotype aggregate and added to their destination genotype aggregate.
-In this manner, we sought to capture Luria–Delbruck dybamics where mutants that arose by chance early in an infection had a greater impact on population composition than mutants arising later on.
+In this manner, we sought to capture Luria–Delbruck dybamics where mutants that arose by chance early in an infection had a greater impact on population composition than mutants arising later on \citep{TODO}.
 To tie within-host dynamics back to the Covasim model of host-to-host transmission, we sampled a genotype at random from each active within-host population and wrote its corresponding strain identifier back to Covasim's ``active strain'' identifier for its host.
 This process was performed between each daily update cycle, allowing the genetic composition of transmission events to fluctuate stochastically over time based on the composition of the within-host population.
 
