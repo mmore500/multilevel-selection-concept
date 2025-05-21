@@ -107,6 +107,17 @@ However --- given that we are using perfect-fidelity data from a digital model -
 
 \subsubsection{Covasim Platform}
 
+We leveraged a pre-existing agent-based epidemiological modeling platform called Covasim for this work.
+This software includes features to capture a variety of aspects of relevant real-world factors, including the structure of social networks within a population (e.g., school, work), development of host immunity, and public health responses (quarantine policy, community containment efforts, etc.).
+
+For our experiments, we used population sizes of either 200,000 or 1.2 million agents.
+We simulated a 650 day window between TODO and TODO.
+For the most part, we used default covasim parameter settings, although we chose a faster decay rate for host immunity to prevent extinctions of viral populations.
+For simulations configured to test robustness to environmental variability, we used an existing suite of configurations emulating the timeline of vaccination rollouts and public health policies within the United Kingdom.
+Experiments assumed the wildtype 2020 strain, except for multi-strain experiments which additionally incorporate extrinsic imports of alpha, beta, and gamma strains at the approximate dates where they were first observed in the course of the Covid-19 pandemic.
+
+Although the covasim framework included capability for representing a fixed number of predefined strains arising at predetermined timepoints, in order to model the \textit{in situ} evolution of genetic traits we had to extend the existing code with a within-host evolution model, which we describe next.
+
 \subsubsection{Within-host Model}
 
 \subsubsection{Phylogeny Tracking}
