@@ -1,12 +1,95 @@
 \section{Methods} \label{sec:methods}
 
+\subsection{Signature of Multilevel Selection}
+
+A fundamental characteristic of multilevel selection is in establishing conflicting incentives between short- and long-term inclusive fitness.
+From the point-of-view of evolution of multicellularity, short-term increases in cell proliferation lead to long-term detriments to the capability of the multicellular organism as a whole to survive and reproduce (e.g., cancer).
+Analagous split-level selective dynamics can also emerge outside the context of cooperative higher-level multicellularity.
+In the context of host-parasite dynamics, traits can exhibit short-term benefits by facilitating within-host proliferation but harm the capability of the strain to infect further hosts --- e.g., due to prematurely killing the host or reduced proficiency or proclivity in escaping the host environment.
+
 \input{fig/mls-schematic}
+
+In the presence of multilevel selection dynamics, therefore, there exist mutations that can briefly surge in prevalence but ultimately be swept to extinction.
+It is these specific genome sites that we explore how to identify in this work.
+We adopt the strategy proposed by \citep{BonettiFranceschi2024phylogenetic}, wherein these sites are identified as
+\begin{enumerate}
+\item appearing in the population at a higher rate than expected for a random neutral mutation (given transient short-term fitness benefit), and
+\item being associated with smaller, shorter-lived clades than expected for neutral mutations (due to longer-term disadvantage).
+\end{enumerate}
+
+This approach therefore requires two types of information: (1) genome sequences, so that the sets of mutations carried by different individuals in a population cab be identified and (2) phylogeny, so that lineage history outcomes may be assessed.
+In biological study systems, these two types data are typically intrinsically linked due to sequence data being used as the basis to infer phylogenetic history.
+However, this is not always the case in digital study systems, where phylogeny may be more readily tracked directly.
+
+Indeed, in direct phylogeny tracking in digital systems, it is often possible to record the exact point at which a mutation originated.
+Howevever, in other scenarios like biological model systems or very large-scale digital simulations, this information may not be available.
+In that case, is therefore necessary to estimate the point in evolutionary where mutations held by members of a population actually arose for the first time.
+\citet{BonettiFranceschi2024phylogenetic} use an \textit{ad hoc} approach accomplish this by labeling tips according to whether or not they contain a mutation and identifying inner nodes for which $\geq75\%$ of descendant tips on one daughter branch contain a mutation but $<75\%$ of nodes on the other do not contain that mutation.
+The clade for which individuals have a mutation through common descent is termed as a \textit{Mutation-Defined Clade (MDC)}.
+In usage in this work, we use direct tracking approaches and the term MDC instead refers to the exact point at which a mutation arises.
+
+In sum, therefore, our goal is to identify particular genome sites for which (1) a higher quantity of MDCs are observed than expected by chance and (2) when MDCs do occur, they tend to be smaller and/or more short-lived than by chance.
+(Figure \ref{fig:mls-schematic}).
+
+In the next section, we will describe the original statistical algorithm proposed by \citet{BonettiFranceschi2024phylogenetic} for this purpose, and our proposed modifications.
+
+\subsection{Site Screen Methodology}
 
 \input{fig/screen-strategy}
 
+\input{fig/comparator-selection}
+
+\subsection{Test Platform: Covid-19 ABM}
+
 \input{fig/covasim-schematic}
 
-\input{fig/comparator-selection}
+\subsubsection{Covasim Platform}
+
+\subsubsection{Within-host Model}
+
+\subsubsection{Phylogeny Tracking}
+
+\subsection{Treatment Conditions}
+
+Terminology --- S: self (L0) a.k.a. within-host, G: group (L1) a.k.a transmission --- neu: neutral, ben: beneficial, del: deleterious
+
+\begin{enumerate}
+  \item Neutral Site (Sneu/Gneu) [control treatment]
+  \item L0/L1-tradeoff Site (Sben/Gdel) [i.e., True TFP]
+    \begin{itemize}
+      \item Weak (Sben/Gdel:1\%)
+      \item Moderate (Sben/Gdel:5\%)
+      \item Strong (Sben/Gdel:25\%)
+    \end{itemize}
+  \item L0-adaptive Site (Sben/Gneu) [control treatment]
+    \begin{itemize}
+      \item Weak (Sben/Gneu:1\%)
+      \item Moderate (Sben/Gneu:5\%)
+      \item Strong (Sben/Gneu:25\%)
+    \end{itemize}
+\end{enumerate}
+
+
+\noindent scenarios NOT consided:
+\begin{itemize}
+  \item pure L1-adaptive or L0/L1 adaptive sites: these will tend to sweep to fixation and are easily detected/recognized using existing methods
+  \item L0-maladaptive sites: these will remain very rare, and if we can distinguish neutral sites we can distinguish these
+\end{itemize}
+
+\subsubsection{Effect Sizes}
+
+\subsubsection{Confounding Factors}
+\noindent Complicating factors not considered:
+\begin{itemize}
+  \item sampling bias
+  \item pleiotropy/epistasis
+  \item virulence (not considered/modeled directly)
+\end{itemize}
+
+
+\subsubsection{Simulation Outcomes}
+
+\input{fig/phylos-vanilla-example}
 
 \subsection{Software and Data Availability} \label{sec:materials}
 
