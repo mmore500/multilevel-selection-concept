@@ -122,6 +122,28 @@ Although the covasim framework included capability for representing a fixed numb
 
 \subsubsection{Within-host Model}
 
+We used an aggregate-based model to track the composition of within-host viroid populations for each member of the covasim population.
+For this purpose, we inspected covasim state between one-day update steps to identify all new infections.
+For each new infection, we seeded an aggregate count corresponding to the infecting genotype unique to the infected population member --- inferred from covasim's strain label for the infection.
+Then, as day cycles elapsed in the primary state, aggregate genotype counts were grown through a doubling process up to a fixed within-host carrying capacity.
+With each doubling, counts of mutants to other possible genotypes were drawn from a binomial distribution.
+These mutant counts were subtracted from their source genotype aggregate and added to their destination genotype aggregate.
+In this manner, we sought to capture Luria–Delbruck dybamics where mutants that arose by chance early in an infection had a greater impact on population composition than mutants arising later on.
+To tie within-host dynamics back to the Covasim model of host-to-host transmission, we sampled a genotype at random from each active within-host population and wrote its corresponding strain identifier back to Covasim's ``active strain'' identifier for its host.
+This process was performed between each daily update cycle, allowing the genetic composition of transmission events to fluctuate stochastically over time based on the composition of the within-host population.
+
+We parameterized the per-replication mutation rate, within-host carrying capacity, and doubling rate of within-host viral growth as TODO, TODO, and TODO respectiv ely based on reference figures from empirical literature \citep{TODO,TODO,TODO}.
+
+In our experiments, we defined a ``focal'' genome site, which was used as the target for testing screening methods.
+However, evaluations also required additional neutral ``background'' genome sites in order to assess capabilities of screens to selectively identify the properties of the focal site.
+In order to ensure statistical interchangeabulity between focal sites and background sites, we used additional instantiations of the aggregate within-host model to simulate the genetic composition of the background sites; the process by which mutations in background sites arose was therefore identical to that for fitness-neutral configurations of the focal site.
+
+One limitation of this approach for generating background mutation data is in not capturing linkage effects between mutations on the time scale of within-host evolution, as the genetic composition of each site based on within-host growth fluctuates independently within our model.
+We also do not capture various nuances of true nucleotide sequence data, such as site-specific biases in mutational rates or outcomes.
+As final limitation is in the number of background sites simulated.
+Due to practical limitations, for our experiments it was feasible to simulate 50 total sites for smaller-scale 200,000-agent trials and 20 total sites for larger-scale 1.2 million-agent simulations.
+Although higher site counts inherently increase the amount of sensitivity and selectivity necessary to reliably detect a likely minority of sites under multilevel selection, we expect that a richer corpus of background sites would also confer some benefit a richer set of comparator MDCs and thus enabling finer-grained normalization of clade fitness statistics.
+
 \subsubsection{Phylogeny Tracking}
 
 We used Covasim's infection log feature as the basis for collecting phylogenetic data from our experiments.
