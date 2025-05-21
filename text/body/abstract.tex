@@ -1,3 +1,12 @@
 \begin{abstract}
-TODO
+Multilevel selection phenomena occur when short-term individual-level reproductive interests conflict with longer-term group-level fitness effects.
+Being able to detect and quantify this phenomenon is key in understanding a wide range of important questions around topics ranging from the evolution of multicellularity to the evolution of pathogen virulence.
+Within the realm of artificial life research, in particular, the topic of multilevel selection has been highlighted in particular with respect to major transitions in evolution and open-ended evolution.
+One approach for detecting multilevel selection dynamics, proposed by \citet{TODO} is in screening for mutations that arise more often in a population than expected by chance (due to transient, individual-level fitness benefits) but are ultimately associated with negative longer-term fitness outcomes (i.e., smaller, shorter-lived descendant clades than expected by chance).
+In this work, we use agent-based modeling with known ground truth to assess the efficacy of this approach.
+To test these methods under challenging conditions broadly comparable to the original dataset explored by \citet{TODO}, we conduct our experiments using the epidemiological covasim framework, modeling multilevel selection in trade-offs between within-host growth rate and between-host transmissibility.
+We also describe an extension to the statistical procedure for screening for clade-level fitness effects, switching from sister-based clade normalization to a more general comparator normalization scheme, necessary to achieve efficacy on in silico data.
+afor pathogen phylogenies drawn from host populations of up to 1.2 million agents, we find the method to be sensitive in detecting genome sites under multilevel selection with 30\% effect sizes on fitnes, but do not see sensitivity to smaller 10\% mutation effect sizes.
+To test the robustness of this methodology, we conduct additional experiments incorporating extrinsic, time-varying environmental changes and the presence of adaptive turnover in population compositions, and find generally comparable screen performance compared to simpler baseline conditions.
+As such, this work represents a promising initial step in ultimately enabing more rigorous quantification of multilevel selection effects that is generalizable across simulation systems, potentiallu also including large-scale decentralized simulations where the necessary data could be collected through sampling approaches.
 \end{abstract}
