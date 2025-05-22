@@ -153,3 +153,8 @@
 	url = https://github.com/mmore500/multilevel-selection-concept.git
 	branch = binder-2025-05-19-freqscreen-summary.ipynb
 	shallow = true
+[submodule "binder/binder-2025-05-19-compscreen-uk-big-summary.ipynb"]
+	path = binder/binder-2025-05-19-compscreen-uk-big-summary.ipynb
+	url = https://github.com/mmore500/multilevel-selection-concept.git
+	branch = binder-2025-05-19-compscreen-uk-big-summary.ipynb
+	shallow = true
