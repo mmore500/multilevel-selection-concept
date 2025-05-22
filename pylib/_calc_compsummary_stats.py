@@ -87,6 +87,7 @@ def calc_compsummary_stats(data: pd.DataFrame, x: str, y: str) -> plt.Axes:
                 "u_mw": mw_u,
                 "cliffs_delta": cliffs_delta,
                 "na": np.sum(grp.isna()),
+                "n_grp": len(grp),
             },
         )
 
