@@ -2,120 +2,113 @@
 
 \subsection{Signature of Multilevel Selection}
 
-A fundamental characteristic of multilevel selection is in establishing conflicting incentives between short- and long-term inclusive fitness.
-From the point-of-view of evolution of multicellularity, short-term increases in cell proliferation lead to long-term detriments to the capability of the multicellular organism as a whole to survive and reproduce (e.g., cancer).
-Analagous split-level selective dynamics can also emerge outside the context of cooperative higher-level multicellularity.
-In the context of host-parasite dynamics, traits can exhibit short-term benefits by facilitating within-host proliferation but harm the capability of the strain to infect further hosts --- e.g., due to prematurely killing the host or reduced proficiency or proclivity in escaping the host environment.
+Multilevel selection is most evident when there are conflicting incentives between fitness at different levels of biological organization.
+For example, in the evolution of multicellularity, cell-level increases in proliferation rate can reduce the capability of the multicellular organism as a whole to survive and reproduce (e.g., cancer).
+%Analagous split-level selective dynamics can also emerge outside the context of cooperative higher-level multicellularity.
+Similarly, in the context of host-parasite dynamics, traits can provide individual-level benefits by facilitating within-host proliferation while harming the capability of the strain to infect further hosts --- e.g., due to prematurely killing the host or reducing interaction with other potential hosts (i.e., increased virulence).
+Importantly, the units at lower levels of biological organization nearly always have shorter lifespans than the collectives that they are part of (e.g., cells have shorter lifespans than multicellular organisms, individual bees have shorter lifespans than bee colonies, etc.). Consequently, multi-level selection can manifest as a trade-off between the short- and long-term success of a lineage.
 
 \input{fig/mls-schematic}
 
 In the presence of multilevel selection dynamics, therefore, there exist mutations that can briefly surge in prevalence but ultimately be swept to extinction.
-It is these specific genome sites that we explore how to identify in this work.
+In this work, we seek to identify these specific genome sites.
 We adopt the strategy proposed by \citep{BonettiFranceschi2024phylogenetic}, wherein these sites are identified as
-\begin{enumerate}
+\begin{enumerate}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
 \item appearing in the population at a higher rate than expected for a random neutral mutation (given transient short-term fitness benefit), and
 \item being associated with smaller, shorter-lived clades than expected for neutral mutations (due to longer-term disadvantage).
 \end{enumerate}
 
-This approach therefore requires two types of information: (1) genome sequences, so that the sets of mutations carried by different individuals in a population cab be identified and (2) phylogeny, so that lineage history outcomes may be assessed.
-In biological study systems, these two types data are typically intrinsically linked due to sequence data being used as the basis to infer phylogenetic history.
-However, this is not always the case in digital study systems, where phylogeny may be more readily tracked directly.
+This approach, then, requires two types of information: (1) genome sequences, so that the sets of mutations carried by different individuals in a population can be identified and (2) phylogenies, so that lineage history outcomes may be assessed.
+In biological study systems, these two types of data are typically intrinsically linked because phylogenies are inferred from genome sequences.
 
-Indeed, in direct phylogeny tracking in digital systems, it is often possible to record the exact point at which a mutation originated.
-Howevever, in other scenarios like biological model systems or very large-scale digital simulations, this information may not be available.
-In that case, is therefore necessary to estimate the point in evolutionary where mutations held by members of a population actually arose for the first time.
-\citet{BonettiFranceschi2024phylogenetic} use an \textit{ad hoc} approach accomplish this by labeling tips according to whether or not they contain a mutation and identifying inner nodes for which $\geq75\%$ of descendant tips on one daughter branch contain a mutation but $<75\%$ of nodes on the other do not contain that mutation.
-The clade for which individuals have a mutation through common descent is termed as a \textit{Mutation-Defined Clade (MDC)}.
-In usage in this work, we use direct tracking approaches and the term MDC instead refers to the exact point at which a mutation arises.
+In digital study systems, phylogeny is usually tracked directly and the exact point at which a mutation originated can be recorded.
+Howevever, direct tracking is impossible in some scenarios like biological model systems or very large-scale digital simulations. In these systems, much as in biology, the point in evolutionary history where mutations actually arose must be estimated.
+\citet{BonettiFranceschi2024phylogenetic} use an \textit{ad hoc} approach to accomplish this estimation. They label tips (i.e., extant taxa) according to whether or not they contain a given mutation and identify inner nodes for which $\geq75\%$ of descendant tips on one daughter branch contain a mutation but $<75\%$ of nodes on the other do not contain that mutation.
+The clade of individuals that share a mutation through common descent is termed as a \textit{Mutation-Defined Clade (MDC)}.
+In this work, we use direct tracking approaches and the term MDC instead refers to the exact point at which a mutation arises.
 
-In sum, therefore, our goal is to identify particular genome sites for which (1) a higher quantity of MDCs are observed than expected by chance and (2) when MDCs do occur, they tend to be smaller and/or more short-lived than by chance.
+In sum, therefore, our goal is to identify particular genome sites for which (1) a higher quantity of MDCs are observed than expected by chance and (2) when MDCs do occur, they tend to be smaller and/or more short-lived than would be expected by chance.
 (Figure \ref{fig:mls-schematic}).
 
 In the next section, we will describe the original statistical algorithm proposed by \citet{BonettiFranceschi2024phylogenetic} for this purpose, and our proposed modifications.
 
 \subsection{Fitness Effect Screen Methodology}
 
-One of the challenges of characterizing fitness outcomes from a phylogeny is in accounting for a myriad of possible confounding factors.
-Several possible examples include: further clade history after the point at which a clade is sampled (e.g., recency bias), differences in genetic background having effects on selection (e.g., emergence of high-transmission strains that like alpha, beta, omicron etc.), time-varying environmental effects (e.g., habitat/resource availability, predation).
+One of the challenges of characterizing fitness outcomes from a phylogeny is accounting for confounding factors contributing to clade fates.
+Several possible examples include: further clade history after the point at which a clade is sampled (e.g., recency bias), differences in genetic background having effects on selection (e.g., emergence of high-transmission SARS-CoV-2 strains like alpha, beta, omicron, etc.), time-varying environmental effects (e.g., habitat/resource availability, predation).
 
-\citet{BonettiFranceschi2024phylogenetic} propose an elegant approach to account for these issues: compare between each MDC and its sister clade.
-These clades and,
-Essentially, the difference between these clades can be interpreted as differing solely in terms of the putatively-causal influence of the mutation of interest.
+\citet{BonettiFranceschi2024phylogenetic} propose an elegant approach to account for these issues: compare each MDC and its nearest non-ancestral relative (its ``sister'' clade).
+% These clades and,
+Essentially, these clades can be interpreted as differing solely in terms of the putatively causal influence of the mutation of interest.
 
 \input{fig/screen-strategy}
 
-However, in adapting this approach to our \textit{in silico} study system we ended up developing an alternate approach wherein we normalize clade statistics to a broader set of selected comparators, rather than just the sister clade.
+However, in adapting this approach to our \textit{in silico} study system, we ran into some challenges (described below) that led us to develop an alternate normalization strategy. Instead of just comparing clades to their sister clades, we identified clades' rankings within a broader set of selected comparator clades.
 Specifically, we normalize against the pooled set of MDCs for \textit{other} mutations.
 Figure \ref{fig:screen-strategy} provides a schematic comparison between the sister-clade and MDC comparator approaches.
 
 Our motivation in diverging to develop the proposed comparator-based approach is twofold, driven by the unique characteristics of phylogenetic data from digital study systems.
 First, we sought to enhance statistical power of the assay.
 %TODO could show results with very small comparator groups to back up this point
-This is a particular concern for \textit{in silico} agent-based model systems, due to the typically smaller populations that are feasible to instantiate compared to the vast population sizes typically exhibited by microbial and viral populations.
+Power is of particular concern for \textit{in silico} agent-based model systems, due to their typically smaller populations relative to microbial and viral populations.
 In particular, under the sister clade comparator approach, the statistics measured for each individual MDC are strongly influenced by the status of the comparator clade.
 
 Another challenge associated with densely-sampled, exactly-tracked phylogenies is complicating artifacts in tree topology.
-For instance, high density of short tips descended from internal nodes can introduce a bias towards comparison against these internal tips as sister clades.
-Likewise, the existence of true multifurcations, which must be arbitrarily resolved in order to perfkrm binary comparisons, also further compliicates matters \citep{TODOphylotrackpy}.
-Relatedly, another related useful factor of the comparator-based approach is in normalizing exclusively against other phylogeny nodes where mutations arose (e.g., incubation time, infection order, etc.).
-This also accounts for possible biasing heterogeneity in the composition of internal nodes where mutations arise, whereas the sister comparator approach largely compares against non-MDC nodes.
+For instance, high density of short tips descended from internal nodes\footnote{These tips are the result of one-off mutations that never reach a large population size. They are common in exactly tracked phylogenies, but rare in phylogenies reconstructed from real-world samples, as the odds of sampling these tips are low.} can introduce a bias towards comparison against these internal tips as sister clades.
+Likewise, the existence of true multifurcations, which must be arbitrarily resolved in order to perform binary comparisons, further complicates matters \citep{dolson2024phylotrack}.
+Relatedly, another useful factor of the comparator-based approach is in normalizing exclusively against other phylogeny nodes where mutations actually arose, thus balancing out possible bias in node characteristics where MDCs are observed (e.g., due to factors such as incubation time, infection order, phylogeny artifacts, etc.).
+In contrast, the sister comparator approach includes comparison against non-MDC nodes.
 
-\citet{BonettiFranceschi2024phylogenetic} apply a combination of three clade statistics to quantify empirical fitness characteristics of clades.
-\begin{enumerate}
-\item clade size,
-\item clade duration,
-\item clade growth rate.
-\end{enumerate}
+\citet{BonettiFranceschi2024phylogenetic} apply a combination of three clade statistics to quantify empirical fitness characteristics of clades: (1) clade size, (2) clade duration, and (3) clade growth rate.
+The first two properties are, respectively, measured as 1) the ratio between the number of leaves in a clade and the number in its sister clade and 2) the ratio of its lifetime (elapsed time between the estimated MDC-originating event and the extinction of its last leaf) and that of its sister.
 
-The first two metrics are taken as the ratio between the number of leaves contained within a clade versus its sister and the ratio of the elapsed chronological time between the estimated MDC-originating event and the extinction of its last leaf versus that for its sister, respetively.
-
-The third metric is has a more subtle calculation and interpretation.
-\citet{TODOOTHERVOLZ} suggests that the relative growth rate between two clades can be estimated by performing binary logistic regression.
+The third metric has a more subtle calculation and interpretation.
+\citet{Volz2023} demonstrates that the relative growth rate between two clades can be estimated by performing binary logistic regression.
 In this approach, membership in clade A versus clade B is considered as a binary response variable and the predictor variable is taken as chronological time.%
 \footnote{%
 Logistic regressions are moderately computationally expensive to perform,
-In exploratory work, we anecdotally found directionally-consistent results with orders-of-magnitude faster runtime could be achieved by applying recently-proposed fast approximations for binary logistic regression applied in \citep{TODO}.
+In anecdotal testing, we found directionally-consistent results with orders-of-magnitude faster runtime could be achieved by applying recently-proposed fast approximations for binary logistic regression \citep{Saran2025}.
 Further investigation is warranted in this regard.
 }
 
-Due to the multiple-comparator approach pursued in this work, we adopt generalizations of clade fitness measures generalized beyond the binary measures used by \citet{BonettiFranceschi2024phylogenetic}.
+Due to the multiple-comparator approach pursued in this work, we generalize clade fitness measures beyond the binary measures used by \citet{BonettiFranceschi2024phylogenetic}.
 For the clade size and clade duration measures, we normalize against the comparator group through a simple percentile ranking.
-(Because of strong discretization effects, we take mean rank measure for tie-breaking.)
-For the sake of simplicity, we omit the logistic clade growth measure from current work given that devising a generalization beyond simple binary comparison would be more involved.
+(Because of strong discretization effects, we take a mean rank measure for tie-breaking.)
+For the sake of simplicity, we omit the logistic clade growth measure from current work, given that devising a generalization beyond simple binary comparison would be more involved.
 
 \input{fig/comparator-selection}
 
-To account for confounding and biasing factors mentioned above, it is possible to fine-tune the set of comparator MDCs sampled to provide a more apples-to-apples comparison.
-Figure \ref{fig:comparator-selection} summarizes the two comparator selection explored in this work.
-To account for variation on account of recency-bias and on account of time-varying environmental factors, the tree may be partioned into discrete temporal ``epochs,'' and comparison limited to other MDCs occuring within the same epoch.
+To account for confounding and biasing factors mentioned above, we fine-tune the set of comparator MDCs sampled to provide a more apples-to-apples comparison.
+Figure \ref{fig:comparator-selection} summarizes the two comparator selection methods explored in this work.
+To account for variation due to recency-bias and time-varying environmental factors, the tree may be partitioned into discrete temporal ``epochs,'' and comparison limited to other MDCs originating within the same epoch.
 To account for variation on account of extrinsic genetic factors, the tree may be partitioned into a set of comparator clades.
-These may be selected using domain knowledge (in this work, phylogenetic partitions are performed on the basis of WHO strain variant).
-In future work, it would also be promising to explore conducting these comparisons on the basis of inferred partitions from aspects of tree topology --- for which there is exciting emerging methodologies being developed.
+These may be selected using domain knowledge (in this work, phylogenetic partitions are performed based on WHO strain variant).
+In future work, it would also be promising to explore conducting these comparisons on the basis of partitions automatically inferred from aspects of tree topology, an area of emerging phylostatistical methodology \citep{Lefrancq2025}.
 
-To perform our statistical test for deviation from expected, we perform a bootstrap test of the mean percentile ranking against the null 50th percentile expectation.
-We used a bootstramp sample size of TODO.
-As a caveat, bootstrap testing is known to be unreliable for small sample sizes (e.g., $\sim20$ observations); thus, where reporting bootstrap results we indicate where this condition is violated.
-Another notable subtlety of this approach is that comparator groups should decompose the set of available MDCs into discrete, consistent partitions.
-Crucially, under this condition, sampling is guaranteed to be evenly-distributed across the percentile scale (because the percentile scale is consistently defined in terms of sampled values).
-This procedure ensures that comparing againt the 50th percentile is appropriate because that is the true group mean.
+To perform our statistical tests for deviation from expected values, we perform a bootstrap test to determine whether the mean percentile ranking of the focal clade within the comparator group is significantly different from the 50th percentile (as we would expect by chance).
+% https://github.com/mmore500/multilevel-selection-concept/blob/6c77a8afbeb760cd8fa878c6fec8fbd8766aaddb/pylib/_calc_compsummary_stats.py
+We used a bootstrap sample size of 1000,000.
+As a caveat, bootstrap testing is known to be unreliable for small sample sizes (e.g., $\sim30$ observations \citep{Efron1994}); thus, where reporting bootstrap results, we indicate where this condition is violated.
+Another important subtlety of our normalization approach is that comparator groups should be comprised of non-overlapping partitions.
+Under this condition, sampling is guaranteed to be evenly distributed across the percentile scale (because the percentile scale is consistently defined in terms of sampled values) --- ensuring the validity of comparing against null expectation of the 50th percentile as the group mean.
 
 To account for intrinsic uncertainty in real-world biological data,
-\citet{BonettiFranceschi2024phylogenetic} take several further quality-control steps in excluding data beyond a fixed minimum clade size threshold and excluding genome regions known to be associated with sequencing anomolies from consideration.
-However --- given that we are using perfect-fidelity data from a digital model --- for the sake of simplicity and to maximize statustucak power of our datasets, we omit these adjustments.
+\citet{BonettiFranceschi2024phylogenetic} take several further quality-control steps by excluding the following from consideration: 1) data beyond a fixed minimum clade size threshold, and 2) genome regions known to be associated with sequencing anomalies.
+However --- given that we are using perfect-fidelity data from a digital model --- for the sake of simplicity and to maximize statistical power of our datasets, we omit these adjustments.
 
 \subsection{Mutation Frequency Screen Methodology}
 
-A variety of methods exist for statistical tests of elevated mutation frequency \citep{TODO}.
-As we found that the primary challenge in accomplishing effective detection of multilevel selection effects is in testing for group-level fitness effects (e.g., transmission efficacy) is the fitness effect component of the screen, we adopted a simple approach to screening mutation frequency for the purposes of present work.
+A variety of statistical tests exist to identify elevated mutation frequency \citep{mcdonaldAdaptiveProteinEvolution1991, narumComparisonFSTOutlier2011, yangStatisticalPropertiesBranchSite2011}.
+As we found that the primary challenge in detecting multilevel selection effects is in testing for group-level fitness effects (e.g., transmission efficacy), we adopted a simple approach to screening mutation frequency for the purposes of present work.
 
-To begin, we generated a simple calculation of baseline mutation frequency $\lambda$ as the mean number of net observed non-focal MDCs per instantiatwd non-focal background site.
-To assess the significance of the observed mutation count in deviating from this expectation, we applied the Poisson survival function to calculate the probability of observing an equivalent or more extreme mutation count under the assumption of mutations being distributed $\sim \mathsf{Pois}(\lambda)$.
+To begin, we performed a simple calculation of baseline mutation frequency $\lambda$ as the mean number of net observed non-focal MDCs per instantiated non-focal background site.
+To assess the significance of the observed mutation count's deviation from this expectation, we applied the Poisson survival function to calculate the probability of observing an equivalent or more extreme mutation count under the assumption of mutations being distributed $\sim \mathsf{Pois}(\lambda)$.
 
-\subsection{Covasim Agent-based Epidemiology Simulation Platform}
+\subsection{Covasim Simulation Platform}
 
 \input{fig/covasim-schematic}
 
-We chose to work with an epidemiological model system for three reasons: (1) to leverage the stochastic dynamics and strong temporaql fluctuations inherent among evolutionary dynamics of pathogens to create a challenging testbed for statistical methodology explored, (2) due to the important practical implications of understanding multilevel selection in this realm to understanding the evolution of virulence, and (3) for comparability with original work by \citet{BonettiFranceschi2024phylogeneti}, who applied their analysis to a 1.2 million-sequence Covid-19 dataset from the United Kingdom \citep{TODOdataset}.
+We chose to work with an epidemiological model system for three reasons: (1) to leverage the stochastic dynamics and strong temporal fluctuations inherent among evolutionary dynamics of pathogens to create a challenging testbed for this statistical methodology, (2) due to the important practical implications of understanding the role of multilevel selection in the evolution of virulence, and (3) for comparability with original work by \citet{BonettiFranceschi2024phylogenetic}, who applied their analysis to a 1.2 million-sequence Covid-19 dataset obtained from the COVID-19 Genomics UK (COG-UK) Consortium \citep{marjanovic2022covid}.
 
 \subsubsection{Covasim Platform}
 
@@ -123,72 +116,73 @@ We leveraged a pre-existing agent-based epidemiological modeling platform called
 This software includes features to capture a variety of aspects of relevant real-world factors, including the structure of social networks within a population (e.g., school, work), development of host immunity, and public health responses (quarantine policy, community containment efforts, etc.).
 
 For our experiments, we used population sizes of either 200,000 or 1.2 million agents.
-We simulated a 650 day window between TODO and TODO.
-Five replicate simulation trials were conducted per observation, except for some large-scale simulation trials which observations were downsized to comprise three replicates.
+% https://github.com/mmore500/multilevel-selection-concept/blob/6c77a8afbeb760cd8fa878c6fec8fbd8766aaddb/pylib/_make_cv_sim_uk.py
+We simulated a 650-day window between Jan 1, 2020 and Oct 31, 2021.
+Five replicate simulation trials were conducted per observation, except for some large-scale simulation trials for which we only ran three replicates.
 
-For the most part, we used default covasim parameter settings, although we chose a faster decay rate for host immunity to prevent extinctions of viral populations.
-For simulations configured to test robustness to environmental variability, we used an existing suite of configurations emulating the timeline of vaccination rollouts and public health policies within the United Kingdom.
-Experiments assumed the wildtype TODO strain, except for multi-strain experiments which additionally incorporate extrinsic imports of alpha, beta, and gamma strains at the approximate dates where they were first observed in the course of the Covid-19 pandemic.
-Due to practical limitations, a baseline population size of 200,000 agents was used in most cases.
-However, to assess the effect of dataset size on detection sensitivity, some experiments were replicated with a larger population size of 1.2 million agents.
+For the most part, we used default Covasim parameter settings, although we applied the fast-waning immunity configuration described in Covasim documentation to prevent extinctions of viral populations.
+For simulations configured to test robustness to environmental variability, we used an existing suite of configurations emulating the timeline of vaccination rollouts and public health policies within the United Kingdom \citep{Panovska2025Covid19Analysis}.
+Experiments were parameterized to model the original Wuhan Covid-19 strain, except for multi-strain experiments, which additionally imported the alpha, beta, and gamma strains at the approximate dates where they were first observed in the course of the Covid-19 pandemic.
+Due to practical limitations, we used a baseline population size of 200,000 agents in most cases.
+However, to assess the effect of dataset size on detection sensitivity, we replicated some experiments with a larger population size of 1.2 million agents.
 
-Although the covasim framework included capability for representing a fixed number of predefined strains arising at predetermined timepoints, in order to model the \textit{in situ} evolution of genetic traits we had to extend the existing code with a within-host evolution model, which we describe next.
+Although the Covasim framework included capability for representing a fixed number of predefined strains arising at predetermined timepoints, in order to model the \textit{in situ} evolution of genetic traits we had to extend the existing code with a within-host evolution model, which we describe next.
 
 \subsubsection{Within-host Model}
 
-We used an aggregate-based model to track the composition of within-host viroid populations for each member of the covasim population.
-For this purpose, we inspected covasim state between one-day update steps to identify all new infections.
-For each new infection, we seeded an aggregate count corresponding to the infecting genotype unique to the infected population member --- inferred from covasim's strain label for the infection.
-Then, as day cycles elapsed in the primary state, aggregate genotype counts were grown through a doubling process up to a fixed within-host carrying capacity.
+We used an aggregate-based model to track the composition of within-host viral populations for each member of the Covasim population.
+For this purpose, we inspected Covasim state between one-day update steps to identify all new infections.
+Within each infected host, we seeded an aggregate count for copies of the infecting genotype --- inferred from Covasim's strain label for the infection.
+Then, as day cycles elapsed in the primary model, aggregate genotype counts grew through a doubling process up to a fixed within-host carrying capacity.
 With each doubling, counts of mutants to other possible genotypes were drawn from a binomial distribution.
 These mutant counts were subtracted from their source genotype aggregate and added to their destination genotype aggregate.
-In this manner, we sought to capture Luria–Delbruck dybamics where mutants that arose by chance early in an infection had a greater impact on population composition than mutants arising later on \citep{TODO}.
+In this manner, we sought to capture Luria–Delbruck dynamics where mutants that arose by chance early in an infection had a greater impact on population composition than mutants arising later on \citep{luriaMutationsBacteriaVirus1943}.
 To tie within-host dynamics back to the Covasim model of host-to-host transmission, we sampled a genotype at random from each active within-host population and wrote its corresponding strain identifier back to Covasim's ``active strain'' identifier for its host.
 This process was performed between each daily update cycle, allowing the genetic composition of transmission events to fluctuate stochastically over time based on the composition of the within-host population.
 
-We parameterized the per-replication mutation rate, within-host carrying capacity, and doubling rate of within-host viral growth as TODO, TODO, and TODO respectiv ely based on reference figures from empirical literature \citep{TODO,TODO,TODO}.
+We parameterized the per-replication mutation rate, within-host carrying capacity, and doubling rate of within-host viral growth as $2\times10^{-6}$ probability per site, $10^{10}$ viral particles, and 4 hours respectively based on reference figures from empirical literature \citep{Markov2023,Sender2021,Gunawardana2022}.
 
 In our experiments, we defined a ``focal'' genome site, which was used as the target for testing screening methods.
-However, evaluations also required additional neutral ``background'' genome sites in order to assess capabilities of screens to selectively identify the properties of the focal site.
-In order to ensure statistical interchangeabulity between focal sites and background sites, we used additional instantiations of the aggregate within-host model to simulate the genetic composition of the background sites; the process by which mutations in background sites arose was therefore identical to that for fitness-neutral configurations of the focal site.
+However, evaluations also required additional neutral ``background'' genome sites in order to assess the capabilities of screens to selectively identify the properties of the focal site.
+In order to ensure statistical interchangeability between focal sites and background sites, we used additional instantiations of the aggregate within-host model to simulate the genetic composition of the background sites; the process by which mutations in background sites arose was therefore identical to that for fitness-neutral configurations of the focal site.
 
-One limitation of this approach for generating background mutation data is in not capturing linkage effects between mutations on the time scale of within-host evolution, as the genetic composition of each site based on within-host growth fluctuates independently within our model.
+One limitation of this approach for generating background mutation data is that it does not capture linkage effects between mutations on the time scale of within-host evolution, as the genetic composition of each site fluctuates independently during within-host growth in our model.
 We also do not capture various nuances of true nucleotide sequence data, such as site-specific biases in mutational rates or outcomes.
-As final limitation is in the number of background sites simulated.
-Due to practical limitations, for our experiments it was feasible to simulate 50 total sites for smaller-scale 200,000-agent trials and 20 total sites for larger-scale 1.2 million-agent simulations.
-Although higher site counts inherently increase the amount of sensitivity and selectivity necessary to reliably detect a likely minority of sites under multilevel selection, we expect that a richer corpus of background sites would also confer some benefit a richer set of comparator MDCs and thus enabling finer-grained normalization of clade fitness statistics.
+A final limitation is in the number of background sites simulated.
+Due to practical limitations, for our experiments, it was feasible to simulate 50 total sites for smaller-scale 200,000-agent trials and 20 total sites for larger-scale 1.2 million-agent simulations.
+Although higher site counts inherently increase the amount of sensitivity and selectivity necessary to reliably detect sites under multilevel selection, we expect that more sites would support a richer corpus of comparator MDCs, which in turn would enable finer-grained normalization of clade fitness statistics.
 
 \subsubsection{Phylogeny Tracking}
 
 We used Covasim's infection log feature as the basis for collecting phylogenetic data from our experiments.
 Thus, our resolution in tracking pathogen ancestry was limited to the resolution of events where the pathogen transmitted between hosts.
-We did not conduct supplemental within-host phylogeny tracking, as viroid level ancestry would be poorly defined in our aggregate-based within-host model.
-However, we did record strain/genotype on the basis of a sampled strain/genotype from the within-host population at day 8 of infection, rather than the founding strain, to better reflect the character of data generated in real-world sampling.
+We did not conduct supplemental within-host phylogeny tracking, as virus particle-level ancestry would be poorly defined in our aggregate-based within-host model.
+However, we did record strain/genotype on the basis of a sampled strain/genotype from the within-host population at day 8 of infection, rather than the founding strain, to better reflect the character of data generated in real-world sampling (because a sample is unlikely to be taken from a real-world patient immediately upon infection).
 
 To adjust the topology of our synthetic dataset to more closely match the characteristics of biological data, we interpreted all sampled genomes as tip nodes, even if they were an inner node in the transmission tree.
-We accomplished this by applying a transform where all inner nodes were copied into their own child list as an additional single-taxon tip branch.
-In future work, it will be important to explore the impact of limitations in phylogeny resolution and reliability on the performance of MLS-detection methods.
+We accomplished this goal by applying a transform where all inner nodes were copied into their own child list as an additional single-taxon tip branch.
+In future work, it will be important to explore the impact of limitations in phylogeny resolution and reliability on the performance of MLS detection methods.
 
 \subsection{Treatment Conditions}
 
-To assess the capability of evaluated methodology in descriminating the signature of multilevel selection effects from other scenarios, we compared screening outcomes across a set of three ground-truth configurations for the fitness effect of our focal genome site:
-\begin{enumerate}
-\item Sben/Gdel: true multilevel selection dynamics,
-\item Sben/Gneu: within-host growth rate advantage,
-\item Sneu/Gneu: neutral dynamics,
+To assess the capability of evaluated methodology in discriminating the signature of multilevel selection effects from other scenarios, we compared screening outcomes across a set of three ground-truth configurations for the fitness effect of our focal genome site:
+\begin{enumerate}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+\item \textbf{Sben/Gdel}: true multilevel selection dynamics,
+\item \textbf{Sben/Gneu}: within-host growth rate advantage,
+\item \textbf{Sneu/Gneu}: neutral dynamics,
 \end{enumerate}
 
-Under ``Sben'' (``self beneficial'') conditions, mutations to the focal site confer an advantage to within-host growth rate.
+Under ``Sben'' (``self-beneficial'') conditions, mutations to the focal site confer an advantage to within-host growth rate.
 Under ``Gdel'' conditions (``group deleterious''), mutations to the focal site confer a penalty to the between-host transmission rate in the Covasim simulation layer.
-For our non-neutral treatments, considered a spread of three effect sizes: 1.1x, 1.3x, and 2x.
+For our non-neutral treatments, we considered a spread of three effect sizes: 1.1x, 1.3x, and 2x.
 
-Given our objective assess capability of proposed methods to detect multilevel selection tradeoffs, we did not include ``Gben'' (group beneficial) focal site properties within our survey, as these are easier to differentiate compared to Gneu conditions and typically leave well-understood signatures of adaptive sweeps within phylogenetic history.
-We did, however, assess the efficacy of multilevel selection detection within a broader context of adaptive evolution, via a multi-strain Covasim configuration (discussed next).
+Given our objective to assess the capability of the proposed method to detect multilevel selection tradeoffs, we did not include ``Gben'' (group beneficial) focal site properties within our survey, as these are easier to differentiate compared to Gneu conditions and typically leave well-understood signatures of adaptive sweeps within phylogenetic history.
+We did, however, assess the efficacy of multilevel selection detection within a broader context of adaptive evolution, via a multi-strain Covasim configuration.
 
 % \subsubsection{Robustness Assessment}
 
 %In our experiments, we additionally sought to assess the robustness of multilevel selection detection across a set of possible complicating factors.
-%Under the ``vanilla'' baseline configuration of Covasim used for our primary set of experiments, social network structure and agent behavior remained consistent across simulated time (although population-level immunity levels did fluctuate as population members encountered infections), and adaptive evolution of transmission cbaracteristics did not occur.
+%Under the ``vanilla'' baseline configuration of Covasim used for our primary set of experiments, social network structure and agent behavior remained consistent across simulated time (although population-level immunity levels did fluctuate as population members encountered infections), and adaptive evolution of transmission characteristics did not occur.
 
 % To assess the effect of dataset size on detection sensitivity, we also replicated some experiments with larger population sizes of 1.2 million agents (versus the baseline population size of 200,000 agents).
 
@@ -200,18 +194,8 @@ We did, however, assess the efficacy of multilevel selection detection within a 
 %  \item virulence (not considered/modeled directly)
 % \end{itemize}
 
-\subsubsection{Simulation Dynamics}
-
-Under baseline conditions, net case counts of TODO were observed over the two-year simulation window among the population of 200,000 agents.
-Under Gneu/Sneu treatments, for the focal mutation of interest on average TODO MDCs comprising TODO mutant samples were observed.
-For Gben/Sneu treatments, TODO/TODO/TODO focal MDCs were observed across effect size strengths, comprising TODO/TODO/TODO total focal mutants.
-For Gben/Sdel treatments, TODO/TODO/TODO focal MDCs were observed across effect size strengths, comprising TODO/TODO/TODO total focal mutants.
-Supplementary Figure \ref{fig:phylos-vanilla-example} shows sample pathogen phylogenies observed in baseline condition experiments.
-
-Under configurations modeling UK vaccination rollout and public health measures, case counts were much lower --- on average, TODO.
-Likewise, with the introduction of high-transmissibility strains in our multistrain experiments, case counts were higher, on average TODO.
-
-To characterize , we report further details on average case counts and focal MDC/mutant counts in our supplementary material \citep{TODO}.
+We report details on average case counts and focal MDC/mutant counts across surveyed treatment conditions in our supplementary material \citep{ExtendingPhylogenybasedMethod2025}.
+Notably, simulation conditions incorporating public health responses generated substantially smaller pathogen phylogeny datasets, on account of reduced viral prevalence.
 
 \subsection{Software and Data Availability} \label{sec:materials}
 

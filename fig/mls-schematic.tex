@@ -1,23 +1,26 @@
 % graphics source https://docs.google.com/presentation/d/111HE56Ow0miZApHPBa18eyPAw8cdslZyBCavoWMix8E
 \begin{figure}
 
-\begin{minipage}{\linewidth}
+\begin{minipage}{0.5\linewidth}
 \centering
-\includegraphics[width=0.6\linewidth]{img/mls-schematic-mdc}
+\includegraphics[width=\linewidth]{img/mls-schematic-mdc}
 \subcaption{mutation-defined clades}
 \label{fig:mls-schematic:mdc}
-\end{minipage}
-
+\end{minipage}%
+\begin{minipage}{0.5\linewidth}
 \centering
-\begin{minipage}{0.49\linewidth}
-\includegraphics[width=\linewidth]{img/mls-schematic-mutfreq}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=0.8\linewidth]{img/mls-schematic-mutfreq}
 \subcaption{mutation frequency}
 \label{fig:mls-schematic:mutfreq}
 \end{minipage}
-\begin{minipage}{0.49\linewidth}
-\includegraphics[width=\linewidth]{img/mls-schematic-fiteffect}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=0.8\linewidth]{img/mls-schematic-fiteffect}
 \subcaption{fitness effect}
 \label{fig:mls-schematic:fiteffect}
+\end{minipage}
 \end{minipage}
 
 \caption{\textbf{Schematic of using the proposed multi-level selection method to screen for MLS on an example mutation of interest.} a) The phylogeny for the mutation of interest. In this case, the mutation arises twice (indicated by stars), producing two mutation-defined clades (highlighted in yellow). Red circles indicate leaf taxa with the mutation. b) Mutations under MLS should be observed more often than expected by chance. C) Mutations under MLS should go on to produce smaller clades than expected by chance.}
