@@ -334,7 +334,7 @@ def draw_biopyhlo_vertical(
         )
         # Add node/taxon labels
         label = label_func(clade)
-        if label not in (None, clade.__class__.__name__):
+        if label and label not in (None, clade.__class__.__name__):
             axes.text(
                 y_here,
                 x_here,
