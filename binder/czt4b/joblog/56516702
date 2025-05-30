@@ -1,0 +1,13 @@
+/mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-18-vanilla-big-run_covasim/2025-05-20/__0/a=run_covaphastsim+replicate=ad386b87-ed0d-858f-9e58-8c6542303f70.pqt
+/mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-18-vanilla-big-run_covasim/2025-05-20/__1/a=run_covaphastsim+replicate=803eeaa6-b866-88c9-a38f-8d696b90d4d9.pqt
+/mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-18-vanilla-big-run_covasim/2025-05-20/__2/a=run_covaphastsim+replicate=8972abb3-bbfd-8063-96c7-3e92aa0f32db.pqt
+/mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-18-vanilla-big-run_covasim/2025-05-20/__3/a=run_covaphastsim+replicate=50a8d3f5-c51e-80dc-a0b2-a0bca9963b31.pqt
+/mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-18-vanilla-big-run_covasim/2025-05-20/__4/a=run_covaphastsim+replicate=e86726db-1b73-869e-9274-59bca767b1d1.pqt
+/mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-18-vanilla-big-run_covasim/2025-05-20/__5/a=run_covaphastsim+replicate=0069ad39-6de5-8b7a-9cf6-3206f83b9372.pqt
+0it [00:00, ?it/s]6it [00:00, 902.87it/s]
+total 1444544
+-rw-r----- 1 mmore500 beacon 715806048 May 20 04:15 a=jobarchive+date=2025-05-20+job=2025-05-18-vanilla-big-run_covasim+ext=.tar.gz
+-rw-r----- 1 mmore500 beacon 832263559 May 20 04:15 a=result+date=2025-05-20+job=2025-05-18-vanilla-big-run_covasim+ext=.pqt
+1.4G	/mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-18-vanilla-big-run_covasim/2025-05-20/jobresult
+   - archive joblog
+~/scratch/multilevel-selection-concept/2025-05-18-vanilla-big-run_covasim/2025-05-20 ~/scratch/multilevel-selection-concept/2025-05-18-vanilla-big-run_covasim/2025-05-20/__56516702

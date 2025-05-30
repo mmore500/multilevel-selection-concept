@@ -1,0 +1,23 @@
+initialization telemetry ------------------------------------ 3
+SOURCE_REVISION 2604bfc930788dd958dbbc4ae3ebdf9c2de46d9c
+BATCHDIR /mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-17-multistrain-run_covasim/2025-05-20
+cc SLURM script --------------------------------------------- 3
+JOBSCRIPT /mnt/home/mmore500/jobscript/56520005
+cc job log -------------------------------------------------- 3
+JOBLOG /mnt/home/mmore500/joblog/56520005
+setup JOBDIR ------------------------------------------------ 3
+JOBDIR /mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-17-multistrain-run_covasim/2025-05-20/__3
+PWD /mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-17-multistrain-run_covasim/2025-05-20/__3
+job telemetry ----------------------------------------------- 3
+source SLURM_JOB_ID nojid
+current SLURM_JOB_ID 56520005
+SLURM_ARRAY_TASK_ID 3
+hostname amr-204
+date Tue May 20 06:28:32 AM EDT 2025
+module setup ------------------------------------------------ 3
+python3.10 /opt/software-current/2023.06/x86_64/generic/software/Python/3.10.8-GCCcore-12.2.0/bin/python3.10
+python3.10 --version Python 3.10.8
+singularity /usr/bin/singularity
+singularity --version singularity-ce version 4.1.2-jammy
+setup dependencies- ----------------------------------------- 5
+/var/lib/slurmd/job56520005/slurm_script: line 72: /mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-17-multistrain-run_covasim/2025-05-20/_jobenv/bin/activate: No such file or directory

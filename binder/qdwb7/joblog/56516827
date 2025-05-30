@@ -1,0 +1,2995 @@
+initialization telemetry ------------------------------------ 5
+SOURCE_REVISION 2604bfc930788dd958dbbc4ae3ebdf9c2de46d9c
+BATCHDIR /mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-17-multistrain-run_covasim/2025-05-20
+cc SLURM script --------------------------------------------- 5
+JOBSCRIPT /mnt/home/mmore500/jobscript/56516827
+cc job log -------------------------------------------------- 5
+JOBLOG /mnt/home/mmore500/joblog/56516827
+setup JOBDIR ------------------------------------------------ 5
+JOBDIR /mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-17-multistrain-run_covasim/2025-05-20/__24
+PWD /mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-17-multistrain-run_covasim/2025-05-20/__24
+job telemetry ----------------------------------------------- 5
+source SLURM_JOB_ID nojid
+current SLURM_JOB_ID 56516827
+SLURM_ARRAY_TASK_ID 24
+hostname vim-001
+date Tue May 20 00:55:37 EDT 2025
+module setup ------------------------------------------------ 5
+python3.10 /opt/software-current/2023.06/x86_64/intel/haswell/software/Python/3.10.8-GCCcore-12.2.0/bin/python3.10
+python3.10 --version Python 3.10.8
+singularity /usr/bin/singularity
+singularity --version singularity-ce version 4.1.2-jammy
+setup dependencies- ----------------------------------------- 8
+Using Python 3.10.8 environment at: /mnt/home/mmore500/scratch/multilevel-selection-concept/2025-05-17-multistrain-run_covasim/2025-05-20/_jobenv
+joinem==0.9.3
+more-itertools==10.7.0
+numpy==2.2.6
+pandas==2.2.3
+pip==25.1.1
+polars==1.29.0
+pyarrow==16.1.0
+python-dateutil==2.9.0.post0
+pytz==2025.2
+scipy==1.15.3
+setuptools==80.7.1
+six==1.17.0
+tqdm==4.67.1
+tzdata==2025.2
+uv==0.7.6
+wheel==0.45.1
+lscpu ------------------------------------------------------- 8
+Architecture:                         x86_64
+CPU op-mode(s):                       32-bit, 64-bit
+Address sizes:                        46 bits physical, 48 bits virtual
+Byte Order:                           Little Endian
+CPU(s):                               64
+On-line CPU(s) list:                  0-63
+Vendor ID:                            GenuineIntel
+Model name:                           Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+CPU family:                           6
+Model:                                63
+Thread(s) per core:                   1
+Core(s) per socket:                   16
+Socket(s):                            4
+Stepping:                             4
+CPU max MHz:                          2500.0000
+CPU min MHz:                          1200.0000
+BogoMIPS:                             4987.93
+Flags:                                fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+Virtualization:                       VT-x
+L1d cache:                            2 MiB (64 instances)
+L1i cache:                            2 MiB (64 instances)
+L2 cache:                             16 MiB (64 instances)
+L3 cache:                             180 MiB (4 instances)
+NUMA node(s):                         4
+NUMA node0 CPU(s):                    0-15
+NUMA node1 CPU(s):                    16-31
+NUMA node2 CPU(s):                    32-47
+NUMA node3 CPU(s):                    48-63
+Vulnerability Gather data sampling:   Not affected
+Vulnerability Itlb multihit:          KVM: Mitigation: VMX disabled
+Vulnerability L1tf:                   Mitigation; PTE Inversion; VMX conditional cache flushes, SMT disabled
+Vulnerability Mds:                    Mitigation; Clear CPU buffers; SMT disabled
+Vulnerability Meltdown:               Mitigation; PTI
+Vulnerability Mmio stale data:        Mitigation; Clear CPU buffers; SMT disabled
+Vulnerability Reg file data sampling: Not affected
+Vulnerability Retbleed:               Not affected
+Vulnerability Spec rstack overflow:   Not affected
+Vulnerability Spec store bypass:      Mitigation; Speculative Store Bypass disabled via prctl and seccomp
+Vulnerability Spectre v1:             Mitigation; usercopy/swapgs barriers and __user pointer sanitization
+Vulnerability Spectre v2:             Mitigation; Retpolines; IBPB conditional; IBRS_FW; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected
+Vulnerability Srbds:                  Not affected
+Vulnerability Tsx async abort:        Mitigation; Clear CPU buffers; SMT disabled
+lshw -------------------------------------------------------- 8
+/var/lib/slurmd/job56516827/slurm_script: line 79: lshw: command not found
+cpuinfo ----------------------------------------------------- 8
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 0
+cpu cores	: 16
+apicid		: 0
+initial apicid	: 0
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 1
+cpu cores	: 16
+apicid		: 2
+initial apicid	: 2
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 2
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 2
+cpu cores	: 16
+apicid		: 4
+initial apicid	: 4
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 3
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 3
+cpu cores	: 16
+apicid		: 6
+initial apicid	: 6
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 4
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 4
+cpu cores	: 16
+apicid		: 8
+initial apicid	: 8
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 5
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 8
+cpu cores	: 16
+apicid		: 16
+initial apicid	: 16
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 6
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 9
+cpu cores	: 16
+apicid		: 18
+initial apicid	: 18
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 7
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 10
+cpu cores	: 16
+apicid		: 20
+initial apicid	: 20
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 8
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 11
+cpu cores	: 16
+apicid		: 22
+initial apicid	: 22
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 9
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 16
+cpu cores	: 16
+apicid		: 32
+initial apicid	: 32
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 10
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 17
+cpu cores	: 16
+apicid		: 34
+initial apicid	: 34
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 11
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 18
+cpu cores	: 16
+apicid		: 36
+initial apicid	: 36
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 12
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 20
+cpu cores	: 16
+apicid		: 40
+initial apicid	: 40
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 13
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 24
+cpu cores	: 16
+apicid		: 48
+initial apicid	: 48
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 14
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 25
+cpu cores	: 16
+apicid		: 50
+initial apicid	: 50
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 15
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 0
+siblings	: 16
+core id		: 27
+cpu cores	: 16
+apicid		: 54
+initial apicid	: 54
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4987.93
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 16
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 0
+cpu cores	: 16
+apicid		: 64
+initial apicid	: 64
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 17
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 1
+cpu cores	: 16
+apicid		: 66
+initial apicid	: 66
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 18
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 2
+cpu cores	: 16
+apicid		: 68
+initial apicid	: 68
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 19
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 3
+cpu cores	: 16
+apicid		: 70
+initial apicid	: 70
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 20
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 4
+cpu cores	: 16
+apicid		: 72
+initial apicid	: 72
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 21
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 8
+cpu cores	: 16
+apicid		: 80
+initial apicid	: 80
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 22
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 9
+cpu cores	: 16
+apicid		: 82
+initial apicid	: 82
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 23
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 10
+cpu cores	: 16
+apicid		: 84
+initial apicid	: 84
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 24
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 11
+cpu cores	: 16
+apicid		: 86
+initial apicid	: 86
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 25
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 16
+cpu cores	: 16
+apicid		: 96
+initial apicid	: 96
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 26
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 17
+cpu cores	: 16
+apicid		: 98
+initial apicid	: 98
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 27
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 18
+cpu cores	: 16
+apicid		: 100
+initial apicid	: 100
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 28
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 20
+cpu cores	: 16
+apicid		: 104
+initial apicid	: 104
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 29
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 24
+cpu cores	: 16
+apicid		: 112
+initial apicid	: 112
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 30
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 25
+cpu cores	: 16
+apicid		: 114
+initial apicid	: 114
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 31
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 1
+siblings	: 16
+core id		: 27
+cpu cores	: 16
+apicid		: 118
+initial apicid	: 118
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4989.94
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 32
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 0
+cpu cores	: 16
+apicid		: 128
+initial apicid	: 128
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 33
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 1
+cpu cores	: 16
+apicid		: 130
+initial apicid	: 130
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 34
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 2
+cpu cores	: 16
+apicid		: 132
+initial apicid	: 132
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 35
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 3
+cpu cores	: 16
+apicid		: 134
+initial apicid	: 134
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 36
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 4
+cpu cores	: 16
+apicid		: 136
+initial apicid	: 136
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 37
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.967
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 8
+cpu cores	: 16
+apicid		: 144
+initial apicid	: 144
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 38
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 9
+cpu cores	: 16
+apicid		: 146
+initial apicid	: 146
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 39
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 10
+cpu cores	: 16
+apicid		: 148
+initial apicid	: 148
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 40
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 11
+cpu cores	: 16
+apicid		: 150
+initial apicid	: 150
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 41
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 16
+cpu cores	: 16
+apicid		: 160
+initial apicid	: 160
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 42
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 17
+cpu cores	: 16
+apicid		: 162
+initial apicid	: 162
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 43
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 18
+cpu cores	: 16
+apicid		: 164
+initial apicid	: 164
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 44
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 20
+cpu cores	: 16
+apicid		: 168
+initial apicid	: 168
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 45
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1197.104
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 24
+cpu cores	: 16
+apicid		: 176
+initial apicid	: 176
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 46
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 25
+cpu cores	: 16
+apicid		: 178
+initial apicid	: 178
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 47
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 2
+siblings	: 16
+core id		: 27
+cpu cores	: 16
+apicid		: 182
+initial apicid	: 182
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.14
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 48
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 0
+cpu cores	: 16
+apicid		: 192
+initial apicid	: 192
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 49
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 1
+cpu cores	: 16
+apicid		: 194
+initial apicid	: 194
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 50
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 2
+cpu cores	: 16
+apicid		: 196
+initial apicid	: 196
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 51
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 3
+cpu cores	: 16
+apicid		: 198
+initial apicid	: 198
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 52
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.963
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 4
+cpu cores	: 16
+apicid		: 200
+initial apicid	: 200
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 53
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 8
+cpu cores	: 16
+apicid		: 208
+initial apicid	: 208
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 54
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 9
+cpu cores	: 16
+apicid		: 210
+initial apicid	: 210
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 55
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 10
+cpu cores	: 16
+apicid		: 212
+initial apicid	: 212
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 56
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 11
+cpu cores	: 16
+apicid		: 214
+initial apicid	: 214
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 57
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.965
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 16
+cpu cores	: 16
+apicid		: 224
+initial apicid	: 224
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 58
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 17
+cpu cores	: 16
+apicid		: 226
+initial apicid	: 226
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 59
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 18
+cpu cores	: 16
+apicid		: 228
+initial apicid	: 228
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 60
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 20
+cpu cores	: 16
+apicid		: 232
+initial apicid	: 232
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 61
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1200.000
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 24
+cpu cores	: 16
+apicid		: 240
+initial apicid	: 240
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 62
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 1197.102
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 25
+cpu cores	: 16
+apicid		: 242
+initial apicid	: 242
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+processor	: 63
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 63
+model name	: Intel(R) Xeon(R) CPU E7-8867 v3 @ 2.50GHz
+stepping	: 4
+microcode	: 0x1a
+cpu MHz		: 2493.964
+cache size	: 46080 KB
+physical id	: 3
+siblings	: 16
+core id		: 27
+cpu cores	: 16
+apicid		: 246
+initial apicid	: 246
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 15
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin ssbd ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm xsaveopt cqm_llc cqm_occup_llc dtherm arat pln pts md_clear flush_l1d
+vmx flags	: vnmi preemption_timer posted_intr invvpid ept_x_only ept_ad ept_1gb flexpriority apicv tsc_offset vtpr mtf vapic ept vpid unrestricted_guest vapic_reg vid ple shadow_vmcs
+bugs		: cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs taa itlb_multihit mmio_stale_data
+bogomips	: 4990.06
+clflush size	: 64
+cache_alignment	: 64
+address sizes	: 46 bits physical, 48 bits virtual
+power management:
+
+do work ----------------------------------------------------- 8
+CONTAINER_URI docker://ghcr.io/mmore500/multilevel-selection-concept@sha256:aa8cedbeaa38f83a57239bb7d0cf0275b98bca5a31f93096ef25ddbda2dbc52e
+INFO:    Using cached SIF image
+Covasim 3.1.6 (2024-01-28) — © 2020-2024 by IDM
+{'SLURM_ARRAY_JOB_ID': 56516680,
+ 'SLURM_ARRAY_TASK_COUNT': 35,
+ 'SLURM_ARRAY_TASK_ID': 24,
+ 'SLURM_ARRAY_TASK_MAX': 34,
+ 'SLURM_ARRAY_TASK_MIN': 0,
+ 'SLURM_JOB_ID': 56516827,
+ 'cfg_make_cv_sim_recipe': 'make_cv_sim_vanilla',
+ 'cfg_make_wt_specs_recipe': 'make_wt_specs_uk',
+ 'cfg_maxseqlen': 49,
+ 'cfg_n_imports_mx': 100,
+ 'cfg_num_mut_sites': 1,
+ 'cfg_p_wt_to_mut': 2e-06,
+ 'cfg_pop_size': 200000,
+ 'cfg_refseqs': 'https://osf.io/hp25c/download',
+ 'cfg_suffix_mut': "'",
+ 'cfg_suffix_wt': '+',
+ 'replicate_num': 3,
+ 'replicate_uuid': 'ad74839d-9db5-8666-9cba-c8ffc68abfcc',
+ 'trt_eff_size': 1.1,
+ 'trt_mutmx_active_strain_factor': 1.0,
+ 'trt_mutmx_rel_beta': 0.9,
+ 'trt_mutmx_withinhost_r': 1.1,
+ 'trt_name': 'Sben1.1x/Gdel1.1x',
+ 'trt_seed': 24,
+ 'trt_type': 'Sben/Gdel'}
+Initializing sim with 200000 people for 650 days
+enter log_context_duration for sim.run
+  Running 2020-03-01 ( 0/650) (0.01 s)  ———————————————————— 0%
+2025-05-20 00:55:52 INFO     num_infections focal = 500
+2025-05-20 00:55:53 INFO     num_infections bkgrnd = 500
+2025-05-20 00:56:22 INFO     num_infections focal = 0
+2025-05-20 00:56:23 INFO     num_infections bkgrnd = 0
+2025-05-20 00:56:49 INFO     num_infections focal = 0
+2025-05-20 00:56:50 INFO     num_infections bkgrnd = 0
+2025-05-20 00:57:17 INFO     num_infections focal = 23
+2025-05-20 00:57:18 INFO     num_infections bkgrnd = 23
+2025-05-20 00:57:48 INFO     num_infections focal = 83
+2025-05-20 00:57:49 INFO     num_infections bkgrnd = 83
+2025-05-20 00:58:15 INFO     num_infections focal = 156
+2025-05-20 00:58:16 INFO     num_infections bkgrnd = 156
+2025-05-20 00:58:44 INFO     num_infections focal = 178
+2025-05-20 00:58:45 INFO     num_infections bkgrnd = 178
+2025-05-20 00:59:15 INFO     num_infections focal = 184
+2025-05-20 00:59:16 INFO     num_infections bkgrnd = 184
+2025-05-20 00:59:49 INFO     num_infections focal = 179
+2025-05-20 00:59:50 INFO     num_infections bkgrnd = 179
+2025-05-20 01:00:21 INFO     num_infections focal = 245
+2025-05-20 01:00:22 INFO     num_infections bkgrnd = 245
+  Running 2020-03-11 (10/650) (298.43 s)  ———————————————————— 2%
+2025-05-20 01:00:50 INFO     num_infections focal = 268
+2025-05-20 01:00:51 INFO     num_infections bkgrnd = 268
+2025-05-20 01:01:18 INFO     num_infections focal = 285
+2025-05-20 01:01:19 INFO     num_infections bkgrnd = 285
+2025-05-20 01:01:46 INFO     num_infections focal = 290
+2025-05-20 01:01:47 INFO     num_infections bkgrnd = 290
+2025-05-20 01:02:13 INFO     num_infections focal = 374
+2025-05-20 01:02:14 INFO     num_infections bkgrnd = 374
+2025-05-20 01:02:40 INFO     num_infections focal = 425
+2025-05-20 01:02:41 INFO     num_infections bkgrnd = 425
+2025-05-20 01:03:07 INFO     num_infections focal = 431
+2025-05-20 01:03:09 INFO     num_infections bkgrnd = 431
+2025-05-20 01:03:35 INFO     num_infections focal = 522
+2025-05-20 01:03:36 INFO     num_infections bkgrnd = 522
+2025-05-20 01:04:02 INFO     num_infections focal = 533
+2025-05-20 01:04:03 INFO     num_infections bkgrnd = 533
+2025-05-20 01:04:29 INFO     num_infections focal = 605
+2025-05-20 01:04:30 INFO     num_infections bkgrnd = 605
+2025-05-20 01:04:56 INFO     num_infections focal = 674
+2025-05-20 01:04:57 INFO     num_infections bkgrnd = 674
+  Running 2020-03-21 (20/650) (571.27 s)  ———————————————————— 3%
+2025-05-20 01:05:23 INFO     num_infections focal = 864
+2025-05-20 01:05:24 INFO     num_infections bkgrnd = 864
+2025-05-20 01:05:51 INFO     num_infections focal = 912
+2025-05-20 01:05:52 INFO     num_infections bkgrnd = 912
+2025-05-20 01:06:20 INFO     num_infections focal = 1056
+2025-05-20 01:06:21 INFO     num_infections bkgrnd = 1056
+2025-05-20 01:06:49 INFO     num_infections focal = 1180
+2025-05-20 01:06:50 INFO     num_infections bkgrnd = 1180
+2025-05-20 01:07:26 INFO     num_infections focal = 1244
+2025-05-20 01:07:28 INFO     num_infections bkgrnd = 1244
+2025-05-20 01:08:04 INFO     num_infections focal = 1401
+2025-05-20 01:08:05 INFO     num_infections bkgrnd = 1401
+2025-05-20 01:08:35 INFO     num_infections focal = 1530
+2025-05-20 01:08:36 INFO     num_infections bkgrnd = 1530
+2025-05-20 01:09:07 INFO     num_infections focal = 1815
+2025-05-20 01:09:08 INFO     num_infections bkgrnd = 1815
+2025-05-20 01:09:36 INFO     num_infections focal = 1897
+2025-05-20 01:09:37 INFO     num_infections bkgrnd = 1897
+2025-05-20 01:10:04 INFO     num_infections focal = 2052
+2025-05-20 01:10:06 INFO     num_infections bkgrnd = 2052
+  Running 2020-03-31 (30/650) (882.62 s)  ———————————————————— 5%
+2025-05-20 01:10:35 INFO     num_infections focal = 2331
+2025-05-20 01:10:36 INFO     num_infections bkgrnd = 2331
+2025-05-20 01:11:03 INFO     num_infections focal = 2494
+2025-05-20 01:11:04 INFO     num_infections bkgrnd = 2494
+2025-05-20 01:11:30 INFO     num_infections focal = 2670
+2025-05-20 01:11:31 INFO     num_infections bkgrnd = 2670
+2025-05-20 01:11:58 INFO     num_infections focal = 3033
+2025-05-20 01:11:59 INFO     num_infections bkgrnd = 3033
+2025-05-20 01:12:27 INFO     num_infections focal = 3391
+2025-05-20 01:12:28 INFO     num_infections bkgrnd = 3391
+2025-05-20 01:12:57 INFO     num_infections focal = 3535
+2025-05-20 01:12:58 INFO     num_infections bkgrnd = 3535
+2025-05-20 01:13:26 INFO     num_infections focal = 3778
+2025-05-20 01:13:27 INFO     num_infections bkgrnd = 3778
+2025-05-20 01:13:55 INFO     num_infections focal = 4067
+2025-05-20 01:13:56 INFO     num_infections bkgrnd = 4067
+2025-05-20 01:14:23 INFO     num_infections focal = 4269
+2025-05-20 01:14:24 INFO     num_infections bkgrnd = 4269
+2025-05-20 01:14:51 INFO     num_infections focal = 4645
+2025-05-20 01:14:52 INFO     num_infections bkgrnd = 4645
+  Running 2020-04-10 (40/650) (1168.25 s)  •——————————————————— 6%
+2025-05-20 01:15:20 INFO     num_infections focal = 4972
+2025-05-20 01:15:21 INFO     num_infections bkgrnd = 4972
+2025-05-20 01:15:50 INFO     num_infections focal = 5126
+2025-05-20 01:15:51 INFO     num_infections bkgrnd = 5126
+2025-05-20 01:16:21 INFO     num_infections focal = 5239
+2025-05-20 01:16:22 INFO     num_infections bkgrnd = 5239
+2025-05-20 01:16:54 INFO     num_infections focal = 5639
+2025-05-20 01:16:55 INFO     num_infections bkgrnd = 5639
+2025-05-20 01:17:28 INFO     num_infections focal = 5753
+2025-05-20 01:17:30 INFO     num_infections bkgrnd = 5753
+2025-05-20 01:18:02 INFO     num_infections focal = 5867
+2025-05-20 01:18:03 INFO     num_infections bkgrnd = 5867
+2025-05-20 01:18:33 INFO     num_infections focal = 6110
+2025-05-20 01:18:34 INFO     num_infections bkgrnd = 6110
+2025-05-20 01:19:06 INFO     num_infections focal = 5960
+2025-05-20 01:19:07 INFO     num_infections bkgrnd = 5960
+2025-05-20 01:19:38 INFO     num_infections focal = 5949
+2025-05-20 01:19:39 INFO     num_infections bkgrnd = 5949
+2025-05-20 01:20:10 INFO     num_infections focal = 5983
+2025-05-20 01:20:11 INFO     num_infections bkgrnd = 5983
+  Running 2020-04-20 (50/650) (1489.71 s)  •——————————————————— 8%
+2025-05-20 01:20:42 INFO     num_infections focal = 5717
+2025-05-20 01:20:43 INFO     num_infections bkgrnd = 5717
+2025-05-20 01:21:15 INFO     num_infections focal = 5651
+2025-05-20 01:21:16 INFO     num_infections bkgrnd = 5651
+2025-05-20 01:21:49 INFO     num_infections focal = 5522
+2025-05-20 01:21:50 INFO     num_infections bkgrnd = 5522
+2025-05-20 01:22:24 INFO     num_infections focal = 5444
+2025-05-20 01:22:26 INFO     num_infections bkgrnd = 5444
+2025-05-20 01:22:59 INFO     num_infections focal = 5158
+2025-05-20 01:23:00 INFO     num_infections bkgrnd = 5158
+2025-05-20 01:23:36 INFO     num_infections focal = 4994
+2025-05-20 01:23:37 INFO     num_infections bkgrnd = 4994
+2025-05-20 01:24:12 INFO     num_infections focal = 4787
+2025-05-20 01:24:13 INFO     num_infections bkgrnd = 4787
+2025-05-20 01:24:46 INFO     num_infections focal = 4374
+2025-05-20 01:24:47 INFO     num_infections bkgrnd = 4374
+2025-05-20 01:25:19 INFO     num_infections focal = 4331
+2025-05-20 01:25:20 INFO     num_infections bkgrnd = 4331
+2025-05-20 01:25:54 INFO     num_infections focal = 3983
+2025-05-20 01:25:55 INFO     num_infections bkgrnd = 3983
+  Running 2020-04-30 (60/650) (1836.09 s)  •——————————————————— 9%
+2025-05-20 01:26:28 INFO     num_infections focal = 3886
+2025-05-20 01:26:29 INFO     num_infections bkgrnd = 3886
+2025-05-20 01:27:00 INFO     num_infections focal = 3701
+2025-05-20 01:27:01 INFO     num_infections bkgrnd = 3701
+2025-05-20 01:27:32 INFO     num_infections focal = 3565
+2025-05-20 01:27:34 INFO     num_infections bkgrnd = 3565
+2025-05-20 01:28:05 INFO     num_infections focal = 3214
+2025-05-20 01:28:06 INFO     num_infections bkgrnd = 3214
+2025-05-20 01:28:41 INFO     num_infections focal = 3036
+2025-05-20 01:28:42 INFO     num_infections bkgrnd = 3036
+2025-05-20 01:29:17 INFO     num_infections focal = 2852
+2025-05-20 01:29:18 INFO     num_infections bkgrnd = 2852
+2025-05-20 01:29:52 INFO     num_infections focal = 2722
+2025-05-20 01:29:53 INFO     num_infections bkgrnd = 2722
+2025-05-20 01:30:24 INFO     num_infections focal = 2513
+2025-05-20 01:30:25 INFO     num_infections bkgrnd = 2513
+2025-05-20 01:30:55 INFO     num_infections focal = 2506
+2025-05-20 01:30:56 INFO     num_infections bkgrnd = 2506
+2025-05-20 01:31:27 INFO     num_infections focal = 2321
+2025-05-20 01:31:28 INFO     num_infections bkgrnd = 2321
+  Running 2020-05-10 (70/650) (2166.69 s)  ••—————————————————— 11%
+2025-05-20 01:31:59 INFO     num_infections focal = 2084
+2025-05-20 01:32:00 INFO     num_infections bkgrnd = 2084
+2025-05-20 01:32:29 INFO     num_infections focal = 1963
+2025-05-20 01:32:31 INFO     num_infections bkgrnd = 1963
+2025-05-20 01:33:02 INFO     num_infections focal = 1962
+2025-05-20 01:33:04 INFO     num_infections bkgrnd = 1962
+2025-05-20 01:33:38 INFO     num_infections focal = 1793
+2025-05-20 01:33:39 INFO     num_infections bkgrnd = 1793
+2025-05-20 01:34:12 INFO     num_infections focal = 1718
+2025-05-20 01:34:13 INFO     num_infections bkgrnd = 1718
+2025-05-20 01:34:43 INFO     num_infections focal = 1636
+2025-05-20 01:34:44 INFO     num_infections bkgrnd = 1636
+2025-05-20 01:35:14 INFO     num_infections focal = 1574
+2025-05-20 01:35:15 INFO     num_infections bkgrnd = 1574
+2025-05-20 01:35:43 INFO     num_infections focal = 1511
+2025-05-20 01:35:44 INFO     num_infections bkgrnd = 1511
+2025-05-20 01:36:11 INFO     num_infections focal = 1341
+2025-05-20 01:36:12 INFO     num_infections bkgrnd = 1341
+2025-05-20 01:36:42 INFO     num_infections focal = 1300
+2025-05-20 01:36:43 INFO     num_infections bkgrnd = 1300
+  Running 2020-05-20 (80/650) (2482.46 s)  ••—————————————————— 12%
+2025-05-20 01:37:15 INFO     num_infections focal = 1229
+2025-05-20 01:37:16 INFO     num_infections bkgrnd = 1229
+2025-05-20 01:37:47 INFO     num_infections focal = 1180
+2025-05-20 01:37:48 INFO     num_infections bkgrnd = 1180
+2025-05-20 01:38:15 INFO     num_infections focal = 1165
+2025-05-20 01:38:16 INFO     num_infections bkgrnd = 1165
+2025-05-20 01:38:45 INFO     num_infections focal = 1097
+2025-05-20 01:38:46 INFO     num_infections bkgrnd = 1097
+2025-05-20 01:39:14 INFO     num_infections focal = 1103
+2025-05-20 01:39:15 INFO     num_infections bkgrnd = 1103
+2025-05-20 01:39:42 INFO     num_infections focal = 1068
+2025-05-20 01:39:43 INFO     num_infections bkgrnd = 1068
+2025-05-20 01:40:12 INFO     num_infections focal = 971
+2025-05-20 01:40:13 INFO     num_infections bkgrnd = 971
+2025-05-20 01:40:41 INFO     num_infections focal = 883
+2025-05-20 01:40:42 INFO     num_infections bkgrnd = 883
+2025-05-20 01:41:10 INFO     num_infections focal = 938
+2025-05-20 01:41:11 INFO     num_infections bkgrnd = 938
+2025-05-20 01:41:39 INFO     num_infections focal = 860
+2025-05-20 01:41:41 INFO     num_infections bkgrnd = 860
+  Running 2020-05-30 (90/650) (2778.65 s)  ••—————————————————— 14%
+2025-05-20 01:42:11 INFO     num_infections focal = 849
+2025-05-20 01:42:13 INFO     num_infections bkgrnd = 849
+2025-05-20 01:42:41 INFO     num_infections focal = 788
+2025-05-20 01:42:42 INFO     num_infections bkgrnd = 788
+2025-05-20 01:43:08 INFO     num_infections focal = 793
+2025-05-20 01:43:09 INFO     num_infections bkgrnd = 793
+2025-05-20 01:43:35 INFO     num_infections focal = 793
+2025-05-20 01:43:37 INFO     num_infections bkgrnd = 793
+2025-05-20 01:44:03 INFO     num_infections focal = 726
+2025-05-20 01:44:04 INFO     num_infections bkgrnd = 726
+2025-05-20 01:44:31 INFO     num_infections focal = 700
+2025-05-20 01:44:32 INFO     num_infections bkgrnd = 700
+2025-05-20 01:44:58 INFO     num_infections focal = 669
+2025-05-20 01:45:00 INFO     num_infections bkgrnd = 669
+2025-05-20 01:45:26 INFO     num_infections focal = 611
+2025-05-20 01:45:27 INFO     num_infections bkgrnd = 611
+2025-05-20 01:45:56 INFO     num_infections focal = 657
+2025-05-20 01:45:57 INFO     num_infections bkgrnd = 657
+2025-05-20 01:46:27 INFO     num_infections focal = 614
+2025-05-20 01:46:28 INFO     num_infections bkgrnd = 614
+  Running 2020-06-09 (100/650) (3062.49 s)  •••————————————————— 16%
+2025-05-20 01:46:55 INFO     num_infections focal = 606
+2025-05-20 01:46:56 INFO     num_infections bkgrnd = 606
+2025-05-20 01:47:23 INFO     num_infections focal = 598
+2025-05-20 01:47:24 INFO     num_infections bkgrnd = 598
+2025-05-20 01:47:52 INFO     num_infections focal = 589
+2025-05-20 01:47:54 INFO     num_infections bkgrnd = 589
+2025-05-20 01:48:22 INFO     num_infections focal = 596
+2025-05-20 01:48:23 INFO     num_infections bkgrnd = 596
+2025-05-20 01:48:50 INFO     num_infections focal = 505
+2025-05-20 01:48:52 INFO     num_infections bkgrnd = 505
+2025-05-20 01:49:19 INFO     num_infections focal = 560
+2025-05-20 01:49:20 INFO     num_infections bkgrnd = 560
+2025-05-20 01:49:47 INFO     num_infections focal = 523
+2025-05-20 01:49:48 INFO     num_infections bkgrnd = 523
+2025-05-20 01:50:14 INFO     num_infections focal = 541
+2025-05-20 01:50:16 INFO     num_infections bkgrnd = 541
+2025-05-20 01:50:42 INFO     num_infections focal = 540
+2025-05-20 01:50:43 INFO     num_infections bkgrnd = 540
+2025-05-20 01:51:09 INFO     num_infections focal = 511
+2025-05-20 01:51:11 INFO     num_infections bkgrnd = 511
+  Running 2020-06-19 (110/650) (3345.47 s)  •••————————————————— 17%
+2025-05-20 01:51:38 INFO     num_infections focal = 522
+2025-05-20 01:51:39 INFO     num_infections bkgrnd = 522
+2025-05-20 01:52:05 INFO     num_infections focal = 488
+2025-05-20 01:52:06 INFO     num_infections bkgrnd = 488
+2025-05-20 01:52:33 INFO     num_infections focal = 553
+2025-05-20 01:52:34 INFO     num_infections bkgrnd = 553
+2025-05-20 01:53:01 INFO     num_infections focal = 498
+2025-05-20 01:53:02 INFO     num_infections bkgrnd = 498
+2025-05-20 01:53:29 INFO     num_infections focal = 513
+2025-05-20 01:53:30 INFO     num_infections bkgrnd = 513
+2025-05-20 01:53:58 INFO     num_infections focal = 464
+2025-05-20 01:53:59 INFO     num_infections bkgrnd = 464
+2025-05-20 01:54:26 INFO     num_infections focal = 494
+2025-05-20 01:54:27 INFO     num_infections bkgrnd = 494
+2025-05-20 01:54:54 INFO     num_infections focal = 489
+2025-05-20 01:54:56 INFO     num_infections bkgrnd = 489
+2025-05-20 01:55:24 INFO     num_infections focal = 528
+2025-05-20 01:55:25 INFO     num_infections bkgrnd = 528
+2025-05-20 01:55:53 INFO     num_infections focal = 495
+2025-05-20 01:55:54 INFO     num_infections bkgrnd = 495
+  Running 2020-06-29 (120/650) (3628.62 s)  •••————————————————— 19%
+2025-05-20 01:56:21 INFO     num_infections focal = 492
+2025-05-20 01:56:22 INFO     num_infections bkgrnd = 492
+2025-05-20 01:56:51 INFO     num_infections focal = 534
+2025-05-20 01:56:52 INFO     num_infections bkgrnd = 534
+2025-05-20 01:57:20 INFO     num_infections focal = 528
+2025-05-20 01:57:22 INFO     num_infections bkgrnd = 528
+2025-05-20 01:57:49 INFO     num_infections focal = 518
+2025-05-20 01:57:51 INFO     num_infections bkgrnd = 518
+2025-05-20 01:58:23 INFO     num_infections focal = 548
+2025-05-20 01:58:24 INFO     num_infections bkgrnd = 548
+2025-05-20 01:59:03 INFO     num_infections focal = 574
+2025-05-20 01:59:05 INFO     num_infections bkgrnd = 574
+2025-05-20 01:59:56 INFO     num_infections focal = 524
+2025-05-20 01:59:58 INFO     num_infections bkgrnd = 524
+2025-05-20 02:00:42 INFO     num_infections focal = 539
+2025-05-20 02:00:43 INFO     num_infections bkgrnd = 539
+2025-05-20 02:01:30 INFO     num_infections focal = 575
+2025-05-20 02:01:32 INFO     num_infections bkgrnd = 575
+2025-05-20 02:02:16 INFO     num_infections focal = 567
+2025-05-20 02:02:17 INFO     num_infections bkgrnd = 567
+  Running 2020-07-09 (130/650) (4030.48 s)  ••••———————————————— 20%
+2025-05-20 02:03:03 INFO     num_infections focal = 573
+2025-05-20 02:03:05 INFO     num_infections bkgrnd = 573
+2025-05-20 02:03:39 INFO     num_infections focal = 621
+2025-05-20 02:03:40 INFO     num_infections bkgrnd = 621
+2025-05-20 02:04:16 INFO     num_infections focal = 586
+2025-05-20 02:04:18 INFO     num_infections bkgrnd = 586
+2025-05-20 02:04:52 INFO     num_infections focal = 567
+2025-05-20 02:04:54 INFO     num_infections bkgrnd = 567
+2025-05-20 02:05:32 INFO     num_infections focal = 606
+2025-05-20 02:05:33 INFO     num_infections bkgrnd = 606
+2025-05-20 02:06:05 INFO     num_infections focal = 624
+2025-05-20 02:06:06 INFO     num_infections bkgrnd = 624
+2025-05-20 02:06:40 INFO     num_infections focal = 662
+2025-05-20 02:06:41 INFO     num_infections bkgrnd = 662
+2025-05-20 02:07:12 INFO     num_infections focal = 721
+2025-05-20 02:07:13 INFO     num_infections bkgrnd = 721
+2025-05-20 02:07:42 INFO     num_infections focal = 661
+2025-05-20 02:07:43 INFO     num_infections bkgrnd = 661
+2025-05-20 02:08:11 INFO     num_infections focal = 680
+2025-05-20 02:08:12 INFO     num_infections bkgrnd = 680
+  Running 2020-07-19 (140/650) (4367.72 s)  ••••———————————————— 22%
+2025-05-20 02:08:40 INFO     num_infections focal = 676
+2025-05-20 02:08:41 INFO     num_infections bkgrnd = 676
+2025-05-20 02:09:09 INFO     num_infections focal = 660
+2025-05-20 02:09:10 INFO     num_infections bkgrnd = 660
+2025-05-20 02:09:36 INFO     num_infections focal = 741
+2025-05-20 02:09:37 INFO     num_infections bkgrnd = 741
+2025-05-20 02:10:02 INFO     num_infections focal = 757
+2025-05-20 02:10:04 INFO     num_infections bkgrnd = 757
+2025-05-20 02:10:28 INFO     num_infections focal = 745
+2025-05-20 02:10:29 INFO     num_infections bkgrnd = 745
+2025-05-20 02:10:54 INFO     num_infections focal = 737
+2025-05-20 02:10:55 INFO     num_infections bkgrnd = 737
+2025-05-20 02:11:20 INFO     num_infections focal = 759
+2025-05-20 02:11:21 INFO     num_infections bkgrnd = 759
+2025-05-20 02:11:47 INFO     num_infections focal = 780
+2025-05-20 02:11:48 INFO     num_infections bkgrnd = 780
+2025-05-20 02:12:16 INFO     num_infections focal = 834
+2025-05-20 02:12:17 INFO     num_infections bkgrnd = 834
+2025-05-20 02:12:45 INFO     num_infections focal = 788
+2025-05-20 02:12:46 INFO     num_infections bkgrnd = 788
+  Running 2020-07-29 (150/650) (4643.90 s)  ••••———————————————— 23%
+2025-05-20 02:13:16 INFO     num_infections focal = 839
+2025-05-20 02:13:17 INFO     num_infections bkgrnd = 839
+2025-05-20 02:13:46 INFO     num_infections focal = 830
+2025-05-20 02:13:48 INFO     num_infections bkgrnd = 830
+2025-05-20 02:14:18 INFO     num_infections focal = 871
+2025-05-20 02:14:20 INFO     num_infections bkgrnd = 871
+2025-05-20 02:14:53 INFO     num_infections focal = 925
+2025-05-20 02:14:55 INFO     num_infections bkgrnd = 925
+2025-05-20 02:15:26 INFO     num_infections focal = 906
+2025-05-20 02:15:28 INFO     num_infections bkgrnd = 906
+2025-05-20 02:15:59 INFO     num_infections focal = 903
+2025-05-20 02:16:00 INFO     num_infections bkgrnd = 903
+2025-05-20 02:16:31 INFO     num_infections focal = 949
+2025-05-20 02:16:32 INFO     num_infections bkgrnd = 949
+2025-05-20 02:17:03 INFO     num_infections focal = 908
+2025-05-20 02:17:05 INFO     num_infections bkgrnd = 908
+2025-05-20 02:17:35 INFO     num_infections focal = 923
+2025-05-20 02:17:36 INFO     num_infections bkgrnd = 923
+2025-05-20 02:18:15 INFO     num_infections focal = 972
+2025-05-20 02:18:18 INFO     num_infections bkgrnd = 972
+  Running 2020-08-08 (160/650) (4983.07 s)  ••••———————————————— 25%
+2025-05-20 02:18:55 INFO     num_infections focal = 962
+2025-05-20 02:18:57 INFO     num_infections bkgrnd = 962
+2025-05-20 02:19:28 INFO     num_infections focal = 1018
+2025-05-20 02:19:29 INFO     num_infections bkgrnd = 1018
+2025-05-20 02:19:57 INFO     num_infections focal = 988
+2025-05-20 02:19:58 INFO     num_infections bkgrnd = 988
+2025-05-20 02:20:27 INFO     num_infections focal = 1011
+2025-05-20 02:20:28 INFO     num_infections bkgrnd = 1011
+2025-05-20 02:20:58 INFO     num_infections focal = 1011
+2025-05-20 02:20:59 INFO     num_infections bkgrnd = 1011
+2025-05-20 02:21:28 INFO     num_infections focal = 1021
+2025-05-20 02:21:29 INFO     num_infections bkgrnd = 1021
+2025-05-20 02:22:00 INFO     num_infections focal = 1107
+2025-05-20 02:22:01 INFO     num_infections bkgrnd = 1107
+2025-05-20 02:22:31 INFO     num_infections focal = 1086
+2025-05-20 02:22:32 INFO     num_infections bkgrnd = 1086
+2025-05-20 02:23:02 INFO     num_infections focal = 1088
+2025-05-20 02:23:03 INFO     num_infections bkgrnd = 1088
+2025-05-20 02:23:30 INFO     num_infections focal = 1083
+2025-05-20 02:23:31 INFO     num_infections bkgrnd = 1083
+  Running 2020-08-18 (170/650) (5286.44 s)  •••••——————————————— 26%
+2025-05-20 02:23:59 INFO     num_infections focal = 1070
+2025-05-20 02:24:00 INFO     num_infections bkgrnd = 1070
+2025-05-20 02:24:28 INFO     num_infections focal = 1232
+2025-05-20 02:24:29 INFO     num_infections bkgrnd = 1232
+2025-05-20 02:24:58 INFO     num_infections focal = 1212
+2025-05-20 02:24:59 INFO     num_infections bkgrnd = 1212
+2025-05-20 02:25:28 INFO     num_infections focal = 1158
+2025-05-20 02:25:29 INFO     num_infections bkgrnd = 1158
+2025-05-20 02:25:57 INFO     num_infections focal = 1156
+2025-05-20 02:25:58 INFO     num_infections bkgrnd = 1156
+2025-05-20 02:26:26 INFO     num_infections focal = 1191
+2025-05-20 02:26:27 INFO     num_infections bkgrnd = 1191
+2025-05-20 02:26:53 INFO     num_infections focal = 1208
+2025-05-20 02:26:54 INFO     num_infections bkgrnd = 1208
+2025-05-20 02:27:22 INFO     num_infections focal = 1195
+2025-05-20 02:27:23 INFO     num_infections bkgrnd = 1195
+2025-05-20 02:27:50 INFO     num_infections focal = 1176
+2025-05-20 02:27:51 INFO     num_infections bkgrnd = 1176
+2025-05-20 02:28:17 INFO     num_infections focal = 1215
+2025-05-20 02:28:18 INFO     num_infections bkgrnd = 1215
+  Running 2020-08-28 (180/650) (5571.48 s)  •••••——————————————— 28%
+2025-05-20 02:28:44 INFO     num_infections focal = 1246
+2025-05-20 02:28:45 INFO     num_infections bkgrnd = 1246
+2025-05-20 02:29:10 INFO     num_infections focal = 1242
+2025-05-20 02:29:11 INFO     num_infections bkgrnd = 1242
+2025-05-20 02:29:37 INFO     num_infections focal = 1278
+2025-05-20 02:29:38 INFO     num_infections bkgrnd = 1278
+2025-05-20 02:30:03 INFO     num_infections focal = 1199
+2025-05-20 02:30:04 INFO     num_infections bkgrnd = 1199
+2025-05-20 02:30:30 INFO     num_infections focal = 1261
+2025-05-20 02:30:31 INFO     num_infections bkgrnd = 1261
+2025-05-20 02:30:57 INFO     num_infections focal = 1265
+2025-05-20 02:30:58 INFO     num_infections bkgrnd = 1265
+2025-05-20 02:31:23 INFO     num_infections focal = 1312
+2025-05-20 02:31:24 INFO     num_infections bkgrnd = 1312
+2025-05-20 02:31:52 INFO     num_infections focal = 1354
+2025-05-20 02:31:53 INFO     num_infections bkgrnd = 1354
+2025-05-20 02:32:19 INFO     num_infections focal = 1288
+2025-05-20 02:32:20 INFO     num_infections bkgrnd = 1288
+2025-05-20 02:32:46 INFO     num_infections focal = 1303
+2025-05-20 02:32:47 INFO     num_infections bkgrnd = 1303
+  Running 2020-09-07 (190/650) (5839.17 s)  •••••——————————————— 29%
+2025-05-20 02:33:11 INFO     num_infections focal = 1294
+2025-05-20 02:33:12 INFO     num_infections bkgrnd = 1294
+2025-05-20 02:33:36 INFO     num_infections focal = 1323
+2025-05-20 02:33:37 INFO     num_infections bkgrnd = 1323
+2025-05-20 02:34:03 INFO     num_infections focal = 1263
+2025-05-20 02:34:03 INFO     num_infections bkgrnd = 1263
+2025-05-20 02:34:29 INFO     num_infections focal = 1324
+2025-05-20 02:34:30 INFO     num_infections bkgrnd = 1324
+2025-05-20 02:34:55 INFO     num_infections focal = 1362
+2025-05-20 02:34:55 INFO     num_infections bkgrnd = 1362
+2025-05-20 02:35:21 INFO     num_infections focal = 1317
+2025-05-20 02:35:22 INFO     num_infections bkgrnd = 1317
+2025-05-20 02:35:47 INFO     num_infections focal = 1382
+2025-05-20 02:35:48 INFO     num_infections bkgrnd = 1382
+2025-05-20 02:36:25 INFO     num_infections focal = 1351
+2025-05-20 02:36:26 INFO     num_infections bkgrnd = 1351
+2025-05-20 02:36:52 INFO     num_infections focal = 1369
+2025-05-20 02:36:53 INFO     num_infections bkgrnd = 1369
+2025-05-20 02:37:18 INFO     num_infections focal = 1294
+2025-05-20 02:37:19 INFO     num_infections bkgrnd = 1294
+  Running 2020-09-17 (200/650) (6113.96 s)  ••••••—————————————— 31%
+2025-05-20 02:37:46 INFO     num_infections focal = 1369
+2025-05-20 02:37:47 INFO     num_infections bkgrnd = 1369
+2025-05-20 02:38:12 INFO     num_infections focal = 1326
+2025-05-20 02:38:13 INFO     num_infections bkgrnd = 1326
+2025-05-20 02:38:39 INFO     num_infections focal = 1244
+2025-05-20 02:38:40 INFO     num_infections bkgrnd = 1244
+2025-05-20 02:39:06 INFO     num_infections focal = 1937
+2025-05-20 02:39:07 INFO     num_infections bkgrnd = 1937
+2025-05-20 02:39:32 INFO     num_infections focal = 1831
+2025-05-20 02:39:33 INFO     num_infections bkgrnd = 1831
+2025-05-20 02:39:59 INFO     num_infections focal = 1954
+2025-05-20 02:40:00 INFO     num_infections bkgrnd = 1954
+2025-05-20 02:40:26 INFO     num_infections focal = 1931
+2025-05-20 02:40:27 INFO     num_infections bkgrnd = 1931
+2025-05-20 02:40:53 INFO     num_infections focal = 1916
+2025-05-20 02:40:54 INFO     num_infections bkgrnd = 1916
+2025-05-20 02:41:19 INFO     num_infections focal = 1922
+2025-05-20 02:41:20 INFO     num_infections bkgrnd = 1922
+2025-05-20 02:41:47 INFO     num_infections focal = 2090
+2025-05-20 02:41:48 INFO     num_infections bkgrnd = 2090
+  Running 2020-09-27 (210/650) (6381.07 s)  ••••••—————————————— 32%
+2025-05-20 02:42:13 INFO     num_infections focal = 2187
+2025-05-20 02:42:14 INFO     num_infections bkgrnd = 2187
+2025-05-20 02:42:38 INFO     num_infections focal = 2214
+2025-05-20 02:42:39 INFO     num_infections bkgrnd = 2214
+2025-05-20 02:43:04 INFO     num_infections focal = 2339
+2025-05-20 02:43:05 INFO     num_infections bkgrnd = 2339
+2025-05-20 02:43:29 INFO     num_infections focal = 1763
+2025-05-20 02:43:30 INFO     num_infections bkgrnd = 1763
+2025-05-20 02:43:54 INFO     num_infections focal = 1816
+2025-05-20 02:43:55 INFO     num_infections bkgrnd = 1816
+2025-05-20 02:44:19 INFO     num_infections focal = 1878
+2025-05-20 02:44:20 INFO     num_infections bkgrnd = 1878
+2025-05-20 02:44:44 INFO     num_infections focal = 1934
+2025-05-20 02:44:45 INFO     num_infections bkgrnd = 1934
+2025-05-20 02:45:09 INFO     num_infections focal = 1973
+2025-05-20 02:45:10 INFO     num_infections bkgrnd = 1973
+2025-05-20 02:45:34 INFO     num_infections focal = 1886
+2025-05-20 02:45:35 INFO     num_infections bkgrnd = 1886
+2025-05-20 02:46:00 INFO     num_infections focal = 1983
+2025-05-20 02:46:00 INFO     num_infections bkgrnd = 1983
+  Running 2020-10-07 (220/650) (6632.91 s)  ••••••—————————————— 34%
+2025-05-20 02:46:25 INFO     num_infections focal = 1863
+2025-05-20 02:46:26 INFO     num_infections bkgrnd = 1863
+2025-05-20 02:46:50 INFO     num_infections focal = 1913
+2025-05-20 02:46:51 INFO     num_infections bkgrnd = 1913
+2025-05-20 02:47:15 INFO     num_infections focal = 1919
+2025-05-20 02:47:16 INFO     num_infections bkgrnd = 1919
+2025-05-20 02:47:41 INFO     num_infections focal = 1828
+2025-05-20 02:47:42 INFO     num_infections bkgrnd = 1828
+2025-05-20 02:48:07 INFO     num_infections focal = 1715
+2025-05-20 02:48:07 INFO     num_infections bkgrnd = 1715
+2025-05-20 02:48:32 INFO     num_infections focal = 1734
+2025-05-20 02:48:33 INFO     num_infections bkgrnd = 1734
+2025-05-20 02:48:58 INFO     num_infections focal = 1810
+2025-05-20 02:48:59 INFO     num_infections bkgrnd = 1810
+2025-05-20 02:49:23 INFO     num_infections focal = 1793
+2025-05-20 02:49:24 INFO     num_infections bkgrnd = 1793
+2025-05-20 02:49:48 INFO     num_infections focal = 1751
+2025-05-20 02:49:49 INFO     num_infections bkgrnd = 1751
+2025-05-20 02:50:14 INFO     num_infections focal = 1703
+2025-05-20 02:50:14 INFO     num_infections bkgrnd = 1703
+  Running 2020-10-17 (230/650) (6887.36 s)  •••••••————————————— 35%
+2025-05-20 02:50:40 INFO     num_infections focal = 1650
+2025-05-20 02:50:40 INFO     num_infections bkgrnd = 1650
+2025-05-20 02:51:05 INFO     num_infections focal = 1629
+2025-05-20 02:51:05 INFO     num_infections bkgrnd = 1629
+2025-05-20 02:51:30 INFO     num_infections focal = 1576
+2025-05-20 02:51:31 INFO     num_infections bkgrnd = 1576
+2025-05-20 02:51:55 INFO     num_infections focal = 1577
+2025-05-20 02:51:56 INFO     num_infections bkgrnd = 1577
+2025-05-20 02:52:20 INFO     num_infections focal = 1486
+2025-05-20 02:52:21 INFO     num_infections bkgrnd = 1486
+2025-05-20 02:52:45 INFO     num_infections focal = 1662
+2025-05-20 02:52:46 INFO     num_infections bkgrnd = 1662
+2025-05-20 02:53:10 INFO     num_infections focal = 1500
+2025-05-20 02:53:11 INFO     num_infections bkgrnd = 1500
+2025-05-20 02:53:35 INFO     num_infections focal = 1461
+2025-05-20 02:53:36 INFO     num_infections bkgrnd = 1461
+2025-05-20 02:53:59 INFO     num_infections focal = 1511
+2025-05-20 02:54:00 INFO     num_infections bkgrnd = 1511
+2025-05-20 02:54:23 INFO     num_infections focal = 1398
+2025-05-20 02:54:24 INFO     num_infections bkgrnd = 1398
+  Running 2020-10-27 (240/650) (7135.66 s)  •••••••————————————— 37%
+2025-05-20 02:54:48 INFO     num_infections focal = 1449
+2025-05-20 02:54:49 INFO     num_infections bkgrnd = 1449
+2025-05-20 02:55:12 INFO     num_infections focal = 1386
+2025-05-20 02:55:13 INFO     num_infections bkgrnd = 1386
+2025-05-20 02:55:36 INFO     num_infections focal = 1379
+2025-05-20 02:55:37 INFO     num_infections bkgrnd = 1379
+2025-05-20 02:56:01 INFO     num_infections focal = 1336
+2025-05-20 02:56:02 INFO     num_infections bkgrnd = 1336
+2025-05-20 02:56:26 INFO     num_infections focal = 1305
+2025-05-20 02:56:27 INFO     num_infections bkgrnd = 1305
+2025-05-20 02:56:50 INFO     num_infections focal = 1296
+2025-05-20 02:56:51 INFO     num_infections bkgrnd = 1296
+2025-05-20 02:57:15 INFO     num_infections focal = 1295
+2025-05-20 02:57:16 INFO     num_infections bkgrnd = 1295
+2025-05-20 02:57:39 INFO     num_infections focal = 1242
+2025-05-20 02:57:40 INFO     num_infections bkgrnd = 1242
+2025-05-20 02:58:04 INFO     num_infections focal = 1183
+2025-05-20 02:58:05 INFO     num_infections bkgrnd = 1183
+2025-05-20 02:58:28 INFO     num_infections focal = 1204
+2025-05-20 02:58:29 INFO     num_infections bkgrnd = 1204
+  Running 2020-11-06 (250/650) (7380.63 s)  •••••••————————————— 39%
+2025-05-20 02:58:53 INFO     num_infections focal = 1152
+2025-05-20 02:58:54 INFO     num_infections bkgrnd = 1152
+2025-05-20 02:59:18 INFO     num_infections focal = 1153
+2025-05-20 02:59:19 INFO     num_infections bkgrnd = 1153
+2025-05-20 02:59:43 INFO     num_infections focal = 1180
+2025-05-20 02:59:44 INFO     num_infections bkgrnd = 1180
+2025-05-20 03:00:08 INFO     num_infections focal = 1100
+2025-05-20 03:00:09 INFO     num_infections bkgrnd = 1100
+2025-05-20 03:00:32 INFO     num_infections focal = 1107
+2025-05-20 03:00:33 INFO     num_infections bkgrnd = 1107
+2025-05-20 03:00:57 INFO     num_infections focal = 1115
+2025-05-20 03:00:58 INFO     num_infections bkgrnd = 1115
+2025-05-20 03:01:22 INFO     num_infections focal = 1107
+2025-05-20 03:01:23 INFO     num_infections bkgrnd = 1107
+2025-05-20 03:01:47 INFO     num_infections focal = 1044
+2025-05-20 03:01:48 INFO     num_infections bkgrnd = 1044
+2025-05-20 03:02:13 INFO     num_infections focal = 1081
+2025-05-20 03:02:14 INFO     num_infections bkgrnd = 1081
+2025-05-20 03:02:38 INFO     num_infections focal = 1048
+2025-05-20 03:02:39 INFO     num_infections bkgrnd = 1048
+  Running 2020-11-16 (260/650) (7630.71 s)  ••••••••———————————— 40%
+2025-05-20 03:03:03 INFO     num_infections focal = 1013
+2025-05-20 03:03:04 INFO     num_infections bkgrnd = 1013
+2025-05-20 03:03:28 INFO     num_infections focal = 1033
+2025-05-20 03:03:29 INFO     num_infections bkgrnd = 1033
+2025-05-20 03:03:53 INFO     num_infections focal = 1009
+2025-05-20 03:03:54 INFO     num_infections bkgrnd = 1009
+2025-05-20 03:04:18 INFO     num_infections focal = 1046
+2025-05-20 03:04:19 INFO     num_infections bkgrnd = 1046
+2025-05-20 03:04:50 INFO     num_infections focal = 1017
+2025-05-20 03:04:53 INFO     num_infections bkgrnd = 1017
+2025-05-20 03:05:25 INFO     num_infections focal = 964
+2025-05-20 03:05:26 INFO     num_infections bkgrnd = 964
+2025-05-20 03:05:51 INFO     num_infections focal = 944
+2025-05-20 03:05:52 INFO     num_infections bkgrnd = 944
+2025-05-20 03:06:18 INFO     num_infections focal = 940
+2025-05-20 03:06:19 INFO     num_infections bkgrnd = 940
+2025-05-20 03:06:43 INFO     num_infections focal = 909
+2025-05-20 03:06:44 INFO     num_infections bkgrnd = 909
+2025-05-20 03:07:09 INFO     num_infections focal = 916
+2025-05-20 03:07:10 INFO     num_infections bkgrnd = 916
+  Running 2020-11-26 (270/650) (7902.18 s)  ••••••••———————————— 42%
+2025-05-20 03:07:34 INFO     num_infections focal = 972
+2025-05-20 03:07:35 INFO     num_infections bkgrnd = 972
+2025-05-20 03:08:00 INFO     num_infections focal = 989
+2025-05-20 03:08:01 INFO     num_infections bkgrnd = 989
+2025-05-20 03:08:27 INFO     num_infections focal = 948
+2025-05-20 03:08:28 INFO     num_infections bkgrnd = 948
+2025-05-20 03:08:53 INFO     num_infections focal = 947
+2025-05-20 03:08:54 INFO     num_infections bkgrnd = 947
+2025-05-20 03:09:19 INFO     num_infections focal = 1560
+2025-05-20 03:09:20 INFO     num_infections bkgrnd = 1560
+2025-05-20 03:09:45 INFO     num_infections focal = 1565
+2025-05-20 03:09:46 INFO     num_infections bkgrnd = 1565
+2025-05-20 03:10:10 INFO     num_infections focal = 1508
+2025-05-20 03:10:11 INFO     num_infections bkgrnd = 1508
+2025-05-20 03:10:37 INFO     num_infections focal = 1486
+2025-05-20 03:10:38 INFO     num_infections bkgrnd = 1486
+2025-05-20 03:11:02 INFO     num_infections focal = 1525
+2025-05-20 03:11:03 INFO     num_infections bkgrnd = 1525
+2025-05-20 03:11:27 INFO     num_infections focal = 1707
+2025-05-20 03:11:28 INFO     num_infections bkgrnd = 1707
+  Running 2020-12-06 (280/650) (8160.56 s)  ••••••••———————————— 43%
+2025-05-20 03:11:53 INFO     num_infections focal = 1815
+2025-05-20 03:11:54 INFO     num_infections bkgrnd = 1815
+2025-05-20 03:12:18 INFO     num_infections focal = 1869
+2025-05-20 03:12:19 INFO     num_infections bkgrnd = 1869
+2025-05-20 03:12:43 INFO     num_infections focal = 2031
+2025-05-20 03:12:44 INFO     num_infections bkgrnd = 2031
+2025-05-20 03:13:07 INFO     num_infections focal = 2051
+2025-05-20 03:13:08 INFO     num_infections bkgrnd = 2051
+2025-05-20 03:13:32 INFO     num_infections focal = 1624
+2025-05-20 03:13:33 INFO     num_infections bkgrnd = 1624
+2025-05-20 03:13:57 INFO     num_infections focal = 1781
+2025-05-20 03:13:58 INFO     num_infections bkgrnd = 1781
+2025-05-20 03:14:23 INFO     num_infections focal = 1888
+2025-05-20 03:14:24 INFO     num_infections bkgrnd = 1888
+2025-05-20 03:14:48 INFO     num_infections focal = 2070
+2025-05-20 03:14:49 INFO     num_infections bkgrnd = 2070
+2025-05-20 03:15:13 INFO     num_infections focal = 2210
+2025-05-20 03:15:14 INFO     num_infections bkgrnd = 2210
+2025-05-20 03:15:39 INFO     num_infections focal = 2213
+2025-05-20 03:15:39 INFO     num_infections bkgrnd = 2213
+  Running 2020-12-16 (290/650) (8411.70 s)  ••••••••———————————— 45%
+2025-05-20 03:16:04 INFO     num_infections focal = 2185
+2025-05-20 03:16:05 INFO     num_infections bkgrnd = 2185
+2025-05-20 03:16:29 INFO     num_infections focal = 2239
+2025-05-20 03:16:30 INFO     num_infections bkgrnd = 2239
+2025-05-20 03:16:54 INFO     num_infections focal = 2171
+2025-05-20 03:16:55 INFO     num_infections bkgrnd = 2171
+2025-05-20 03:17:20 INFO     num_infections focal = 2403
+2025-05-20 03:17:21 INFO     num_infections bkgrnd = 2403
+2025-05-20 03:17:45 INFO     num_infections focal = 2318
+2025-05-20 03:17:46 INFO     num_infections bkgrnd = 2318
+2025-05-20 03:18:25 INFO     num_infections focal = 2342
+2025-05-20 03:18:29 INFO     num_infections bkgrnd = 2342
+2025-05-20 03:18:55 INFO     num_infections focal = 2461
+2025-05-20 03:18:55 INFO     num_infections bkgrnd = 2461
+2025-05-20 03:19:20 INFO     num_infections focal = 2502
+2025-05-20 03:19:21 INFO     num_infections bkgrnd = 2502
+2025-05-20 03:19:46 INFO     num_infections focal = 2522
+2025-05-20 03:19:47 INFO     num_infections bkgrnd = 2522
+2025-05-20 03:20:12 INFO     num_infections focal = 2553
+2025-05-20 03:20:13 INFO     num_infections bkgrnd = 2553
+  Running 2020-12-26 (300/650) (8687.54 s)  •••••••••——————————— 46%
+2025-05-20 03:20:40 INFO     num_infections focal = 2554
+2025-05-20 03:20:41 INFO     num_infections bkgrnd = 2554
+2025-05-20 03:21:07 INFO     num_infections focal = 2529
+2025-05-20 03:21:08 INFO     num_infections bkgrnd = 2529
+2025-05-20 03:21:33 INFO     num_infections focal = 2672
+2025-05-20 03:21:34 INFO     num_infections bkgrnd = 2672
+2025-05-20 03:21:59 INFO     num_infections focal = 2699
+2025-05-20 03:22:00 INFO     num_infections bkgrnd = 2699
+2025-05-20 03:22:25 INFO     num_infections focal = 2718
+2025-05-20 03:22:26 INFO     num_infections bkgrnd = 2718
+2025-05-20 03:22:50 INFO     num_infections focal = 2706
+2025-05-20 03:22:51 INFO     num_infections bkgrnd = 2706
+2025-05-20 03:23:16 INFO     num_infections focal = 2742
+2025-05-20 03:23:17 INFO     num_infections bkgrnd = 2742
+2025-05-20 03:23:42 INFO     num_infections focal = 2762
+2025-05-20 03:23:43 INFO     num_infections bkgrnd = 2762
+2025-05-20 03:24:08 INFO     num_infections focal = 2802
+2025-05-20 03:24:09 INFO     num_infections bkgrnd = 2802
+2025-05-20 03:24:34 INFO     num_infections focal = 2780
+2025-05-20 03:24:35 INFO     num_infections bkgrnd = 2780
+  Running 2021-01-05 (310/650) (8948.53 s)  •••••••••——————————— 48%
+2025-05-20 03:25:01 INFO     num_infections focal = 2762
+2025-05-20 03:25:02 INFO     num_infections bkgrnd = 2762
+2025-05-20 03:25:27 INFO     num_infections focal = 2773
+2025-05-20 03:25:28 INFO     num_infections bkgrnd = 2773
+2025-05-20 03:25:53 INFO     num_infections focal = 2745
+2025-05-20 03:25:54 INFO     num_infections bkgrnd = 2745
+2025-05-20 03:26:19 INFO     num_infections focal = 2767
+2025-05-20 03:26:20 INFO     num_infections bkgrnd = 2767
+2025-05-20 03:26:46 INFO     num_infections focal = 2751
+2025-05-20 03:26:46 INFO     num_infections bkgrnd = 2751
+2025-05-20 03:27:12 INFO     num_infections focal = 2701
+2025-05-20 03:27:13 INFO     num_infections bkgrnd = 2701
+2025-05-20 03:27:39 INFO     num_infections focal = 2673
+2025-05-20 03:27:39 INFO     num_infections bkgrnd = 2673
+2025-05-20 03:28:05 INFO     num_infections focal = 2673
+2025-05-20 03:28:06 INFO     num_infections bkgrnd = 2673
+2025-05-20 03:28:31 INFO     num_infections focal = 2707
+2025-05-20 03:28:32 INFO     num_infections bkgrnd = 2707
+2025-05-20 03:28:57 INFO     num_infections focal = 2694
+2025-05-20 03:28:58 INFO     num_infections bkgrnd = 2694
+  Running 2021-01-15 (320/650) (9211.81 s)  •••••••••——————————— 49%
+2025-05-20 03:29:24 INFO     num_infections focal = 2534
+2025-05-20 03:29:25 INFO     num_infections bkgrnd = 2534
+2025-05-20 03:29:50 INFO     num_infections focal = 2509
+2025-05-20 03:29:51 INFO     num_infections bkgrnd = 2509
+2025-05-20 03:30:17 INFO     num_infections focal = 2535
+2025-05-20 03:30:18 INFO     num_infections bkgrnd = 2535
+2025-05-20 03:30:43 INFO     num_infections focal = 2504
+2025-05-20 03:30:44 INFO     num_infections bkgrnd = 2504
+2025-05-20 03:31:10 INFO     num_infections focal = 2559
+2025-05-20 03:31:10 INFO     num_infections bkgrnd = 2559
+2025-05-20 03:31:35 INFO     num_infections focal = 2411
+2025-05-20 03:31:36 INFO     num_infections bkgrnd = 2411
+2025-05-20 03:32:02 INFO     num_infections focal = 2350
+2025-05-20 03:32:03 INFO     num_infections bkgrnd = 2350
+2025-05-20 03:32:29 INFO     num_infections focal = 2331
+2025-05-20 03:32:30 INFO     num_infections bkgrnd = 2331
+2025-05-20 03:32:56 INFO     num_infections focal = 2364
+2025-05-20 03:32:57 INFO     num_infections bkgrnd = 2364
+2025-05-20 03:33:22 INFO     num_infections focal = 2331
+2025-05-20 03:33:23 INFO     num_infections bkgrnd = 2331
+  Running 2021-01-25 (330/650) (9476.24 s)  ••••••••••—————————— 51%
+2025-05-20 03:33:48 INFO     num_infections focal = 2237
+2025-05-20 03:33:49 INFO     num_infections bkgrnd = 2237
+2025-05-20 03:34:14 INFO     num_infections focal = 2104
+2025-05-20 03:34:15 INFO     num_infections bkgrnd = 2104
+2025-05-20 03:34:41 INFO     num_infections focal = 2136
+2025-05-20 03:34:42 INFO     num_infections bkgrnd = 2136
+2025-05-20 03:35:07 INFO     num_infections focal = 2185
+2025-05-20 03:35:08 INFO     num_infections bkgrnd = 2185
+2025-05-20 03:35:33 INFO     num_infections focal = 2052
+2025-05-20 03:35:34 INFO     num_infections bkgrnd = 2052
+2025-05-20 03:35:59 INFO     num_infections focal = 1973
+2025-05-20 03:36:00 INFO     num_infections bkgrnd = 1973
+2025-05-20 03:36:25 INFO     num_infections focal = 1946
+2025-05-20 03:36:26 INFO     num_infections bkgrnd = 1946
+2025-05-20 03:36:51 INFO     num_infections focal = 1982
+2025-05-20 03:36:52 INFO     num_infections bkgrnd = 1982
+2025-05-20 03:37:17 INFO     num_infections focal = 1914
+2025-05-20 03:37:18 INFO     num_infections bkgrnd = 1914
+2025-05-20 03:37:43 INFO     num_infections focal = 1827
+2025-05-20 03:37:44 INFO     num_infections bkgrnd = 1827
+  Running 2021-02-04 (340/650) (9736.50 s)  ••••••••••—————————— 52%
+2025-05-20 03:38:09 INFO     num_infections focal = 1793
+2025-05-20 03:38:10 INFO     num_infections bkgrnd = 1793
+2025-05-20 03:38:34 INFO     num_infections focal = 1783
+2025-05-20 03:38:35 INFO     num_infections bkgrnd = 1783
+2025-05-20 03:39:01 INFO     num_infections focal = 1830
+2025-05-20 03:39:01 INFO     num_infections bkgrnd = 1830
+2025-05-20 03:39:26 INFO     num_infections focal = 1763
+2025-05-20 03:39:27 INFO     num_infections bkgrnd = 1763
+2025-05-20 03:39:51 INFO     num_infections focal = 1748
+2025-05-20 03:39:52 INFO     num_infections bkgrnd = 1748
+2025-05-20 03:40:17 INFO     num_infections focal = 1680
+2025-05-20 03:40:18 INFO     num_infections bkgrnd = 1680
+2025-05-20 03:40:43 INFO     num_infections focal = 1707
+2025-05-20 03:40:44 INFO     num_infections bkgrnd = 1707
+2025-05-20 03:41:09 INFO     num_infections focal = 1573
+2025-05-20 03:41:10 INFO     num_infections bkgrnd = 1573
+2025-05-20 03:41:37 INFO     num_infections focal = 1651
+2025-05-20 03:41:38 INFO     num_infections bkgrnd = 1651
+2025-05-20 03:42:05 INFO     num_infections focal = 1542
+2025-05-20 03:42:06 INFO     num_infections bkgrnd = 1542
+  Running 2021-02-14 (350/650) (9998.86 s)  ••••••••••—————————— 54%
+2025-05-20 03:42:31 INFO     num_infections focal = 1620
+2025-05-20 03:42:32 INFO     num_infections bkgrnd = 1620
+2025-05-20 03:42:57 INFO     num_infections focal = 1600
+2025-05-20 03:42:58 INFO     num_infections bkgrnd = 1600
+2025-05-20 03:43:23 INFO     num_infections focal = 1493
+2025-05-20 03:43:24 INFO     num_infections bkgrnd = 1493
+2025-05-20 03:43:49 INFO     num_infections focal = 1488
+2025-05-20 03:43:50 INFO     num_infections bkgrnd = 1488
+2025-05-20 03:44:15 INFO     num_infections focal = 1455
+2025-05-20 03:44:16 INFO     num_infections bkgrnd = 1455
+2025-05-20 03:44:41 INFO     num_infections focal = 1437
+2025-05-20 03:44:41 INFO     num_infections bkgrnd = 1437
+2025-05-20 03:45:06 INFO     num_infections focal = 1426
+2025-05-20 03:45:07 INFO     num_infections bkgrnd = 1426
+2025-05-20 03:45:32 INFO     num_infections focal = 1433
+2025-05-20 03:45:33 INFO     num_infections bkgrnd = 1433
+2025-05-20 03:45:58 INFO     num_infections focal = 1343
+2025-05-20 03:45:58 INFO     num_infections bkgrnd = 1343
+2025-05-20 03:46:24 INFO     num_infections focal = 1425
+2025-05-20 03:46:25 INFO     num_infections bkgrnd = 1425
+  Running 2021-02-24 (360/650) (10257.09 s)  •••••••••••————————— 55%
+2025-05-20 03:46:49 INFO     num_infections focal = 1429
+2025-05-20 03:46:50 INFO     num_infections bkgrnd = 1429
+2025-05-20 03:47:15 INFO     num_infections focal = 1355
+2025-05-20 03:47:16 INFO     num_infections bkgrnd = 1355
+2025-05-20 03:47:40 INFO     num_infections focal = 1348
+2025-05-20 03:47:41 INFO     num_infections bkgrnd = 1348
+2025-05-20 03:48:06 INFO     num_infections focal = 1419
+2025-05-20 03:48:07 INFO     num_infections bkgrnd = 1419
+2025-05-20 03:48:31 INFO     num_infections focal = 1360
+2025-05-20 03:48:32 INFO     num_infections bkgrnd = 1360
+2025-05-20 03:48:56 INFO     num_infections focal = 1389
+2025-05-20 03:48:57 INFO     num_infections bkgrnd = 1389
+2025-05-20 03:49:21 INFO     num_infections focal = 1379
+2025-05-20 03:49:22 INFO     num_infections bkgrnd = 1379
+2025-05-20 03:49:46 INFO     num_infections focal = 1403
+2025-05-20 03:49:47 INFO     num_infections bkgrnd = 1403
+2025-05-20 03:50:12 INFO     num_infections focal = 1343
+2025-05-20 03:50:13 INFO     num_infections bkgrnd = 1343
+2025-05-20 03:50:38 INFO     num_infections focal = 1353
+2025-05-20 03:50:39 INFO     num_infections bkgrnd = 1353
+  Running 2021-03-06 (370/650) (10510.52 s)  •••••••••••————————— 57%
+2025-05-20 03:51:03 INFO     num_infections focal = 1377
+2025-05-20 03:51:04 INFO     num_infections bkgrnd = 1377
+2025-05-20 03:51:27 INFO     num_infections focal = 1433
+2025-05-20 03:51:28 INFO     num_infections bkgrnd = 1433
+2025-05-20 03:51:52 INFO     num_infections focal = 1408
+2025-05-20 03:51:53 INFO     num_infections bkgrnd = 1408
+2025-05-20 03:52:17 INFO     num_infections focal = 1358
+2025-05-20 03:52:18 INFO     num_infections bkgrnd = 1358
+2025-05-20 03:52:43 INFO     num_infections focal = 1443
+2025-05-20 03:52:43 INFO     num_infections bkgrnd = 1443
+2025-05-20 03:53:08 INFO     num_infections focal = 1489
+2025-05-20 03:53:09 INFO     num_infections bkgrnd = 1489
+2025-05-20 03:53:33 INFO     num_infections focal = 1380
+2025-05-20 03:53:34 INFO     num_infections bkgrnd = 1380
+2025-05-20 03:53:58 INFO     num_infections focal = 1507
+2025-05-20 03:53:59 INFO     num_infections bkgrnd = 1507
+2025-05-20 03:54:24 INFO     num_infections focal = 1569
+2025-05-20 03:54:25 INFO     num_infections bkgrnd = 1569
+2025-05-20 03:54:50 INFO     num_infections focal = 1443
+2025-05-20 03:54:51 INFO     num_infections bkgrnd = 1443
+  Running 2021-03-16 (380/650) (10762.68 s)  •••••••••••————————— 59%
+2025-05-20 03:55:15 INFO     num_infections focal = 1436
+2025-05-20 03:55:16 INFO     num_infections bkgrnd = 1436
+2025-05-20 03:55:40 INFO     num_infections focal = 1460
+2025-05-20 03:55:41 INFO     num_infections bkgrnd = 1460
+2025-05-20 03:56:06 INFO     num_infections focal = 1482
+2025-05-20 03:56:07 INFO     num_infections bkgrnd = 1482
+2025-05-20 03:56:32 INFO     num_infections focal = 1486
+2025-05-20 03:56:33 INFO     num_infections bkgrnd = 1486
+2025-05-20 03:56:58 INFO     num_infections focal = 1573
+2025-05-20 03:56:59 INFO     num_infections bkgrnd = 1573
+2025-05-20 03:57:24 INFO     num_infections focal = 1626
+2025-05-20 03:57:25 INFO     num_infections bkgrnd = 1626
+2025-05-20 03:57:49 INFO     num_infections focal = 1549
+2025-05-20 03:57:50 INFO     num_infections bkgrnd = 1549
+2025-05-20 03:58:15 INFO     num_infections focal = 1664
+2025-05-20 03:58:16 INFO     num_infections bkgrnd = 1664
+2025-05-20 03:58:40 INFO     num_infections focal = 1584
+2025-05-20 03:58:41 INFO     num_infections bkgrnd = 1584
+2025-05-20 03:59:05 INFO     num_infections focal = 1726
+2025-05-20 03:59:06 INFO     num_infections bkgrnd = 1726
+  Running 2021-03-26 (390/650) (11018.06 s)  ••••••••••••———————— 60%
+2025-05-20 03:59:30 INFO     num_infections focal = 1705
+2025-05-20 03:59:31 INFO     num_infections bkgrnd = 1705
+2025-05-20 03:59:56 INFO     num_infections focal = 1749
+2025-05-20 03:59:56 INFO     num_infections bkgrnd = 1749
+2025-05-20 04:00:20 INFO     num_infections focal = 1726
+2025-05-20 04:00:21 INFO     num_infections bkgrnd = 1726
+2025-05-20 04:00:46 INFO     num_infections focal = 1736
+2025-05-20 04:00:46 INFO     num_infections bkgrnd = 1736
+2025-05-20 04:01:11 INFO     num_infections focal = 1767
+2025-05-20 04:01:12 INFO     num_infections bkgrnd = 1767
+2025-05-20 04:01:39 INFO     num_infections focal = 1864
+2025-05-20 04:01:40 INFO     num_infections bkgrnd = 1864
+2025-05-20 04:02:07 INFO     num_infections focal = 1868
+2025-05-20 04:02:08 INFO     num_infections bkgrnd = 1868
+2025-05-20 04:02:34 INFO     num_infections focal = 1878
+2025-05-20 04:02:35 INFO     num_infections bkgrnd = 1878
+2025-05-20 04:02:59 INFO     num_infections focal = 1887
+2025-05-20 04:03:00 INFO     num_infections bkgrnd = 1887
+2025-05-20 04:03:23 INFO     num_infections focal = 1981
+2025-05-20 04:03:24 INFO     num_infections bkgrnd = 1981
+  Running 2021-04-05 (400/650) (11275.92 s)  ••••••••••••———————— 62%
+2025-05-20 04:03:48 INFO     num_infections focal = 2003
+2025-05-20 04:03:49 INFO     num_infections bkgrnd = 2003
+2025-05-20 04:04:13 INFO     num_infections focal = 2090
+2025-05-20 04:04:14 INFO     num_infections bkgrnd = 2090
+2025-05-20 04:04:40 INFO     num_infections focal = 2065
+2025-05-20 04:04:41 INFO     num_infections bkgrnd = 2065
+2025-05-20 04:05:07 INFO     num_infections focal = 2147
+2025-05-20 04:05:08 INFO     num_infections bkgrnd = 2147
+2025-05-20 04:05:32 INFO     num_infections focal = 2060
+2025-05-20 04:05:33 INFO     num_infections bkgrnd = 2060
+2025-05-20 04:05:57 INFO     num_infections focal = 2092
+2025-05-20 04:05:58 INFO     num_infections bkgrnd = 2092
+2025-05-20 04:06:22 INFO     num_infections focal = 2228
+2025-05-20 04:06:23 INFO     num_infections bkgrnd = 2228
+2025-05-20 04:06:48 INFO     num_infections focal = 2196
+2025-05-20 04:06:48 INFO     num_infections bkgrnd = 2196
+2025-05-20 04:07:13 INFO     num_infections focal = 2154
+2025-05-20 04:07:14 INFO     num_infections bkgrnd = 2154
+2025-05-20 04:07:38 INFO     num_infections focal = 2174
+2025-05-20 04:07:39 INFO     num_infections bkgrnd = 2174
+  Running 2021-04-15 (410/650) (11531.41 s)  ••••••••••••———————— 63%
+2025-05-20 04:08:04 INFO     num_infections focal = 2283
+2025-05-20 04:08:04 INFO     num_infections bkgrnd = 2283
+2025-05-20 04:08:29 INFO     num_infections focal = 2291
+2025-05-20 04:08:30 INFO     num_infections bkgrnd = 2291
+2025-05-20 04:08:54 INFO     num_infections focal = 2293
+2025-05-20 04:08:55 INFO     num_infections bkgrnd = 2293
+2025-05-20 04:09:20 INFO     num_infections focal = 2343
+2025-05-20 04:09:21 INFO     num_infections bkgrnd = 2343
+2025-05-20 04:09:45 INFO     num_infections focal = 2289
+2025-05-20 04:09:46 INFO     num_infections bkgrnd = 2289
+2025-05-20 04:10:11 INFO     num_infections focal = 2252
+2025-05-20 04:10:12 INFO     num_infections bkgrnd = 2252
+2025-05-20 04:10:42 INFO     num_infections focal = 2299
+2025-05-20 04:10:43 INFO     num_infections bkgrnd = 2299
+2025-05-20 04:11:10 INFO     num_infections focal = 2216
+2025-05-20 04:11:11 INFO     num_infections bkgrnd = 2216
+2025-05-20 04:11:36 INFO     num_infections focal = 2304
+2025-05-20 04:11:37 INFO     num_infections bkgrnd = 2304
+2025-05-20 04:12:02 INFO     num_infections focal = 2225
+2025-05-20 04:12:03 INFO     num_infections bkgrnd = 2225
+  Running 2021-04-25 (420/650) (11795.87 s)  ••••••••••••———————— 65%
+2025-05-20 04:12:28 INFO     num_infections focal = 2263
+2025-05-20 04:12:29 INFO     num_infections bkgrnd = 2263
+2025-05-20 04:12:54 INFO     num_infections focal = 2179
+2025-05-20 04:12:54 INFO     num_infections bkgrnd = 2179
+2025-05-20 04:13:19 INFO     num_infections focal = 2231
+2025-05-20 04:13:20 INFO     num_infections bkgrnd = 2231
+2025-05-20 04:13:45 INFO     num_infections focal = 2278
+2025-05-20 04:13:46 INFO     num_infections bkgrnd = 2278
+2025-05-20 04:14:10 INFO     num_infections focal = 2269
+2025-05-20 04:14:11 INFO     num_infections bkgrnd = 2269
+2025-05-20 04:14:36 INFO     num_infections focal = 2148
+2025-05-20 04:14:37 INFO     num_infections bkgrnd = 2148
+2025-05-20 04:15:02 INFO     num_infections focal = 2269
+2025-05-20 04:15:03 INFO     num_infections bkgrnd = 2269
+2025-05-20 04:15:27 INFO     num_infections focal = 2237
+2025-05-20 04:15:28 INFO     num_infections bkgrnd = 2237
+2025-05-20 04:15:53 INFO     num_infections focal = 2157
+2025-05-20 04:15:54 INFO     num_infections bkgrnd = 2157
+2025-05-20 04:16:19 INFO     num_infections focal = 2181
+2025-05-20 04:16:20 INFO     num_infections bkgrnd = 2181
+  Running 2021-05-05 (430/650) (12052.66 s)  •••••••••••••——————— 66%
+2025-05-20 04:16:45 INFO     num_infections focal = 2065
+2025-05-20 04:16:46 INFO     num_infections bkgrnd = 2065
+2025-05-20 04:17:11 INFO     num_infections focal = 2127
+2025-05-20 04:17:12 INFO     num_infections bkgrnd = 2127
+2025-05-20 04:17:37 INFO     num_infections focal = 2082
+2025-05-20 04:17:38 INFO     num_infections bkgrnd = 2082
+2025-05-20 04:18:03 INFO     num_infections focal = 2054
+2025-05-20 04:18:04 INFO     num_infections bkgrnd = 2054
+2025-05-20 04:18:30 INFO     num_infections focal = 1998
+2025-05-20 04:18:30 INFO     num_infections bkgrnd = 1998
+2025-05-20 04:18:56 INFO     num_infections focal = 2008
+2025-05-20 04:18:56 INFO     num_infections bkgrnd = 2008
+2025-05-20 04:19:22 INFO     num_infections focal = 1997
+2025-05-20 04:19:23 INFO     num_infections bkgrnd = 1997
+2025-05-20 04:19:49 INFO     num_infections focal = 1922
+2025-05-20 04:19:50 INFO     num_infections bkgrnd = 1922
+2025-05-20 04:20:17 INFO     num_infections focal = 1934
+2025-05-20 04:20:17 INFO     num_infections bkgrnd = 1934
+2025-05-20 04:20:43 INFO     num_infections focal = 1910
+2025-05-20 04:20:44 INFO     num_infections bkgrnd = 1910
+  Running 2021-05-15 (440/650) (12320.04 s)  •••••••••••••——————— 68%
+2025-05-20 04:21:12 INFO     num_infections focal = 1865
+2025-05-20 04:21:13 INFO     num_infections bkgrnd = 1865
+2025-05-20 04:21:39 INFO     num_infections focal = 1851
+2025-05-20 04:21:39 INFO     num_infections bkgrnd = 1851
+2025-05-20 04:22:05 INFO     num_infections focal = 1865
+2025-05-20 04:22:06 INFO     num_infections bkgrnd = 1865
+2025-05-20 04:22:32 INFO     num_infections focal = 1858
+2025-05-20 04:22:33 INFO     num_infections bkgrnd = 1858
+2025-05-20 04:22:58 INFO     num_infections focal = 1769
+2025-05-20 04:22:59 INFO     num_infections bkgrnd = 1769
+2025-05-20 04:23:24 INFO     num_infections focal = 1831
+2025-05-20 04:23:25 INFO     num_infections bkgrnd = 1831
+2025-05-20 04:23:50 INFO     num_infections focal = 1796
+2025-05-20 04:23:51 INFO     num_infections bkgrnd = 1796
+2025-05-20 04:24:16 INFO     num_infections focal = 1775
+2025-05-20 04:24:17 INFO     num_infections bkgrnd = 1775
+2025-05-20 04:24:43 INFO     num_infections focal = 1677
+2025-05-20 04:24:44 INFO     num_infections bkgrnd = 1677
+2025-05-20 04:25:09 INFO     num_infections focal = 1710
+2025-05-20 04:25:10 INFO     num_infections bkgrnd = 1710
+  Running 2021-05-25 (450/650) (12584.26 s)  •••••••••••••——————— 69%
+2025-05-20 04:25:36 INFO     num_infections focal = 1641
+2025-05-20 04:25:37 INFO     num_infections bkgrnd = 1641
+2025-05-20 04:26:03 INFO     num_infections focal = 2452
+2025-05-20 04:26:04 INFO     num_infections bkgrnd = 2452
+2025-05-20 04:26:30 INFO     num_infections focal = 2421
+2025-05-20 04:26:31 INFO     num_infections bkgrnd = 2421
+2025-05-20 04:26:59 INFO     num_infections focal = 2329
+2025-05-20 04:27:00 INFO     num_infections bkgrnd = 2329
+2025-05-20 04:27:30 INFO     num_infections focal = 2294
+2025-05-20 04:27:32 INFO     num_infections bkgrnd = 2294
+2025-05-20 04:28:00 INFO     num_infections focal = 2404
+2025-05-20 04:28:01 INFO     num_infections bkgrnd = 2404
+2025-05-20 04:28:28 INFO     num_infections focal = 1752
+2025-05-20 04:28:29 INFO     num_infections bkgrnd = 1752
+2025-05-20 04:28:57 INFO     num_infections focal = 1883
+2025-05-20 04:28:58 INFO     num_infections bkgrnd = 1883
+2025-05-20 04:29:24 INFO     num_infections focal = 1920
+2025-05-20 04:29:25 INFO     num_infections bkgrnd = 1920
+2025-05-20 04:29:50 INFO     num_infections focal = 2077
+2025-05-20 04:29:51 INFO     num_infections bkgrnd = 2077
+  Running 2021-06-04 (460/650) (12864.54 s)  ••••••••••••••—————— 71%
+2025-05-20 04:30:17 INFO     num_infections focal = 2081
+2025-05-20 04:30:18 INFO     num_infections bkgrnd = 2081
+2025-05-20 04:30:43 INFO     num_infections focal = 2155
+2025-05-20 04:30:44 INFO     num_infections bkgrnd = 2155
+2025-05-20 04:31:10 INFO     num_infections focal = 2108
+2025-05-20 04:31:11 INFO     num_infections bkgrnd = 2108
+2025-05-20 04:31:36 INFO     num_infections focal = 2124
+2025-05-20 04:31:37 INFO     num_infections bkgrnd = 2124
+2025-05-20 04:32:02 INFO     num_infections focal = 2176
+2025-05-20 04:32:03 INFO     num_infections bkgrnd = 2176
+2025-05-20 04:32:29 INFO     num_infections focal = 2189
+2025-05-20 04:32:30 INFO     num_infections bkgrnd = 2189
+2025-05-20 04:32:54 INFO     num_infections focal = 2055
+2025-05-20 04:32:55 INFO     num_infections bkgrnd = 2055
+2025-05-20 04:33:20 INFO     num_infections focal = 2255
+2025-05-20 04:33:21 INFO     num_infections bkgrnd = 2255
+2025-05-20 04:33:46 INFO     num_infections focal = 2157
+2025-05-20 04:33:47 INFO     num_infections bkgrnd = 2157
+2025-05-20 04:34:15 INFO     num_infections focal = 2149
+2025-05-20 04:34:15 INFO     num_infections bkgrnd = 2149
+  Running 2021-06-14 (470/650) (13128.44 s)  ••••••••••••••—————— 72%
+2025-05-20 04:34:41 INFO     num_infections focal = 2190
+2025-05-20 04:34:41 INFO     num_infections bkgrnd = 2190
+2025-05-20 04:35:08 INFO     num_infections focal = 2183
+2025-05-20 04:35:08 INFO     num_infections bkgrnd = 2183
+2025-05-20 04:35:36 INFO     num_infections focal = 2233
+2025-05-20 04:35:37 INFO     num_infections bkgrnd = 2233
+2025-05-20 04:36:04 INFO     num_infections focal = 2187
+2025-05-20 04:36:05 INFO     num_infections bkgrnd = 2187
+2025-05-20 04:36:32 INFO     num_infections focal = 2242
+2025-05-20 04:36:33 INFO     num_infections bkgrnd = 2242
+2025-05-20 04:37:00 INFO     num_infections focal = 2233
+2025-05-20 04:37:01 INFO     num_infections bkgrnd = 2233
+2025-05-20 04:37:28 INFO     num_infections focal = 2328
+2025-05-20 04:37:29 INFO     num_infections bkgrnd = 2328
+2025-05-20 04:37:54 INFO     num_infections focal = 2267
+2025-05-20 04:37:55 INFO     num_infections bkgrnd = 2267
+2025-05-20 04:38:20 INFO     num_infections focal = 2415
+2025-05-20 04:38:20 INFO     num_infections bkgrnd = 2415
+2025-05-20 04:38:45 INFO     num_infections focal = 2312
+2025-05-20 04:38:46 INFO     num_infections bkgrnd = 2312
+  Running 2021-06-24 (480/650) (13398.70 s)  ••••••••••••••—————— 74%
+2025-05-20 04:39:11 INFO     num_infections focal = 2371
+2025-05-20 04:39:12 INFO     num_infections bkgrnd = 2371
+2025-05-20 04:39:36 INFO     num_infections focal = 2398
+2025-05-20 04:39:37 INFO     num_infections bkgrnd = 2398
+2025-05-20 04:40:02 INFO     num_infections focal = 2382
+2025-05-20 04:40:03 INFO     num_infections bkgrnd = 2382
+2025-05-20 04:40:28 INFO     num_infections focal = 2500
+2025-05-20 04:40:29 INFO     num_infections bkgrnd = 2500
+2025-05-20 04:40:54 INFO     num_infections focal = 2515
+2025-05-20 04:40:55 INFO     num_infections bkgrnd = 2515
+2025-05-20 04:41:20 INFO     num_infections focal = 2511
+2025-05-20 04:41:21 INFO     num_infections bkgrnd = 2511
+2025-05-20 04:41:45 INFO     num_infections focal = 2461
+2025-05-20 04:41:46 INFO     num_infections bkgrnd = 2461
+2025-05-20 04:42:11 INFO     num_infections focal = 2564
+2025-05-20 04:42:11 INFO     num_infections bkgrnd = 2564
+2025-05-20 04:42:36 INFO     num_infections focal = 2403
+2025-05-20 04:42:37 INFO     num_infections bkgrnd = 2403
+2025-05-20 04:43:02 INFO     num_infections focal = 2612
+2025-05-20 04:43:03 INFO     num_infections bkgrnd = 2612
+  Running 2021-07-04 (490/650) (13655.65 s)  •••••••••••••••————— 75%
+2025-05-20 04:43:28 INFO     num_infections focal = 2567
+2025-05-20 04:43:29 INFO     num_infections bkgrnd = 2567
+2025-05-20 04:43:55 INFO     num_infections focal = 2636
+2025-05-20 04:43:55 INFO     num_infections bkgrnd = 2636
+2025-05-20 04:44:20 INFO     num_infections focal = 2662
+2025-05-20 04:44:21 INFO     num_infections bkgrnd = 2662
+2025-05-20 04:44:45 INFO     num_infections focal = 2596
+2025-05-20 04:44:46 INFO     num_infections bkgrnd = 2596
+2025-05-20 04:45:11 INFO     num_infections focal = 2620
+2025-05-20 04:45:12 INFO     num_infections bkgrnd = 2620
+2025-05-20 04:45:37 INFO     num_infections focal = 2640
+2025-05-20 04:45:38 INFO     num_infections bkgrnd = 2640
+2025-05-20 04:46:05 INFO     num_infections focal = 2706
+2025-05-20 04:46:06 INFO     num_infections bkgrnd = 2706
+2025-05-20 04:46:31 INFO     num_infections focal = 2747
+2025-05-20 04:46:32 INFO     num_infections bkgrnd = 2747
+2025-05-20 04:46:57 INFO     num_infections focal = 2578
+2025-05-20 04:46:58 INFO     num_infections bkgrnd = 2578
+2025-05-20 04:47:25 INFO     num_infections focal = 2623
+2025-05-20 04:47:26 INFO     num_infections bkgrnd = 2623
+  Running 2021-07-14 (500/650) (13923.64 s)  •••••••••••••••————— 77%
+2025-05-20 04:47:56 INFO     num_infections focal = 2814
+2025-05-20 04:47:57 INFO     num_infections bkgrnd = 2814
+2025-05-20 04:48:25 INFO     num_infections focal = 2730
+2025-05-20 04:48:26 INFO     num_infections bkgrnd = 2730
+2025-05-20 04:48:51 INFO     num_infections focal = 2612
+2025-05-20 04:48:52 INFO     num_infections bkgrnd = 2612
+2025-05-20 04:49:18 INFO     num_infections focal = 2728
+2025-05-20 04:49:19 INFO     num_infections bkgrnd = 2728
+2025-05-20 04:49:44 INFO     num_infections focal = 2721
+2025-05-20 04:49:45 INFO     num_infections bkgrnd = 2721
+2025-05-20 04:50:11 INFO     num_infections focal = 2650
+2025-05-20 04:50:12 INFO     num_infections bkgrnd = 2650
+2025-05-20 04:50:37 INFO     num_infections focal = 2752
+2025-05-20 04:50:38 INFO     num_infections bkgrnd = 2752
+2025-05-20 04:51:04 INFO     num_infections focal = 2686
+2025-05-20 04:51:05 INFO     num_infections bkgrnd = 2686
+2025-05-20 04:51:31 INFO     num_infections focal = 2690
+2025-05-20 04:51:32 INFO     num_infections bkgrnd = 2690
+2025-05-20 04:52:02 INFO     num_infections focal = 2712
+2025-05-20 04:52:03 INFO     num_infections bkgrnd = 2712
+  Running 2021-07-24 (510/650) (14199.09 s)  •••••••••••••••————— 78%
+2025-05-20 04:52:31 INFO     num_infections focal = 2766
+2025-05-20 04:52:32 INFO     num_infections bkgrnd = 2766
+2025-05-20 04:53:00 INFO     num_infections focal = 2606
+2025-05-20 04:53:01 INFO     num_infections bkgrnd = 2606
+2025-05-20 04:53:27 INFO     num_infections focal = 2650
+2025-05-20 04:53:28 INFO     num_infections bkgrnd = 2650
+2025-05-20 04:54:03 INFO     num_infections focal = 2678
+2025-05-20 04:54:04 INFO     num_infections bkgrnd = 2678
+2025-05-20 04:54:37 INFO     num_infections focal = 2602
+2025-05-20 04:54:38 INFO     num_infections bkgrnd = 2602
+2025-05-20 04:55:05 INFO     num_infections focal = 2593
+2025-05-20 04:55:06 INFO     num_infections bkgrnd = 2593
+2025-05-20 04:55:33 INFO     num_infections focal = 2530
+2025-05-20 04:55:34 INFO     num_infections bkgrnd = 2530
+slurmstepd: error: *** JOB 56516827 ON vim-001 CANCELLED AT 2025-05-20T04:55:45 DUE TO TIME LIMIT ***
