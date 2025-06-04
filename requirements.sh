@@ -3,4 +3,4 @@
 set -e
 
 cd "$(dirname "$0")"
-python3 -m uv pip compile requirements.in > requirements.txt
+python3 -m uv pip compile requirements.in --python 3.10 > requirements.txt
