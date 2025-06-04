@@ -86,7 +86,7 @@ jobs:
         uses: pyvista/setup-headless-display-action@v2
       - run: |
           sudo apt-get update -y
-          sudo apt-get install -y ghostscript imagemagick python3-pil libgif-dev ffmpeg mat2 texlive-pictures poppler-utils
+          sudo apt-get install -y ghostscript imagemagick python3-pil libgif-dev ffmpeg mat2 texlive-latex-extra poppler-utils
           python -m pip install pip --upgrade
           sudo python -m pip install pip --upgrade
           sudo python -m pip install uv --upgrade
@@ -120,7 +120,7 @@ jobs:
         uses: pyvista/setup-headless-display-action@v2
       - run: |
           sudo apt-get update -y
-          sudo apt-get install -y ghostscript imagemagick python3-pil libgif-dev ffmpeg mat2 texlive-pictures poppler-utils
+          sudo apt-get install -y ghostscript imagemagick python3-pil libgif-dev ffmpeg mat2 texlive-latex-extra poppler-utils
           python -m pip install pip --upgrade
           sudo python -m pip install pip --upgrade
           sudo python -m pip install uv --upgrade
