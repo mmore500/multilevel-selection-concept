@@ -93,11 +93,11 @@ Nop-C        #  8:
 Nop-C        #  8:
 Search       #  9:  Drop flow head at start of copy loop
 Inst-Read    # 10:
-Inst-Write   # 11: 
+Inst-Write   # 11:
 Head-Push    # 12:  Get current position of...
 Nop-C        # 13:  - Read-Head
 If-Equal     # 14:  Test if we are done copying...
 Divide       # 15:  ...If so, divide.
 Head-Move    # 16:  ...If not, continue with loop.
 Nop-A        # 17:
-Nop-B		
+Nop-B

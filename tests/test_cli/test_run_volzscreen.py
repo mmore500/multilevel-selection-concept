@@ -53,11 +53,12 @@ def test_run_volzscreen_covaphastsim_smoke(hsurf_bits: int):
         check=True,
         env={"PYTHONPATH": f"{pwd}"},
         input=f"""
+cfg_n_imports_mx: 500
 cfg_maxseqlen: 300
 cfg_make_cv_sim_recipe: "make_cv_sim_uk"
 cfg_make_wt_specs_recipe: "make_wt_specs_uk"
 cfg_num_mut_sites: 1
-cfg_p_wt_to_mut: 0.01
+cfg_p_wt_to_mut: 2.74e-6
 cfg_p_seq_mut: 2.74e-6
 cfg_pop_size: 4000
 cfg_refseqs: "{assets}/alignedsequences.csv"
@@ -109,6 +110,7 @@ def test_run_volzscreen_covasim_smoke(hsurf_bits: int):
         check=True,
         env={"PYTHONPATH": f"{pwd}"},
         input=f"""
+cfg_n_imports_mx: 500
 cfg_maxseqlen: 20
 cfg_make_cv_sim_recipe: "make_cv_sim_uk"
 cfg_make_wt_specs_recipe: "make_wt_specs_uk"

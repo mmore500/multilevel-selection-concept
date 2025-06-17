@@ -1,5 +1,8 @@
+import logging
+
 import covasim as cv
 import numpy as np
+from scipy import stats as scipy_stats
 
 from ._VariantFlavor import VariantFlavor
 
@@ -51,6 +54,9 @@ class SyncHostCompartmentsBackground:
 
         ## sync covasim to host compartments
         #######################################################################
+        logging.info(
+            f"num_infections bkgrnd = {len(log[self._infection_log_pos :])}",
+        )
         for entry in log[self._infection_log_pos :]:
             source, target, variant, date = (
                 entry["source"],
@@ -76,8 +82,8 @@ class SyncHostCompartmentsBackground:
             # zero out non-infectious/exposed compartments
             compartments[target, :, :] = 0.0
 
-            # init w/ covasim infectious variant
-            compartments[target, variant, :] = 1.0
+            for bg_site, variant in enumerate(variant):
+                compartments[target, variant, bg_site] = 1.0
 
         self._infection_log_pos = len(log)
 
@@ -96,9 +102,7 @@ class SyncHostCompartmentsBackground:
             )
             if not num_doublings > 0:
                 raise ValueError
-            p_per_doubling = 1.0 - np.power(
-                1.0 - variant_flavor.p_wt_to_mut, 1 / num_doublings
-            )
+            p_per_doubling = variant_flavor.p_wt_to_mut
 
             wt_growth_per_doubling = variant_flavor.withinhost_r_wt ** (
                 1 / num_doublings
@@ -110,6 +114,7 @@ class SyncHostCompartmentsBackground:
                 )
                 < 1e-6
             )
+            assert wt_growth_per_doubling >= 1
             for __ in range(num_doublings):
                 compartments[:, offset, :] *= wt_growth_per_doubling
                 compartments[:, offset + 1, :] *= wt_growth_per_doubling
@@ -133,13 +138,17 @@ class SyncHostCompartmentsBackground:
                 compartments[:, offset + 1, :] -= num_reversions
 
         # apply within-host carrying capacity
-        compartments /= (
+        divisor = (
             np.maximum(
                 compartments.sum(axis=1, keepdims=True),
                 self._host_capacity,
             )
             / self._host_capacity
         )
+        assert np.all(divisor >= 1.0)
+        assert np.isfinite(divisor).all()
+        compartments /= divisor
+        assert np.isfinite(compartments).all()
 
         ## sync host compartments to covasim "infectious variant"
         #######################################################################
@@ -164,6 +173,10 @@ class SyncHostCompartmentsBackground:
             np.nan,
         )
         assert len(sampled_strains) == compartments_.shape[0]
+        assert sampled_strains.shape == (
+            compartments_.shape[0],
+            compartments_.shape[2],
+        )
 
         self._last_sampled_strains = np.where(
             ~np.isnan(sampled_strains),
@@ -175,14 +188,36 @@ class SyncHostCompartmentsBackground:
         self._infectious_variants_log.append(sampled_strains)
 
         ## sample variants of record
+        upper_bound = scipy_stats.binom.isf(
+            1e-9,
+            compartments_.shape[2],
+            p_per_doubling * num_doublings * 8,
+        )
         for who in np.flatnonzero(self._infection_days_elapsed >= 8):
             entry = self._infection_log_entries[who]
             assert entry is not None
             assert not (self._last_sampled_strains[who] == 0).any()
             variant = self._last_sampled_strains[who].astype(int)
-            entry["sequence_background"] = "".join(
-                ["'", "+"][v % 2] for v in variant
+            assert (np.clip(variant, 1, num_variants - 1) == variant).all()
+            sampled_strain = "".join(["'", "+"][v % 2] for v in variant)
+
+            num_changes = sum(
+                x != y
+                for x, y in zip(entry["sequence_background"], sampled_strain)
             )
+            assert (
+                num_changes <= upper_bound
+            ), f"""
+{num_changes=}
+{variant=}
+{who=}
+{entry=}
+{sampled_strain=}
+{upper_bound=}
+{p_per_doubling=}
+{compartments_.shape[2]=}
+"""
+            entry["sequence_background"] = sampled_strain
             self._infection_log_entries[who] = None
 
         self._infection_days_elapsed *= self._infection_days_elapsed < 8
