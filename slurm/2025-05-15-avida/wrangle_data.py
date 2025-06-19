@@ -1,8 +1,10 @@
 import glob
+import os
 import sys
 import uuid
 import polars as pl
 pl.enable_string_cache()
+pl.Config.set_streaming_chunk_size(500)
 
 pattern = sys.argv[1]
 
@@ -46,11 +48,13 @@ translation_dict_test = {
 
 seq_dict = {translation_dict_test[k] : k for k in translation_dict_test}
 
+j = 200
 
-dfs = []
+for dir in dirs[j:]:
+    if os.path.exists(f"intermediate_{j}.parquet"):
+        continue
 
-for dir in dirs:
-    print(dir)
+    print(dir, flush=True)
     rep_uuid = str(uuid.uuid4())
     replicate_num = dir.split("/")[-1].split("-")[-1]
     trt_name = dir.split("/")[-2]
@@ -68,8 +72,9 @@ for dir in dirs:
             f"{i}: {char}" for i, char in enumerate(seq) if i < len(ancestral_seq) and char != ancestral_seq[i]
         ) + "}"
 
-    for phylo in glob.glob(f"{dir}/phylogeny-snapshot*.csv"):
-
+    for k, phylo in enumerate(glob.glob(f"{dir}/phylogeny-snapshot*.csv")):
+        if os.path.exists(f"very_intermediate_{j}_{k}.parquet"):
+            continue
         # sequence_diff_expr = (
         #     # pl.col("sequence").str.split("").
         #     ("{" +
@@ -93,7 +98,7 @@ for dir in dirs:
         #         + '}').alias("sequence_diff")
         # )
 
-        lf = pl.scan_csv(phylo, infer_schema_length=0).with_columns([
+        lf = pl.scan_csv(phylo, infer_schema_length=0).select([
             pl.lit(rep_uuid).alias("replicate_uuid").cast(pl.Categorical),
             pl.lit(replicate_num).alias("replicate_num"),
             pl.lit(trt_name).alias("trt_name"),
@@ -102,26 +107,18 @@ for dir in dirs:
             pl.col("deme").cast(pl.Int64).alias("mlsgroup_id"),
             pl.col("sequence").map_elements(compute_diff, return_dtype=pl.String).alias("sequence_diff"),
             pl.col("ancestor_list").str.strip_chars("[]").alias("ancestor_id")
-        ]).group_by("id").agg([
-            pl.first("replicate_uuid"),
-            pl.first("replicate_num"),
-            pl.first("trt_name"),
-            pl.first("ancestral_sequence"),
-            pl.first("origin_time"),
-            pl.first("mlsgroup_id"),
-            pl.first("ancestor_id"),
-            pl.first("sequence_diff")
         ])
+        lf.sink_parquet(f"very_intermediate_{j}_{k}.parquet", engine="streaming", maintain_order=False)
 
-        dfs.append(lf)
+    intermediate_parts = pl.scan_parquet(f"very_intermediate_{j}_*.parquet").unique()
+    intermediate_parts.sink_parquet(f"intermediate_{j}.parquet", engine="streaming", maintain_order=False)
+    j += 1
 
-print("Concatenating dataframes...")
-full_df = pl.concat(dfs)
 
-print(full_df.explain(engine="streaming"))
+# print(full_df.explain(engine="streaming"))
 
-print("Writing final dataframe to parquet...")
-full_df.sink_parquet("2025-05-15-avida.parquet")
+all_parts = pl.scan_parquet("intermediate_*.parquet")
+all_parts.sink_parquet(sys.argv[2], engine="streaming", maintain_order=False)
 
 # print("Finalizing dataframe...")
 # final_df = (
