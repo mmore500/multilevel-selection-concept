@@ -2,7 +2,7 @@ import glob
 import sys
 import uuid
 import polars as pl
-
+pl.enable_string_cache()
 
 pattern = sys.argv[1]
 
@@ -69,23 +69,40 @@ for dir in dirs:
         ) + "}"
 
     for phylo in glob.glob(f"{dir}/phylogeny-snapshot*.csv"):
-        lf = pl.read_csv(phylo, infer_schema_length=0).lazy()
 
-        lf = lf.with_columns([
-            pl.lit(rep_uuid).alias("replicate_uuid"),
+        # sequence_diff_expr = (
+        #     # pl.col("sequence").str.split("").
+        #     ("{" +
+        #         # pl.concat_list([
+        #         #     pl.col("sequence").str.split(""),
+        #         #     pl.col("ancestral_sequence").str.split("")
+        #         # ])
+        #         pl.col("sequence").str.split("").eval(
+        #             pl.when(pl.element() != a.list.get(pl.int_range(pl.len())))
+        #             .then(
+        #                 pl.format(
+        #                     "{}: {}",
+        #                     pl.int_range(pl.len()),
+        #                     pl.element()
+        #                 )
+        #             )
+        #             .otherwise(None)
+        #         )
+        #         .list.drop_nulls()
+        #         .list.join(", ").cast(pl.String)
+        #         + '}').alias("sequence_diff")
+        # )
+
+        lf = pl.scan_csv(phylo, infer_schema_length=0).with_columns([
+            pl.lit(rep_uuid).alias("replicate_uuid").cast(pl.Categorical),
             pl.lit(replicate_num).alias("replicate_num"),
             pl.lit(trt_name).alias("trt_name"),
-            pl.lit(ancestral_seq).alias("ancestral_sequence"),
+            pl.lit(ancestral_seq).alias("ancestral_sequence").cast(pl.Categorical),
             pl.col("origin_time").cast(pl.Int64),
             pl.col("deme").cast(pl.Int64).alias("mlsgroup_id"),
-            pl.col("ancestor_list").str.strip_chars("[]").alias("ancestor_id"),
-        ])
-
-        lf = lf.with_columns([
-            pl.col("sequence").map_elements(lambda seq: compute_diff(seq), return_dtype=pl.String).alias("sequence_diff")
-        ])
-
-        lf = lf.group_by("id").agg([
+            pl.col("sequence").map_elements(compute_diff, return_dtype=pl.String).alias("sequence_diff"),
+            pl.col("ancestor_list").str.strip_chars("[]").alias("ancestor_id")
+        ]).group_by("id").agg([
             pl.first("replicate_uuid"),
             pl.first("replicate_num"),
             pl.first("trt_name"),
@@ -101,15 +118,16 @@ for dir in dirs:
 print("Concatenating dataframes...")
 full_df = pl.concat(dfs)
 
-print("Finalizing dataframe...")
-final_df = (
-    full_df
-    .collect()
-    .with_columns([
-        pl.col("replicate_uuid").cast(pl.Categorical),
-        pl.col("ancestral_sequence").cast(pl.Categorical)
-    ])
-)
+print(full_df.explain(engine="streaming"))
 
 print("Writing final dataframe to parquet...")
-final_df.write_parquet("2025-05-15-avida.parquet")
+full_df.sink_parquet("2025-05-15-avida.parquet")
+
+# print("Finalizing dataframe...")
+# final_df = (
+#     full_df
+#     .collect(streaming=True)
+# )
+
+# print("Writing final dataframe to parquet...")
+# final_df.write_parquet("2025-05-15-avida.parquet")
