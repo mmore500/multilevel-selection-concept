@@ -52,6 +52,7 @@ j = 200
 
 for dir in dirs[j:]:
     if os.path.exists(f"intermediate_{j}.parquet"):
+        j+=1
         continue
 
     print(dir, flush=True)
@@ -73,8 +74,6 @@ for dir in dirs[j:]:
         ) + "}"
 
     for k, phylo in enumerate(glob.glob(f"{dir}/phylogeny-snapshot*.csv")):
-        if os.path.exists(f"very_intermediate_{j}_{k}.parquet"):
-            continue
         # sequence_diff_expr = (
         #     # pl.col("sequence").str.split("").
         #     ("{" +
@@ -104,6 +103,8 @@ for dir in dirs[j:]:
             pl.lit(trt_name).alias("trt_name"),
             pl.lit(ancestral_seq).alias("ancestral_sequence").cast(pl.Categorical),
             pl.col("origin_time").cast(pl.Int64),
+            pl.col("destruction_time").cast(pl.Int64),
+            pl.col("id").cast(pl.Int64),
             pl.col("deme").cast(pl.Int64).alias("mlsgroup_id"),
             pl.col("sequence").map_elements(compute_diff, return_dtype=pl.String).alias("sequence_diff"),
             pl.col("ancestor_list").str.strip_chars("[]").alias("ancestor_id")
