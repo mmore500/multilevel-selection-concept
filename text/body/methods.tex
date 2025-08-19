@@ -136,7 +136,7 @@ Within each infected host, we seeded an aggregate count for copies of the infect
 Then, as day cycles elapsed in the primary model, aggregate genotype counts grew through a doubling process up to a fixed within-host carrying capacity.
 With each doubling, counts of mutants to other possible genotypes were drawn from a binomial distribution.
 These mutant counts were subtracted from their source genotype aggregate and added to their destination genotype aggregate.
-In this manner, we sought to capture Luria–Delbruck dynamics where mutants that arose by chance early in an infection had a greater impact on population composition than mutants arising later on \citep{luriaMutationsBacteriaVirus1943}.
+In this manner, we sought to capture Luria-Delbruck dynamics where mutants that arose by chance early in an infection had a greater impact on population composition than mutants arising later on \citep{luriaMutationsBacteriaVirus1943}.
 To tie within-host dynamics back to the Covasim model of host-to-host transmission, we sampled a genotype at random from each active within-host population and wrote its corresponding strain identifier back to Covasim's ``active strain'' identifier for its host.
 This process was performed between each daily update cycle, allowing the genetic composition of transmission events to fluctuate stochastically over time based on the composition of the within-host population.
 

@@ -12,11 +12,11 @@ We discuss the fitness effect screen component performance first, followed by di
 
 \input{fig/results-vanilla-example}
 
-As a first step in evaluating our comparator-based approach for assessing MDC fitness outcomes, we compared the results of sample assays for deleterious between-host transmission effects across Gneu/Sneu, Gneu/Sben, and Gdel/Sben treatments.
+As a first step in evaluating our comparator-based approach for assessing MDC fitness outcomes, we compared the results of sample assays for deleterious between-host transmission effects across true MLS (Sben/Gdel) and control (Sneu/Gneu and Sben/Gneu) treatments.
 For illustrative purposes, we show as examples the strongest-surveyed 2$\times$ magnitude for Gdel and Sben effects.
 
 Figure \ref{fig:results-vanilla-example} compares the distribution percentile-normalized clade fitness statistics for focal MDCs across the neutral, within-host advantage, and true multilevel selection tradeoff treatments.
-For multilevel selection Gdel/Sben conditions, bootstrap testing indicates the mean percentile ranking of MDC clade sizes and durations to both be significantly below the 50th percentile (%$\mu=TODO$,
+For multilevel selection Sben/Gdel conditions, bootstrap testing indicates the mean percentile ranking of MDC clade sizes and durations to both be significantly below the 50th percentile (%$\mu=TODO$,
 $p<0.001$;
 %$\mu=TODO$,
 $p<0.001$).
@@ -25,10 +25,10 @@ Note that MDC fitness effects are falsely detected under Sben/Gneu conditions wh
 $p=0.004$;
 %$\mu=TODO$,
 $p=0.004$).
-Indeed, we found the naive approach where every MDC was included in the comparator set for all other MDCs to generally produce a high false-positive rate across Gneu/Sneu and Gneu/Sben tests.
+Indeed, we found the naive approach where every MDC was included in the comparator set for all other MDCs to generally produce a high false-positive rate across Sneu/Gneu and Sben/Gneu tests.
 However, as seen in this example, we found that binning comparator sets by simulation month was effective in improving test specificity, and so adopted the approach of partitioning comparator sets by month for all subsequently-discussed results.
 
-For Gneu/Sneu conditions shown in Figure \ref{fig:results-vanilla-example}, note that too few mutations were observed for the bootstrap test to be considered reliable.
+For Sneu/Gneu conditions shown in Figure \ref{fig:results-vanilla-example}, note that too few mutations were observed for the bootstrap test to be considered reliable.
 
 \subsection{Fitness Effect Screen}
 
@@ -41,7 +41,7 @@ Experiments were conducted under baseline ``vanilla'' configuration.
 %Excluding replicates with fewer than 30 observed MDCs (due to bootstrap unreliability for small sample sizes),
 0/5 replicates with true neutral focal sites screened positive at $\alpha=0.05$ (although all 5 of these replicates had too few observed MDCs for a reliable bootstrap analysis).
 Across the tested Sben/Gneu effect sizes, 1/15 focal sites screened positive. However, this replicate had fewer than 30 observed MDCs, making the bootstrap analysis unreliable.
-For true Sben/Gdel multilevel-selection effect conditions, we detected clade fitness statistics below the 50th percentile for all 5 $2\times$ effect size replicates.
+Under true multilevel selection conditions (Sben/Gdel), we detected clade fitness statistics below the 50th percentile for all five $2\times$ effect size replicates.
 However, sensitivity was insufficient to reliably detect smaller $1.1\times$ and $1.3\times$ effect sizes, with only 2/10 replicates screening positive.
 
 \subsection{Fitness Effect Screen: Dataset Size}
@@ -58,7 +58,7 @@ We next assessed the robustness of comparator-based screens for negative MDC-ass
 For these experiments, we utilized Covasim configurations modeling vaccine rollout and public health policies over the course of the pre-omicron COVID-19 pandemic.
 Due to significantly lower case counts within this configuration, we conducted all trials at the larger 1.2 million host population size in order to achieve a pathogen phylogeny dataset size comparable to baseline conditions.
 Under these conditions, we found comparable sensitivity, with true positive detections in 5/5 trials under $2\times$ effect size.
-However, for smaller, $1.1\times$ and $1.3\times$ effect sizes, true Sben/Gdel dynamics were only detected in 1/10 replicates (and the number of MDCs was too low for bootstrap reliability).
+However, for smaller, $1.1\times$ and $1.3\times$ effect sizes, true multilevel selection dynamics (Sben/Gdel) were only detected in 1/10 replicates (and the number of MDCs was too low for bootstrap reliability).
 We also found specificity to be comparable to baseline conditions, with false positive detections in 3/20 trials (all with too few MDCs for reliability).
 Supplementary Figure \ref{fig:uk-summary-results} summarizes these results.
 
@@ -67,10 +67,10 @@ Supplementary Figure \ref{fig:uk-summary-results} summarizes these results.
 Finally, we assessed the robustness of comparator-based screens for negative fitness effects in the presence of strong background inter-clade fitness differentials.
 For these experiments, we extended our baseline Covasim configuration to incorporate introduction of alpha, beta, and gamma strains over the course of the pandemic.
 In addition to partitioning MDC comparator sets by month, as was performed for other assays, for these trials we additionally assessed further partitioning by strain ID (e.g., wildtype, alpha, beta, etc.).
-We include these strain-partitioned results in Supplementary Figure \ref{fig:multistrain-summary-results}, although did not find appreciable effects of this further clade-based partitioning.
+We include these strain-partitioned results in Supplementary Figure \ref{fig:multistrain-summary-results}, although we did not find appreciable effects of this further clade-based partitioning.
 
 As before, under month-by-month partitioning of comparator sets, we found reliable sensitivity under a strong $2\times$ effect size.
-Again, though, at smaller, $1.1\times$ and $1.3\times$ effect sizes, true Sben/Gdel dynamics were detected in only 4/10 trials.
+Again, though, at smaller, $1.1\times$ and $1.3\times$ effect sizes, true multilevel selection dynamics (Sben/Gdel) were detected in only 4/10 trials.
 False positive detections occurred in 2/20 trials.
 
 \subsection{Mutation Frequency Screen}
