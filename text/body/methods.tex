@@ -18,11 +18,11 @@ We adopt the strategy proposed by \citep{BonettiFranceschi2024phylogenetic}, whe
 \item being associated with smaller, shorter-lived clades than expected for neutral mutations (due to longer-term disadvantage).
 \end{enumerate}
 
-This approach, then, requires two types of information: (1) genome sequences, so that the sets of mutations carried by different individuals in a population can be identified and (2) phylogenies, so that lineage history outcomes may be assessed.
+This approach, then, requires two types of information: (1) genome sequences, so that the sets of mutations carried by different individuals in a population can be identified, and (2) phylogenies, so that lineage history outcomes may be assessed.
 In biological study systems, these two types of data are typically intrinsically linked because phylogenies are inferred from genome sequences.
 
 In digital study systems, phylogeny is usually tracked directly and the exact point at which a mutation originated can be recorded.
-Howevever, direct tracking is impossible in some scenarios like biological model systems or very large-scale digital simulations. In these systems, much as in biology, the point in evolutionary history where mutations actually arose must be estimated.
+However, direct tracking is impractical in some scenarios, like biological model systems or very large-scale digital simulations. In these systems, much as in biology, the point in evolutionary history where mutations actually arose must be estimated.
 \citet{BonettiFranceschi2024phylogenetic} use an \textit{ad hoc} approach to accomplish this estimation. They label tips (i.e., extant taxa) according to whether or not they contain a given mutation and identify inner nodes for which $\geq75\%$ of descendant tips on one daughter branch contain a mutation but $<75\%$ of nodes on the other do not contain that mutation.
 The clade of individuals that share a mutation through common descent is termed as a \textit{Mutation-Defined Clade (MDC)}.
 In this work, we use direct tracking approaches and the term MDC instead refers to the exact point at which a mutation arises.
@@ -35,7 +35,7 @@ In the next section, we will describe the original statistical algorithm propose
 \subsection{Fitness Effect Screen Methodology}
 
 One of the challenges of characterizing fitness outcomes from a phylogeny is accounting for confounding factors contributing to clade fates.
-Several possible examples include: further clade history after the point at which a clade is sampled (e.g., recency bias), differences in genetic background having effects on selection (e.g., emergence of high-transmission SARS-CoV-2 strains like alpha, beta, omicron, etc.), time-varying environmental effects (e.g., habitat/resource availability, predation).
+Several possible examples include: further clade history after the point at which a clade is sampled (e.g., recency bias), differences in genetic background having effects on selection (e.g., emergence of high-transmission SARS-CoV-2 strains like alpha, beta, omicron, etc.), and time-varying environmental effects (e.g., habitat/resource availability, predation).
 
 \citet{BonettiFranceschi2024phylogenetic} propose an elegant approach to account for these issues: compare each MDC and its nearest non-ancestral relative (its ``sister'' clade).
 % These clades and,
@@ -64,7 +64,7 @@ The first two properties are, respectively, measured as 1) the ratio between the
 
 The third metric has a more subtle calculation and interpretation.
 \citet{Volz2023} demonstrates that the relative growth rate between two clades can be estimated by performing binary logistic regression.
-In this approach, membership in clade A versus clade B is considered as a binary response variable and the predictor variable is taken as chronological time.%
+In this approach, membership in clade A versus clade B is considered as a binary response variable, and the predictor variable is taken as chronological time.%
 \footnote{%
 Logistic regressions are moderately computationally expensive to perform,
 In anecdotal testing, we found directionally-consistent results with orders-of-magnitude faster runtime could be achieved by applying recently-proposed fast approximations for binary logistic regression \citep{Saran2025}.
@@ -126,7 +126,7 @@ Experiments were parameterized to model the original Wuhan Covid-19 strain, exce
 Due to practical limitations, we used a baseline population size of 200,000 agents in most cases.
 However, to assess the effect of dataset size on detection sensitivity, we replicated some experiments with a larger population size of 1.2 million agents.
 
-Although the Covasim framework included capability for representing a fixed number of predefined strains arising at predetermined timepoints, in order to model the \textit{in situ} evolution of genetic traits we had to extend the existing code with a within-host evolution model, which we describe next.
+Although the Covasim framework included capability to represent a fixed number of predefined strains arising at predetermined timepoints, in order to model the \textit{in situ} evolution of genetic traits we had to extend the existing code with a within-host evolution model, which we describe next.
 
 \subsubsection{Within-host Model}
 
@@ -140,7 +140,7 @@ In this manner, we sought to capture Luria–Delbruck dynamics where mutants tha
 To tie within-host dynamics back to the Covasim model of host-to-host transmission, we sampled a genotype at random from each active within-host population and wrote its corresponding strain identifier back to Covasim's ``active strain'' identifier for its host.
 This process was performed between each daily update cycle, allowing the genetic composition of transmission events to fluctuate stochastically over time based on the composition of the within-host population.
 
-We parameterized the per-replication mutation rate, within-host carrying capacity, and doubling rate of within-host viral growth as $2\times10^{-6}$ probability per site, $10^{10}$ viral particles, and 4 hours respectively based on reference figures from empirical literature \citep{Markov2023,Sender2021,Gunawardana2022}.
+We parameterized the per-replication mutation rate, within-host carrying capacity, and doubling rate of within-host viral growth as $2\times10^{-6}$ probability per site, $10^{10}$ viral particles, and 4 hours, respectively, based on reference figures from empirical literature \citep{Markov2023,Sender2021,Gunawardana2022}.
 
 In our experiments, we defined a ``focal'' genome site, which was used as the target for testing screening methods.
 However, evaluations also required additional neutral ``background'' genome sites in order to assess the capabilities of screens to selectively identify the properties of the focal site.
