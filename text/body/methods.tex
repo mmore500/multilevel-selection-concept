@@ -22,7 +22,7 @@ This approach, then, requires two types of information: (1) genome sequences, so
 In biological study systems, these two types of data are typically intrinsically linked because phylogenies are inferred from genome sequences.
 
 In digital study systems, phylogeny is usually tracked directly and the exact point at which a mutation originated can be recorded.
-However, direct tracking is impractical in some scenarios, like biological model systems or very large-scale digital simulations. In these systems, much as in biology, the point in evolutionary history where mutations actually arose must be estimated.
+However, direct tracking is impractical in some scenarios, like biological model systems or very large-scale digital simulations \citep{ackley2023robust,moreno2024trackable}. In these systems, much as in biology, the point in evolutionary history where mutations actually arose must be estimated.
 \citet{BonettiFranceschi2024phylogenetic} use an \textit{ad hoc} approach to accomplish this estimation. They label tips (i.e., extant taxa) according to whether or not they contain a given mutation and identify inner nodes for which $\geq75\%$ of descendant tips on one daughter branch contain a mutation but $<75\%$ of nodes on the other do not contain that mutation.
 The clade of individuals that share a mutation through common descent is termed as a \textit{Mutation-Defined Clade (MDC)}.
 In this work, we use direct tracking approaches and the term MDC instead refers to the exact point at which a mutation arises.
