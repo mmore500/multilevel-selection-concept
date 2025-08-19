@@ -15,6 +15,14 @@ find . -type d -name conduit -exec rm -rf {} +
 find . -type d -name docs -exec rm -rf {} +
 find . -type d -empty -delete
 
+find ./binder -type f -name "*.pdf" -print | while read -r f; do
+    base=$(basename "$f" .pdf)   # strip .pdf extension
+    if ! grep -qF "$base" ./**/*.tex 2>/dev/null; then
+        echo rm "$f"
+        rm "$f"
+    fi
+done
+
 rm -f arxiv.tar.gz
 git checkout bibl.bib
 make cleaner
