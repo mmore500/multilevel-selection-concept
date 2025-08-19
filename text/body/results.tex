@@ -38,7 +38,7 @@ Given the promising results from example screens shown in Figure \ref{fig:result
 Figure \ref{fig:vanilla-summary-results} summarizes bootstrap tests for depression of mean normalized clade size and duration associated with focal MDCs.
 Experiments were conducted under baseline ``vanilla'' configuration.
 
-%Excluding replicates with fewer than 30 observed MDCs (due to booststrap unreliability for small sample sizes),
+%Excluding replicates with fewer than 30 observed MDCs (due to bootstrap unreliability for small sample sizes),
 0/5 replicates with true neutral focal sites screened positive at $\alpha=0.05$ (although all 5 of these replicates had too few observed MDCs for a reliable bootstrap analysis).
 Across the tested Sben/Gneu effect sizes, 1/15 focal sites screened positive. However, this replicate had fewer than 30 observed MDCs, making the bootstrap analysis unreliable.
 For true Sben/Gdel multilevel-selection effect conditions, we detected clade fitness statistics below the 50th percentile for all 5 $2\times$ effect size replicates.
@@ -54,9 +54,9 @@ Figure \ref{fig:vanilla-summary-results:fit-effect-big} shows these results.
 
 \subsection{Fitness Effect Screen: Environmental Fluctuations}
 
-We next assessed robustness of comparator-based screens for negative MDC-associated fitness effects over populations under the influence of extrinsic, time-varying environmental factors.
+We next assessed the robustness of comparator-based screens for negative MDC-associated fitness effects over populations under the influence of extrinsic, time-varying environmental factors.
 For these experiments, we utilized Covasim configurations modeling vaccine rollout and public health policies over the course of the pre-omicron COVID-19 pandemic.
-Due to significantly lower case counts within this configuration, we conducted all trials at the larger 1.2 million host population size in order to achieve pathogen phylogeny dataset size comparable to baseline conditions.
+Due to significantly lower case counts within this configuration, we conducted all trials at the larger 1.2 million host population size in order to achieve a pathogen phylogeny dataset size comparable to baseline conditions.
 Under these conditions, we found comparable sensitivity, with true positive detections in 5/5 trials under $2\times$ effect size.
 However, for smaller, $1.1\times$ and $1.3\times$ effect sizes, true Sben/Gdel dynamics were only detected in 1/10 replicates (and the number of MDCs was too low for bootstrap reliability).
 We also found specificity to be comparable to baseline conditions, with false positive detections in 3/20 trials (all with too few MDCs for reliability).
@@ -64,7 +64,7 @@ Supplementary Figure \ref{fig:uk-summary-results} summarizes these results.
 
 \subsection{Fitness Effect Screen: Adaptive Dynamics}
 
-Finally, we assessed robustness of comparator-based screens for negative fitness effects in the presence of strong background inter-clade fitness differentials.
+Finally, we assessed the robustness of comparator-based screens for negative fitness effects in the presence of strong background inter-clade fitness differentials.
 For these experiments, we extended our baseline Covasim configuration to incorporate introduction of alpha, beta, and gamma strains over the course of the pandemic.
 In addition to partitioning MDC comparator sets by month, as was performed for other assays, for these trials we additionally assessed further partitioning by strain ID (e.g., wildtype, alpha, beta, etc.).
 We include these strain-partitioned results in Supplementary Figure \ref{fig:multistrain-summary-results}, although did not find appreciable effects of this further clade-based partitioning.
