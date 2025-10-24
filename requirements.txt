@@ -16,9 +16,9 @@ astropy==6.1.7
     # via
     #   -r requirements.in
     #   hstrat
-astropy-iers-data==0.2025.6.2.0.38.23
+astropy-iers-data==0.2025.10.20.0.39.8
     # via astropy
-attrs==25.3.0
+attrs==25.4.0
     # via
     #   jsonschema
     #   pytest
@@ -31,7 +31,7 @@ backstrip==0.2.4
     # via
     #   -r requirements.in
     #   pecking
-beautifulsoup4==4.13.4
+beautifulsoup4==4.14.2
     # via
     #   google
     #   nbconvert
@@ -40,7 +40,7 @@ biopython==1.85
     #   -r requirements.in
     #   alifedata-phyloinformatics-convert
     #   phastsim
-bitarray==3.4.2
+bitarray==3.7.2
     # via
     #   bitstring
     #   hstrat
@@ -50,12 +50,12 @@ black==22.10.0
     # via -r requirements.in
 bleach==6.2.0
     # via nbconvert
-click==8.2.1
+click==8.3.0
     # via
     #   alifedata-phyloinformatics-convert
     #   black
     #   keyname
-comm==0.2.2
+comm==0.2.3
     # via ipykernel
 contourpy==1.3.2
     # via matplotlib
@@ -63,7 +63,7 @@ covasim==3.1.6
     # via -r requirements.in
 cycler==0.12.1
     # via matplotlib
-debugpy==1.8.14
+debugpy==1.8.17
     # via ipykernel
 decorator==5.2.1
     # via
@@ -101,11 +101,11 @@ exceptiongroup==1.3.0
     # via pytest
 execnet==2.1.1
     # via pytest-xdist
-fastjsonschema==2.21.1
+fastjsonschema==2.21.2
     # via nbformat
 fishersrc==0.1.15
     # via hstrat
-fonttools==4.58.1
+fonttools==4.60.1
     # via matplotlib
 frozendict==2.4.6
     # via
@@ -113,29 +113,31 @@ frozendict==2.4.6
     #   backstrip
 gitdb==4.0.12
     # via gitpython
-gitpython==3.1.44
+gitpython==3.1.45
     # via sciris
 google==3.0.0
     # via phastsim
-hstrat==1.20.11
+hstrat==1.20.16
     # via -r requirements.in
 hurry-filesize==0.9
     # via nbmetalog
-idna==3.10
+idna==3.11
     # via yarl
 importlib-metadata==8.7.0
     # via watermark
 importlib-resources==6.5.2
     # via phastsim
-iniconfig==2.1.0
+iniconfig==2.3.0
     # via pytest
 interval-search==0.5.2
     # via
     #   -r requirements.in
     #   hstrat
-ipykernel==6.29.5
+iplotx==1.2.1
+    # via -r requirements.in
+ipykernel==7.0.1
     # via ipynbname
-ipynbname==2024.1.0.0
+ipynbname==2025.8.0.0
     # via nbmetalog
 ipython==7.31.1
     # via
@@ -152,7 +154,7 @@ iterpop==0.4.1
     #   hstrat
 jedi==0.19.2
     # via ipython
-jellyfish==1.2.0
+jellyfish==1.2.1
     # via sciris
 jinja2==3.0.3
     # via
@@ -171,15 +173,15 @@ joinem==0.9.3
     #   hstrat
 jsonpickle==4.1.1
     # via sciris
-jsonschema==4.24.0
+jsonschema==4.25.1
     # via nbformat
-jsonschema-specifications==2025.4.1
+jsonschema-specifications==2025.9.1
     # via jsonschema
 jupyter-client==8.6.3
     # via
     #   ipykernel
     #   nbclient
-jupyter-core==5.8.1
+jupyter-core==5.9.1
     # via
     #   ipykernel
     #   jupyter-client
@@ -195,41 +197,42 @@ keyname==0.6.0
     #   hstrat
     #   nbmetalog
     #   teeplot
-kiwisolver==1.4.8
+kiwisolver==1.4.9
     # via matplotlib
 lazy-loader==0.4
     # via
     #   downstream
     #   hstrat
-line-profiler==4.2.0
+line-profiler==5.0.0
     # via sciris
 llvmlite==0.44.0
     # via numba
 lru-dict==1.3.0
     # via hstrat
-markupsafe==3.0.2
+markupsafe==3.0.3
     # via
     #   jinja2
     #   nbconvert
-matplotlib==3.9.2
+matplotlib==3.10.0
     # via
     #   -r requirements.in
     #   backstrip
     #   covasim
     #   hstrat
+    #   iplotx
     #   sciris
     #   seaborn
     #   svgpath2mpl
     #   teeplot
-matplotlib-inline==0.1.7
+matplotlib-inline==0.2.1
     # via
     #   ipykernel
     #   ipython
 memory-profiler==0.61.0
     # via sciris
-mistune==3.1.3
+mistune==3.1.4
     # via nbconvert
-mmh3==5.1.0
+mmh3==5.2.0
     # via hstrat
 more-itertools==9.1.0
     # via
@@ -238,7 +241,7 @@ more-itertools==9.1.0
     #   keyname
 mpmath==1.3.0
     # via hstrat
-multidict==6.4.4
+multidict==6.7.0
     # via yarl
 multiprocess==0.70.18
     # via sciris
@@ -285,6 +288,7 @@ numpy==2.1.2
     #   downstream
     #   fishersrc
     #   hstrat
+    #   iplotx
     #   matplotlib
     #   numba
     #   pandas
@@ -329,20 +333,21 @@ pandas==2.2.3
     #   backstrip
     #   covasim
     #   hstrat
+    #   iplotx
     #   nbmetalog
     #   pecking
     #   sciris
     #   seaborn
     #   statsmodels
-pandera==0.24.0
+pandera==0.26.1
     # via hstrat
 pandocfilters==1.5.1
     # via nbconvert
-parso==0.8.4
+parso==0.8.5
     # via jedi
 pathspec==0.12.1
     # via black
-patsy==1.0.1
+patsy==1.0.2
     # via statsmodels
 pecking==0.2.1
     # via -r requirements.in
@@ -352,9 +357,9 @@ phastsim==0.0.6
     # via -r requirements.in
 pickleshare==0.7.5
     # via ipython
-pillow==11.2.1
+pillow==12.0.0
     # via matplotlib
-platformdirs==4.3.8
+platformdirs==4.5.0
     # via
     #   black
     #   jupyter-core
@@ -372,13 +377,13 @@ polars-u64-idx==1.29.0
     #   hstrat
 prettytable==3.16.0
     # via hstrat
-prompt-toolkit==3.0.51
+prompt-toolkit==3.0.52
     # via ipython
-propcache==0.3.1
+propcache==0.4.1
     # via yarl
 protobuf==3.20.3
     # via phastsim
-psutil==7.0.0
+psutil==7.1.1
     # via
     #   ipykernel
     #   memory-profiler
@@ -392,19 +397,19 @@ pyarrow==16.1.0
     #   -r requirements.in
     #   hstrat
     #   polars
-pycodestyle==2.13.0
+pycodestyle==2.14.0
     # via autopep8
-pydantic==2.11.5
+pydantic==2.12.3
     # via pandera
-pydantic-core==2.33.2
+pydantic-core==2.41.4
     # via pydantic
 pyerfa==2.0.1.5
     # via astropy
-pygments==2.19.1
+pygments==2.19.2
     # via
     #   ipython
     #   nbconvert
-pyparsing==3.2.3
+pyparsing==3.2.5
     # via matplotlib
 pytest==7.2.2
     # via
@@ -425,16 +430,16 @@ python-slugify==8.0.4
     #   teeplot
 pytz==2025.2
     # via pandas
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via
     #   astropy
     #   nbmetalog
     #   sciris
-pyzmq==26.4.0
+pyzmq==27.1.0
     # via
     #   ipykernel
     #   jupyter-client
-referencing==0.36.2
+referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-specifications
@@ -442,7 +447,7 @@ retry==0.9.2
     # via
     #   -r requirements.in
     #   keyname
-rpds-py==0.25.1
+rpds-py==0.28.0
     # via
     #   jsonschema
     #   referencing
@@ -450,7 +455,7 @@ ruff==0.0.260
     # via -r requirements.in
 safe-assert==0.5.0
     # via hstrat
-scikit-learn==1.6.1
+scikit-learn==1.7.2
     # via hstrat
 scipy==1.14.1
     # via
@@ -459,7 +464,7 @@ scipy==1.14.1
     #   pecking
     #   scikit-learn
     #   statsmodels
-sciris==3.2.1
+sciris==3.2.4
     # via covasim
 seaborn==0.13.2
     # via
@@ -484,9 +489,9 @@ sortedcontainers==2.4.0
     # via
     #   alifedata-phyloinformatics-convert
     #   hstrat
-soupsieve==2.7
+soupsieve==2.8
     # via beautifulsoup4
-statsmodels==0.14.4
+statsmodels==0.14.5
     # via
     #   covasim
     #   hstrat
@@ -502,13 +507,14 @@ tinycss2==1.4.0
     # via nbconvert
 tokenize-rt==6.2.0
     # via nbqa
-tomli==2.2.1
+tomli==2.3.0
     # via
     #   autopep8
     #   black
+    #   line-profiler
     #   nbqa
     #   pytest
-tornado==6.5.1
+tornado==6.5.2
     # via
     #   ipykernel
     #   jupyter-client
@@ -520,7 +526,6 @@ tqdm==4.64.1
     #   sciris
 traitlets==5.14.3
     # via
-    #   comm
     #   ipykernel
     #   ipython
     #   jupyter-client
@@ -531,9 +536,9 @@ traitlets==5.14.3
     #   nbformat
 treeswift==1.1.45
     # via alifedata-phyloinformatics-convert
-typeguard==4.4.2
+typeguard==4.4.4
     # via pandera
-typing-extensions==4.14.0
+typing-extensions==4.15.0
     # via
     #   alifedata-phyloinformatics-convert
     #   beautifulsoup4
@@ -551,7 +556,7 @@ typing-extensions==4.14.0
     #   typing-inspection
 typing-inspect==0.9.0
     # via pandera
-typing-inspection==0.4.1
+typing-inspection==0.4.2
     # via pydantic
 tzdata==2025.2
     # via pandas
@@ -561,7 +566,7 @@ validators==0.35.0
     # via alifedata-phyloinformatics-convert
 watermark==2.4.3
     # via -r requirements.in
-wcwidth==0.2.13
+wcwidth==0.2.14
     # via
     #   prettytable
     #   prompt-toolkit
@@ -569,13 +574,13 @@ webencodings==0.5.1
     # via
     #   bleach
     #   tinycss2
-wrapt==1.17.2
+wrapt==1.17.3
     # via deprecated
-xlsxwriter==3.2.3
+xlsxwriter==3.2.9
     # via sciris
-yarl==1.20.0
+yarl==1.22.0
     # via alifedata-phyloinformatics-convert
-zipp==3.22.0
+zipp==3.23.0
     # via importlib-metadata
-zstandard==0.23.0
+zstandard==0.25.0
     # via sciris
