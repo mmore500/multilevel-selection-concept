@@ -4,7 +4,7 @@ biopython==1.85
 black==22.10.0
 Deprecated==1.2.13
 dendropy==5.0.7
-hstrat==1.20.16
+hstrat @ git+https://github.com/mmore500/hstrat.git@v1.20.19
 downstream==1.14.3
 frozendict==2.4.6
 interval_search==0.5.2
