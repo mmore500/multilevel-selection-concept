@@ -117,7 +117,7 @@ gitpython==3.1.45
     # via sciris
 google==3.0.0
     # via phastsim
-hstrat==1.20.16
+hstrat @ git+https://github.com/mmore500/hstrat.git@24fd6050527d806a5772ae0a69c105af40b5ad8f
     # via -r requirements.in
 hurry-filesize==0.9
     # via nbmetalog
@@ -383,7 +383,7 @@ propcache==0.4.1
     # via yarl
 protobuf==3.20.3
     # via phastsim
-psutil==7.1.1
+psutil==7.1.2
     # via
     #   ipykernel
     #   memory-profiler
